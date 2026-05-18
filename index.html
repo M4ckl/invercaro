@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invercaro</title>
+  <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
+  <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
+  <link rel="stylesheet" href="style/main.css">
+  <link rel="stylesheet" href="style/mobile.css">
+</head>
+
+<body>
+  <header class="main-header">
+    <div class="header-top">
+      <nav class="nav-left">
+        <a href="index.html" class="nav-item" id="link-invercaro">
+          <img src="style/icons/icon_invercaro.svg" alt="Invercaro Icon" class="logo-icon">
+          <span class="logo-text">Invercaro</span>
+        </a>
+
+        <a href="space.html" class="nav-item space-text" id="link-space">
+          Space
+        </a>
+      </nav>
+
+      <div class="social-right">
+        <a href="https://github.com/M4ckl" class="social-link">
+          <img src="style/icons/icon_github.svg" alt="GitHub">
+        </a>
+        <a href="https://www.linkedin.com/in/mikhail-ramaniuk-861428257/" class="social-link">
+          <img src="style/icons/icon_linkedin.svg" alt="LinkedIn">
+        </a>
+      </div>
+    </div>
+
+    <div class="header-bottom">
+      <div class="track-gray">
+        <div class="indicator-black" id="nav-indicator"></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="intro-section">
+      <h1 class="intro-title">Technology that doesn't rush.</h1>
+      <div class="intro-subtitle-wrapper">
+        <span class="intro-subtitle">We create products that leave space.</span>
+      </div>
+    </section>
+
+    <section class="projects-canvas">
+      <div class="canvas-container">
+
+        <div class="side-panel panel-about float-card">
+          <span class="panel-badge">About</span>
+          <div class="panel-content">
+            <div class="bullet-ring"></div>
+            <p>We create products because we needed them ourselves.</p>
+
+            <div class="bullet-ring"></div>
+            <p>We don't believe life needs to be optimized.<br>
+              We believe it's important to <span class="black-pill">feel</span> it.</p>
+
+            <div class="bullet-ring"></div>
+            <p>Our apps don't rush, demand, or evaluate.<br>
+              They are just there when needed.</p>
+          </div>
+        </div>
+
+        <div class="center-map">
+          <svg class="map-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M 50 50 V 20 H 15" vector-effect="non-scaling-stroke" />
+            <path d="M 50 50 H 20 V 80" vector-effect="non-scaling-stroke" />
+            <path d="M 50 50 H 85 V 30" vector-effect="non-scaling-stroke" />
+          </svg>
+
+          <a href="space.html#sileo" class="map-node node-sileo">
+            <span class="tooltip-badge">Open</span>
+            <img src="style/icons/icon_sileo.svg" alt="Sileo">
+          </a>
+
+          <a href="space.html#mono" class="map-node node-mono">
+            <span class="tooltip-badge">Open</span>
+            <img src="style/icons/icon_mono.svg" alt="Mono">
+          </a>
+
+          <div class="map-node node-intent">
+            <span class="tooltip-badge">In development</span>
+            <img src="style/icons/icon_intent.svg" alt="Intent">
+          </div>
+
+          <div class="map-node node-space float-card">
+            Space
+          </div>
+        </div>
+
+        <div class="side-panel panel-whats-next float-card">
+          <span class="panel-badge">What’s next</span>
+          <div class="panel-content">
+            <p>We’ll keep building simple tools<br>
+              for attention, clarity and space —<br>
+              when something is truly missing.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

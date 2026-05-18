@@ -1,0 +1,297 @@
+/* ============GLOBAL & LAYOUT============ */
+body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main-header {
+    flex-shrink: 0;
+}
+
+.sp-container {
+    flex: 1 1 0;
+    padding: 0 2vw 2vw;
+    max-width: 1800px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+    box-sizing: border-box;
+}
+
+/* ============NAVIGATION & TABS============ */
+.sp-tabs-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    flex-shrink: 0;
+}
+
+.sp-tabs {
+    position: relative;
+    display: inline-flex;
+    padding: 4px;
+}
+
+.sp-tab-bg {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 8px);
+    background-color: var(--color-gray-line, #E5E5EA);
+    border-radius: 999px;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sp-tab {
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    border: none;
+    padding: 8px 28px;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-primary, #000000);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: color 0.3s;
+}
+
+/* ============APP STORE BUTTON============ */
+.sp-app-store-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(calc(-50% + 5px));
+
+    background-color: var(--text-primary, #000000);
+    color: var(--text-inverse, #FFFFFF);
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sp-app-store-btn:hover {
+    transform: translateY(calc(-50% + 5px)) scale(1.05);
+}
+
+/* ============CONTENT & ANIMATIONS============ */
+.sp-content-section {
+    display: none;
+    flex: 1 1 0;
+    min-height: 0;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.sp-content-section.sp-active-section {
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============GRID SYSTEM============ */
+.sp-main-grid {
+    flex: 1 1 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 2fr 5.5fr 2.5fr;
+    gap: 20px;
+}
+
+.sp-col-left,
+.sp-col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+}
+
+.sp-col-center {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+}
+
+/* ============CARDS & PROPORTIONS============ */
+.sp-card {
+    background-color: var(--bg-card, #FFFFFF);
+    border-radius: 32px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+}
+
+.sp-card-mono-top {
+    flex: 0.15;
+    gap: 12px;
+}
+
+.sp-card-mono-bottom {
+    flex: 0.85;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.sp-card-mono-bottom .sp-img {
+    align-self: center;
+    margin-top: 24px;
+}
+
+.sp-card-sileo-top {
+    flex: 0.85;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.sp-card-sileo-bottom {
+    flex: 0.15;
+    justify-content: center;
+    gap: 12px;
+}
+
+.sp-card-15 {
+    flex: 0.15;
+}
+
+.sp-card-85 {
+    flex: 0.85;
+    justify-content: flex-start;
+}
+
+/* ============TYPOGRAPHY & GRADIENTS============ */
+.sp-card h2 {
+    font-size: 32px;
+    font-weight: 500;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+.sp-card h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    margin-top: 16px;
+}
+
+.sp-gradient-text {
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.sp-gradient-mono-main {
+    background: linear-gradient(to right, #FF133E, #FFBAC6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sp-gradient-mono-history {
+    background: linear-gradient(to right, #356646, #02AC3F);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sp-gradient-mono-expense {
+    background: linear-gradient(to right, #FF9553, #EEDA00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sp-gradient-sileo-main {
+    background: linear-gradient(to right, #8E8E93, #C7C7CC);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sp-gradient-sileo-history {
+    background: linear-gradient(to right, #3A549F, #976D2C);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sp-gradient-sileo-achieve {
+    background: linear-gradient(to right, #E30B0B, #E3694A);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sp-small-text {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-primary, #000000);
+}
+
+.sp-align-right {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.sp-text-top {
+    margin-bottom: auto;
+}
+
+/* ============IMAGES============ */
+.sp-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.sp-img-large {
+    width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+}
+
+.sp-img-center {
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#sp-sileo .sp-img-large {
+    width: 90%;
+    max-height: 60vh;
+}

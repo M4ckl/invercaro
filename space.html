@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space</title>
+
+    <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
+    <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
+
+    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/space.css">
+    <link rel="stylesheet" href="style/mobile.css">
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="header-top">
+            <nav class="nav-left">
+                <a href="index.html" class="nav-item" id="link-invercaro">
+                    <img src="style/icons/icon_invercaro.svg" alt="Invercaro Icon" class="logo-icon">
+                    <span class="logo-text">Invercaro</span>
+                </a>
+                <a href="space.html" class="nav-item space-text" id="link-space">Space</a>
+            </nav>
+            <div class="social-right">
+                <a href="https://github.com/M4ckl" class="social-link"><img src="style/icons/icon_github.svg"
+                        alt="GitHub"></a>
+                <a href="https://www.linkedin.com/in/mikhail-ramaniuk-861428257/" class="social-link"><img
+                        src="style/icons/icon_linkedin.svg" alt="LinkedIn"></a>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="track-gray">
+                <div class="indicator-black" id="nav-indicator"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="sp-container">
+        <div class="sp-tabs-wrapper">
+            <div class="sp-tabs">
+                <div class="sp-tab-bg" id="sp-tab-indicator"></div>
+                <button class="sp-tab sp-active" data-target="sp-mono">Mono</button>
+                <button class="sp-tab" data-target="sp-sileo">Sileo</button>
+            </div>
+
+            <a href="#" id="sp-app-store-link" class="sp-app-store-btn" target="_blank">
+                App Store soon
+            </a>
+        </div>
+
+        <div id="sp-mono" class="sp-content-section sp-active-section">
+            <div class="sp-main-grid">
+                <div class="sp-col-left">
+                    <div class="sp-card sp-card-mono-top">
+                        <span class="sp-small-text">Mono Plus only from</span>
+                        <img src="style/images/mono/image_mono_sub.svg" alt="Mono Sub" class="sp-img">
+                        <span class="sp-small-text">More control. Same simplicity.</span>
+                    </div>
+                    <div class="sp-card sp-card-mono-bottom">
+                        <h3 class="sp-gradient-mono-history">Understand your habits</h3>
+                        <img src="style/images/mono/image_mono_history.svg" alt="History" class="sp-img">
+                    </div>
+                </div>
+                <div class="sp-col-center sp-card">
+                    <img src="style/images/mono/image_mono_main.svg" alt="Mono Main" class="sp-img-large">
+                    <h2 class="sp-gradient-mono-main">Track spending. Nothing more.</h2>
+                </div>
+                <div class="sp-col-right">
+                    <div class="sp-card sp-card-85">
+                        <img src="style/images/mono/image_mono_expense.svg" alt="Expense" class="sp-img">
+                        <h3 class="sp-gradient-mono-expense">Fast. Simple. Effortless.</h3>
+                    </div>
+                    <div class="sp-card sp-card-15">
+                        <img src="style/images/mono/image_mono_theme.svg" alt="Theme" class="sp-img-center">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sp-sileo" class="sp-content-section">
+            <div class="sp-main-grid">
+                <div class="sp-col-left">
+                    <div class="sp-card sp-card-sileo-top">
+                        <h3 class="sp-gradient-sileo-history">Moments that matter</h3>
+                        <img src="style/images/sileo/image_sileo_history.svg" alt="History" class="sp-img">
+                    </div>
+                    <div class="sp-card sp-card-sileo-bottom">
+                        <span class="sp-small-text">More ways to pause</span>
+                        <img src="style/images/sileo/image_sileo_sub.svg" alt="Sileo Sub" class="sp-img">
+                        <span class="sp-small-text">with SILEO PLUS</span>
+                    </div>
+                </div>
+                <div class="sp-col-center sp-card">
+                    <h2 class="sp-gradient-sileo-main">Take a moment</h2>
+                    <img src="style/images/sileo/image_sileo_main.svg" alt="Sileo Main" class="sp-img-large">
+                </div>
+                <div class="sp-col-right">
+                    <div class="sp-card sp-card-15">
+                        <img src="style/images/sileo/image_sileo_theme.svg" alt="Theme" class="sp-img-center">
+                    </div>
+                    <div class="sp-card sp-card-85">
+                        <img src="style/images/sileo/image_sileo_achive.svg" alt="Achieve" class="sp-img">
+                        <h3 class="sp-gradient-sileo-achieve">Small wins</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="js/app.js"></script>
+    <script src="js/space.js"></script>
+</body>
+
+</html>
