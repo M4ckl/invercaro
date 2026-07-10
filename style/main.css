@@ -2,7 +2,8 @@
 :root {
     --bg-main: #F7F7F7;
     --bg-card: #FFFFFF;
-    --text-primary: #000000;
+    --text-primary: #1D1D1F;
+    --text-strong: #000000;
     --text-secondary: #8E8E93;
     --text-inverse: #FFFFFF;
     
@@ -10,7 +11,14 @@
     --color-dots: #C7C7CC;
     --color-svg-path: #D1D1D6;
     
-    --transition-apple: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    /* Motion system — strong custom curves (the built-in easings are too weak) */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+
+    --dur-press: 150ms;
+    --dur-hover: 300ms;
+    --dur-slow: 450ms;
 }
 
 /* ======RESET & BODY====== */
@@ -49,6 +57,11 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: transform var(--dur-press) var(--ease-out);
+}
+
+.nav-item:active {
+    transform: scale(0.97);
 }
 
 .logo-icon {
@@ -66,7 +79,7 @@ body {
     color: var(--text-secondary);
     font-weight: 400;
     font-size: 18px;
-    transition: color 0.3s ease;
+    transition: color var(--dur-hover) var(--ease-out);
 }
 
 .space-text:hover {
@@ -83,11 +96,15 @@ body {
     width: 24px;
     height: 24px;
     opacity: 0.8;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
 }
 
 .social-link:hover img {
     opacity: 1;
+}
+
+.social-link:active img {
+    transform: scale(0.9);
 }
 
 .header-bottom {
@@ -108,7 +125,7 @@ body {
     height: 100%;
     background-color: var(--text-primary);
     border-radius: 4px;
-    transition: var(--transition-apple); 
+    transition: left var(--dur-slow) var(--ease-out), width var(--dur-slow) var(--ease-out); 
 }
 
 /* ======INTRO TEXT====== */
@@ -122,10 +139,12 @@ body {
 }
 
 .intro-title {
-    font-size: 40px; 
-    font-weight: 400; 
+    font-size: 40px;
+    font-weight: 400;
     color: var(--text-primary);
-    margin-bottom: 24px; 
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 24px;
 }
 
 .intro-subtitle-wrapper {
@@ -186,7 +205,7 @@ body {
     height: fit-content;
     position: relative;
     z-index: 2;
-    transition: var(--transition-apple);
+    transition: transform var(--dur-hover) var(--ease-out), box-shadow var(--dur-hover) var(--ease-out), outline-color var(--dur-hover) var(--ease-out);
     outline: 1px solid transparent;
     outline-offset: 2px;
 }
@@ -299,7 +318,7 @@ div.node-intent {
     font-size: 20px;
     font-weight: 400;
     border-radius: 24px;
-    transition: var(--transition-apple);
+    transition: transform var(--dur-hover) var(--ease-out), box-shadow var(--dur-hover) var(--ease-out), outline-color var(--dur-hover) var(--ease-out);
     outline: 1px solid transparent;
     outline-offset: 2px;
 }
@@ -319,7 +338,7 @@ div.node-intent {
     height: 84px; 
     border-radius: 20px; 
     filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.08));
-    transition: var(--transition-apple);
+    transition: transform var(--dur-hover) var(--ease-out), filter var(--dur-hover) var(--ease-out);
 }
 
 /* ======TOOLTIPS====== */
@@ -338,7 +357,7 @@ div.node-intent {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: var(--transition-apple);
+    transition: opacity var(--dur-press) var(--ease-out), transform var(--dur-press) var(--ease-out);
     z-index: 10;
 }
 
@@ -369,5 +388,51 @@ div.node-intent {
 .map-node:hover .tooltip-badge {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50%) translateY(0); 
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ======PRESS FEEDBACK======
+   Tactile scale-down on press. Rules sit after the :hover blocks so they win
+   when both are active (a press while hovering reads as a real button press).
+   These preserve each node's resting translate() so absolute layout is intact. */
+.map-node:active img {
+    transform: translateY(-2px) scale(0.97);
+}
+
+.node-space:active {
+    transform: translate(-50%, calc(-50% - 2px)) scale(0.985);
+}
+
+/* ======ENTRANCE (on load)======
+   Content rises; the floating side panels fade in slightly after — one calm,
+   staggered "materialize" gesture. Panels use opacity only (no transform) so
+   their resting translateY offsets and hover lift are never disturbed. */
+@keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.intro-title             { animation: rise 700ms var(--ease-out) both; }
+.intro-subtitle-wrapper  { animation: rise 700ms var(--ease-out) 90ms both; }
+.center-map              { animation: rise 750ms var(--ease-out) 150ms both; }
+.panel-about             { animation: fade 800ms var(--ease-out) 260ms both; }
+.panel-whats-next        { animation: fade 800ms var(--ease-out) 340ms both; }
+
+/* ======REDUCED MOTION======
+   Honor the OS setting: keep the interface legible, drop the movement. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-delay: 0ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
 }

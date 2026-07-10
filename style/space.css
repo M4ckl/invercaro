@@ -47,7 +47,7 @@ body {
     background-color: var(--color-gray-line, #E5E5EA);
     border-radius: 999px;
     z-index: 1;
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform var(--dur-slow) var(--ease-spring), width var(--dur-slow) var(--ease-spring);
 }
 
 .sp-tab {
@@ -61,7 +61,11 @@ body {
     color: var(--text-primary, #000000);
     cursor: pointer;
     border-radius: 999px;
-    transition: color 0.3s;
+    transition: color var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+
+.sp-tab:active {
+    transform: scale(0.96);
 }
 
 /* ============APP STORE BUTTON============ */
@@ -80,11 +84,16 @@ body {
     font-weight: 500;
     white-space: nowrap;
 
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
 }
 
 .sp-app-store-btn:hover {
     transform: translateY(calc(-50% + 5px)) scale(1.05);
+    background-color: #333333;
+}
+
+.sp-app-store-btn:active {
+    transform: translateY(calc(-50% + 5px)) scale(0.97);
 }
 
 /* ============CONTENT & ANIMATIONS============ */
@@ -92,7 +101,7 @@ body {
     display: none;
     flex: 1 1 0;
     min-height: 0;
-    animation: fadeIn 0.4s ease-in-out;
+    animation: fade 300ms var(--ease-out) both;
 }
 
 .sp-content-section.sp-active-section {
@@ -100,16 +109,21 @@ body {
     flex-direction: column;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
+/* Card cascade — when a section becomes visible (initial load or tab switch)
+   its cards rise in one after another. Animations replay on display change,
+   so switching tabs re-triggers the stagger for free. transform/opacity only. */
+.sp-active-section .sp-col-center {
+    animation: rise 550ms var(--ease-out) 60ms both;
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.sp-active-section .sp-col-left .sp-card:nth-child(1),
+.sp-active-section .sp-col-right .sp-card:nth-child(1) {
+    animation: rise 550ms var(--ease-out) 130ms both;
+}
+
+.sp-active-section .sp-col-left .sp-card:nth-child(2),
+.sp-active-section .sp-col-right .sp-card:nth-child(2) {
+    animation: rise 550ms var(--ease-out) 200ms both;
 }
 
 /* ============GRID SYSTEM============ */
@@ -197,6 +211,8 @@ body {
 .sp-card h2 {
     font-size: 32px;
     font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
     margin-top: 24px;
     margin-bottom: 24px;
 }
@@ -204,6 +220,8 @@ body {
 .sp-card h3 {
     font-size: 24px;
     font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
     margin-bottom: 16px;
     margin-top: 16px;
 }
