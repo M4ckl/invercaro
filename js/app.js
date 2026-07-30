@@ -1,42 +1,70 @@
+/* Shared page behaviour: nav indicator, entrance, typewriter title, touch flip. */
 document.addEventListener('DOMContentLoaded', () => {
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ---------------- Nav indicator ---------------- */
     const indicator = document.getElementById('nav-indicator');
     const track = document.querySelector('.track-gray');
-
     const invercaroLink = document.getElementById('link-invercaro');
     const spaceLink = document.getElementById('link-space');
-
     const isSpacePage = window.location.pathname.includes('space.html');
 
     function updateIndicatorPosition() {
+        if (!track || !indicator) return;
         const trackRect = track.getBoundingClientRect();
-
         const extraWidth = 18;
 
         if (!isSpacePage) {
             const invRect = invercaroLink.getBoundingClientRect();
-            const width = (invRect.right - trackRect.left) + extraWidth;
-
             indicator.style.left = '0px';
-            indicator.style.width = `${width}px`;
-
-            document.querySelector('.logo-text').style.color = '#000000';
-            spaceLink.style.color = '#8E8E93';
-
+            indicator.style.width = `${(invRect.right - trackRect.left) + extraWidth}px`;
+            invercaroLink.classList.add('nav-current');
+            spaceLink.classList.remove('nav-current');
         } else {
             const spaceRect = spaceLink.getBoundingClientRect();
-
-            const leftOffset = (spaceRect.left - trackRect.left) - extraWidth;
-
-            const width = spaceRect.width + (extraWidth * 2);
-
-            indicator.style.left = `${leftOffset}px`;
-            indicator.style.width = `${width}px`;
-
-            document.querySelector('.logo-text').style.color = '#8E8E93';
-            spaceLink.style.color = '#000000';
+            indicator.style.left = `${(spaceRect.left - trackRect.left) - extraWidth}px`;
+            indicator.style.width = `${spaceRect.width + (extraWidth * 2)}px`;
+            spaceLink.classList.add('nav-current');
+            invercaroLink.classList.remove('nav-current');
         }
     }
 
     updateIndicatorPosition();
     window.addEventListener('resize', updateIndicatorPosition);
+
+    /* ---------------- Entrance ---------------- */
+    root.classList.remove('is-loading');
+    root.classList.add('is-loaded');
+
+    /* ---------------- Typewriter title ---------------- */
+    const title = document.querySelector('[data-typewriter]');
+    if (title) {
+        const full = title.textContent.trim();
+        if (reduceMotion) {
+            title.classList.add('type-done');
+        } else {
+            title.textContent = '';
+            title.classList.add('typing');
+            let i = 0;
+            const type = () => {
+                if (i <= full.length) {
+                    title.textContent = full.slice(0, i);
+                    i++;
+                    setTimeout(type, 55);
+                } else {
+                    title.classList.remove('typing');
+                    title.classList.add('type-done');
+                }
+            };
+            setTimeout(type, 850);
+        }
+    }
+
+    /* ---------------- Flip cards (tap support on touch) ---------------- */
+    if (window.matchMedia('(hover: none)').matches) {
+        document.querySelectorAll('[data-flip]').forEach((card) => {
+            card.addEventListener('click', () => card.classList.toggle('is-flipped'));
+        });
+    }
 });

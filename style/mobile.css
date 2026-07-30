@@ -1,165 +1,183 @@
-/* ===========MOBILE OPTIMIZATION=========== */
+/* ====== MOBILE OPTIMIZATION ====== */
 @media screen and (max-width: 900px) {
-    
-    /* ===========
-       1. GLOBAL & BODY SETTINGS=========== */
+    /* ====== GLOBAL & BODY ====== */
     html, body {
         overflow-y: visible !important;
         overflow-x: hidden !important;
-        height: auto !important; 
+        height: auto !important;
         min-height: 100vh;
         position: relative;
-        padding-bottom: 120px;
+        padding-bottom: 44px;
     }
 
-    /* ===========HEADER=========== */
+    body.home,
+    body.home main {
+        display: block !important;
+    }
+
+    /* ====== HEADER ====== */
     .main-header {
-        margin: 20px 0 0; 
+        margin: 16px 0 0;
         position: static;
     }
 
     .header-top {
-        padding: 0;
-        position: static !important; 
+        padding: 0 6px;
+        position: static !important;
         display: flex;
         align-items: center;
-        height: 50px;
+        justify-content: space-between;
+        height: 48px;
     }
 
     .nav-left {
-        width: 100%;
+        width: auto;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
-        gap: 20px;
-        position: relative;
+        gap: 16px;
+        position: static;
     }
 
     .nav-item .logo-icon {
-        position: absolute;
-        left: 20px; 
-        top: 50%;
-        transform: translateY(-50%);
-        width: 36px !important; 
-        height: 36px !important;
+        position: static;
+        transform: none;
+        width: 26px !important;
+        height: 26px !important;
+    }
+
+    .logo-text,
+    .space-text {
+        font-size: 16px;
     }
 
     .header-bottom {
         display: none !important;
     }
 
-    /* ===========SOCIALS=========== */
     .social-right {
-        position: absolute;
-        bottom: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 32px; 
+        position: static;
+        transform: none;
+        bottom: auto;
+        left: auto;
+        gap: 0;
     }
 
-    .social-link img {
-        width: 32px; 
-        height: 32px;
+    .intro {
+        display: none !important;
     }
 
-    /* ===========INTRO SECTION=========== */
-    .intro-section {
-        padding: 40px 16px 0;
-    }
-
-    .intro-title {
-        font-size: 26px; 
-        margin-bottom: 16px;
-        line-height: 1.2;
-    }
-
-    .intro-subtitle-wrapper {
-        padding: 8px 20px;
-    }
-
-    .intro-subtitle {
-        font-size: 14px; 
-    }
-
-    /* ===========MAIN CANVAS=========== */
+    /* ====== STAGE ====== */
     .projects-canvas {
-        padding: 40px 16px;
+        padding: 18px 16px 48px;
         height: auto !important;
         min-height: auto !important;
     }
 
-    .canvas-container {
+    .stage {
+        min-height: auto !important;
         display: flex;
         flex-direction: column;
-        gap: 40px;
-        height: auto !important;
+        align-items: center;
+        gap: 24px;
     }
 
-    .center-map { order: 1; }
-    .panel-about { order: 2; }
-    .panel-whats-next { order: 3; }
+    .stage-center { order: 1; }
+    .dock         { order: 2; }
+    .app-panel    { order: 3; }
+    .left-stack   { order: 4; }
+
+    .stage-center {
+        position: static !important;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .model-stage {
+        width: min(80vw, 340px);
+        height: min(80vw, 340px);
+        max-width: none;
+    }
+
+    .model-hint {
+        width: min(82vw, 300px);
+    }
+
+    .dock {
+        position: static !important;
+        right: auto;
+        bottom: auto;
+        margin: 0;
+        gap: 14px;
+        padding: 10px 18px;
+    }
+
+    .dock-icon {
+        transform: none !important;
+    }
+
+    .app-panel {
+        position: static !important;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        max-width: 360px;
+        transform: none !important;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .app-panel:not(.is-open) {
+        display: none;
+    }
+
+    .left-stack {
+        position: static !important;
+        width: 100%;
+        max-width: 440px;
+        gap: 18px;
+    }
 
     .side-panel {
         width: 100%;
         max-width: none;
-        padding: 48px 24px 32px;
-        transform: none !important; 
-        height: auto !important;
-    }
-
-    .side-panel:hover {
-        transform: none !important; 
-    }
-
-    /* ===========CENTER MAP=========== */
-    .center-map {
-        width: 100%;
-        height: auto !important;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
-        padding: 20px 0;
-        position: relative;
-    }
-
-    .map-lines {
-        display: none; 
-    }
-
-    .center-map::before {
-        content: "";
-        position: absolute;
-        top: 40px; 
-        bottom: 80px;
-        left: 50%;
-        width: 2px;
-        border-left: 2px dashed var(--color-svg-path);
-        transform: translateX(-50%);
-        z-index: 1;
-    }
-
-    .map-node {
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
         transform: none !important;
-        z-index: 2; 
-        background-color: var(--bg-main);
-        border-radius: 20px;
+        height: auto !important;
     }
 
-    .node-space { order: 1; background-color: var(--bg-card); }
-    .node-mono  { order: 2; }
-    .node-sileo { order: 3; }
-    .node-intent{ order: 4; margin-bottom: 0 !important; }
-
-    .node-space:hover, .map-node:hover img {
-        transform: none !important; 
+    .side-panel:hover,
+    .flip-card:hover {
+        transform: none !important;
     }
 
-    /* ===========SPACE.HTML=========== */
+    .flip-card {
+        height: auto !important;
+        perspective: none;
+    }
+
+    .flip-card-inner {
+        position: static;
+        height: auto;
+        transform: none !important;
+        transform-style: flat;
+    }
+
+    .flip-card-front {
+        display: none;
+    }
+
+    .flip-card-back {
+        position: static;
+        transform: none;
+        -webkit-backface-visibility: visible;
+        backface-visibility: visible;
+        height: auto;
+        border-radius: 24px;
+        padding: 60px 26px 32px;
+    }
+
+    /* ====== SPACE PAGE ====== */
     .sp-container {
         padding: 0 16px;
         height: auto !important;
@@ -185,7 +203,7 @@
     }
 
     .sp-content-section {
-        display: none !important; 
+        display: none !important;
     }
 
     .sp-content-section.sp-active-section {

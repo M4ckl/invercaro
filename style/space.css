@@ -1,4 +1,4 @@
-/* ============GLOBAL & LAYOUT============ */
+/* ====== GLOBAL & LAYOUT ====== */
 body {
     overflow: hidden;
     display: flex;
@@ -23,7 +23,7 @@ body {
     box-sizing: border-box;
 }
 
-/* ============NAVIGATION & TABS============ */
+/* ====== TABS ====== */
 .sp-tabs-wrapper {
     position: relative;
     width: 100%;
@@ -68,7 +68,7 @@ body {
     transform: scale(0.96);
 }
 
-/* ============APP STORE BUTTON============ */
+/* ====== APP STORE BUTTON ====== */
 .sp-app-store-btn {
     position: absolute;
     right: 0;
@@ -96,7 +96,7 @@ body {
     transform: translateY(calc(-50% + 5px)) scale(0.97);
 }
 
-/* ============CONTENT & ANIMATIONS============ */
+/* ====== CONTENT & ANIMATIONS ====== */
 .sp-content-section {
     display: none;
     flex: 1 1 0;
@@ -109,9 +109,6 @@ body {
     flex-direction: column;
 }
 
-/* Card cascade — when a section becomes visible (initial load or tab switch)
-   its cards rise in one after another. Animations replay on display change,
-   so switching tabs re-triggers the stagger for free. transform/opacity only. */
 .sp-active-section .sp-col-center {
     animation: rise 550ms var(--ease-out) 60ms both;
 }
@@ -126,7 +123,7 @@ body {
     animation: rise 550ms var(--ease-out) 200ms both;
 }
 
-/* ============GRID SYSTEM============ */
+/* ====== GRID ====== */
 .sp-main-grid {
     flex: 1 1 0;
     min-height: 0;
@@ -154,7 +151,7 @@ body {
     height: 100%;
 }
 
-/* ============CARDS & PROPORTIONS============ */
+/* ====== CARDS ====== */
 .sp-card {
     background-color: var(--bg-card, #FFFFFF);
     border-radius: 32px;
@@ -166,6 +163,14 @@ body {
     overflow: hidden;
     position: relative;
     min-height: 0;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    transition: background-color var(--dur-slow) var(--ease-out), box-shadow var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out), border-color var(--dur-slow) var(--ease-out);
+}
+
+.sp-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-4px);
 }
 
 .sp-card-mono-top {
@@ -207,7 +212,7 @@ body {
     justify-content: flex-start;
 }
 
-/* ============TYPOGRAPHY & GRADIENTS============ */
+/* ====== TYPOGRAPHY & GRADIENTS ====== */
 .sp-card h2 {
     font-size: 32px;
     font-weight: 500;
@@ -290,7 +295,7 @@ body {
     margin-bottom: auto;
 }
 
-/* ============IMAGES============ */
+/* ====== IMAGES ====== */
 .sp-img {
     max-width: 100%;
     max-height: 100%;
@@ -312,4 +317,18 @@ body {
 #sp-sileo .sp-img-large {
     width: 90%;
     max-height: 60vh;
+}
+
+/* ====== THEME & ENTRANCE ====== */
+.sp-tab {
+    transition: color var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+
+.sp-tab-bg,
+.sp-app-store-btn {
+    transition: transform var(--dur-slow) var(--ease-spring), width var(--dur-slow) var(--ease-spring), background-color var(--dur-slow) var(--ease-out), color var(--dur-slow) var(--ease-out);
+}
+
+html.is-loaded .sp-tabs-wrapper {
+    animation: fade 600ms var(--ease-out) 150ms both;
 }

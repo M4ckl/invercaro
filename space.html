@@ -9,12 +9,22 @@
     <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
     <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
 
-    <link rel="stylesheet" href="style/main.css">
-    <link rel="stylesheet" href="style/space.css">
-    <link rel="stylesheet" href="style/mobile.css">
+    <link rel="stylesheet" href="style/main.css?v=15">
+    <link rel="stylesheet" href="style/space.css?v=15">
+    <link rel="stylesheet" href="style/mobile.css?v=15">
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('invercaro-theme');
+                if (t) document.documentElement.setAttribute('data-theme', t);
+            } catch (e) {}
+            document.documentElement.classList.add('is-loading');
+        })();
+    </script>
 </head>
 
 <body>
+    <canvas class="dots-canvas" id="dots-canvas" aria-hidden="true"></canvas>
     <header class="main-header">
         <div class="header-top">
             <nav class="nav-left">
@@ -25,10 +35,17 @@
                 <a href="space.html" class="nav-item space-text" id="link-space">Space</a>
             </nav>
             <div class="social-right">
-                <a href="https://github.com/M4ckl" class="social-link"><img src="style/icons/icon_github.svg"
-                        alt="GitHub"></a>
-                <a href="https://www.linkedin.com/in/mikhail-ramaniuk-861428257/" class="social-link"><img
-                        src="style/icons/icon_linkedin.svg" alt="LinkedIn"></a>
+                <button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Toggle dark theme">
+                    <svg class="theme-glyph-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
+                    </svg>
+                    <svg class="theme-glyph-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                    </svg>
+                </button>
             </div>
         </div>
         <div class="header-bottom">
@@ -111,8 +128,10 @@
 
     </main>
 
-    <script src="js/app.js"></script>
-    <script src="js/space.js"></script>
+    <script src="js/bg.js?v=15"></script>
+    <script src="js/site.js?v=15"></script>
+    <script src="js/app.js?v=15"></script>
+    <script src="js/space.js?v=15"></script>
 </body>
 
 </html>
