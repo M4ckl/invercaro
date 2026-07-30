@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tabs.forEach((tab) => tab.addEventListener('click', () => activate(tab)));
 
-    /* Open the tab named in the URL hash (#sileo / #mono) */
     const hash = window.location.hash;
     let initial = document.querySelector('.sp-tab.sp-active');
     if (hash === '#sileo') initial = document.querySelector('.sp-tab[data-target="sp-sileo"]');

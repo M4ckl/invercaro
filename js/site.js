@@ -25,8 +25,6 @@
 
   updateAppIcons();
 
-  /* A disc in the target theme's background colour grows from the toggle,
-     the theme is applied under the full cover, then the disc fades away. */
   function toggleTheme(x, y) {
     const next = currentTheme() === 'dark' ? 'light' : 'dark';
     if (reduceMotion) { applyTheme(next); return; }
