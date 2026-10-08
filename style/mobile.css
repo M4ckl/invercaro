@@ -3,7 +3,7 @@
     /* ====== GLOBAL & BODY ====== */
     html, body {
         overflow-y: visible !important;
-        overflow-x: hidden !important;
+        overflow-x: clip !important;
         height: auto !important;
         min-height: 100vh;
         position: relative;
@@ -60,7 +60,7 @@
         transform: none;
         bottom: auto;
         left: auto;
-        gap: 0;
+        gap: 16px;
     }
 
     .intro {
@@ -142,38 +142,7 @@
     .side-panel {
         width: 100%;
         max-width: none;
-        transform: none !important;
         height: auto !important;
-    }
-
-    .side-panel:hover,
-    .flip-card:hover {
-        transform: none !important;
-    }
-
-    .flip-card {
-        height: auto !important;
-        perspective: none;
-    }
-
-    .flip-card-inner {
-        position: static;
-        height: auto;
-        transform: none !important;
-        transform-style: flat;
-    }
-
-    .flip-card-front {
-        display: none;
-    }
-
-    .flip-card-back {
-        position: static;
-        transform: none;
-        -webkit-backface-visibility: visible;
-        backface-visibility: visible;
-        height: auto;
-        border-radius: 24px;
         padding: 60px 26px 32px;
     }
 
@@ -186,20 +155,31 @@
     }
 
     .sp-tabs-wrapper {
-        flex-direction: column;
-        align-items: center; 
-        gap: 20px;
-        padding-top: 24px;
-        margin-bottom: 24px;
+        top: 8px;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        margin: 12px 0 8px;
+        padding: 4px 6px;
+    }
+
+    .sp-tab {
+        padding: 7px 16px;
+        font-size: 15px;
+    }
+
+    .sp-actions {
+        position: static;
+        transform: none;
+        gap: 12px;
     }
 
     .sp-app-store-btn {
         position: static !important;
         transform: none !important;
-        margin: 0 auto;
-        padding: 10px 24px;
+        padding: 8px 14px;
         width: fit-content;
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .sp-content-section {
@@ -249,13 +229,119 @@
         margin: 16px auto !important;
     }
 
-    #sp-mono .sp-col-center .sp-img-large {
-        content: url("images/mono/image_mono_mobile_main.svg");
-        width: 80% !important;
-    }
-
     #sp-sileo .sp-col-center .sp-img-large {
         content: url("images/sileo/image_sileo_mobile_main.svg");
         width: 80% !important;
+    }
+
+    .mn-hero {
+        padding: 8px 8px 24px;
+    }
+
+    .mn-hero-sub {
+        font-size: 30px;
+    }
+
+    .mn-stack {
+        gap: 16px;
+    }
+
+    .mn-panel,
+    .mn-privacy {
+        position: relative;
+        top: auto;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        transform: none;
+        grid-template-columns: 1fr;
+        border-radius: 28px;
+    }
+
+    .mn-panel::after {
+        display: none;
+    }
+
+    .mn-media {
+        padding: 28px 16px;
+        height: min(104vw, 460px);
+    }
+
+    .mn-phone {
+        max-width: 45%;
+    }
+
+    .mn-phone:only-child {
+        max-width: 56%;
+    }
+
+    .mn-copy {
+        padding: 28px 22px 32px;
+    }
+
+    .mn-title {
+        font-size: 32px;
+    }
+
+    .mn-subtitle {
+        font-size: 20px;
+    }
+
+    .mn-body,
+    .mn-policy p {
+        font-size: 16px;
+    }
+
+    .mn-policy h3 {
+        font-size: 19px;
+    }
+
+    .mn-policy section {
+        padding: 22px 0;
+    }
+
+    .mn-meta div {
+        font-size: 14px;
+    }
+
+    .mn-copy-link {
+        width: 100%;
+        padding: 13px 20px;
+    }
+
+    .mn-scrollbar {
+        right: 3px;
+        width: 4px;
+        height: 36vh;
+    }
+
+    body.sp-scroll .mn-scrollbar.is-ready {
+        pointer-events: none;
+    }
+
+    .mn-scrollbar-ticks {
+        display: none;
+    }
+
+    .mn-body {
+        margin-top: 24px;
+        padding-top: 22px;
+    }
+
+    .mn-privacy {
+        height: auto;
+        padding: 32px 22px;
+        gap: 28px;
+    }
+
+    .mn-privacy-head {
+        padding: 0;
+    }
+
+    .mn-privacy .mn-policy {
+        overflow: visible;
+        padding: 0;
+        -webkit-mask-image: none;
+        mask-image: none;
     }
 }

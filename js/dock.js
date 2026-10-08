@@ -42,14 +42,15 @@
   }
 
   /* ---------------- App selection ---------------- */
+  const STATUS_LABELS = { open: 'Open', dev: 'In development', soon: 'Soon' };
   let active = null;
   let modelActive = false;
 
   function fillPanel(app) {
     const d = app.dataset;
     panelName.textContent = d.name;
-    panelStatus.textContent = d.status === 'soon' ? 'Soon' : 'Open';
-    panelStatus.className = 'app-panel-status ' + (d.status === 'soon' ? 'is-soon' : 'is-open');
+    panelStatus.textContent = STATUS_LABELS[d.status] || 'Open';
+    panelStatus.className = 'app-panel-status is-' + d.status;
     panelDesc.textContent = d.desc;
     if (d.href) {
       panelCta.href = d.href;

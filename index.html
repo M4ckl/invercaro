@@ -7,8 +7,8 @@
   <title>Invercaro</title>
   <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
   <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
-  <link rel="stylesheet" href="style/main.css?v=15">
-  <link rel="stylesheet" href="style/mobile.css?v=15">
+  <link rel="stylesheet" href="style/main.css?v=19">
+  <link rel="stylesheet" href="style/mobile.css?v=19">
   <script>
     (function () {
       try {
@@ -38,6 +38,13 @@
       </nav>
 
       <div class="social-right">
+        <a href="support.html" class="header-icon-btn" id="link-support" aria-label="Support">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5" />
+            <path d="M9.4 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.6 2.4-2.6 4" />
+            <circle cx="12" cy="17.4" r="0.6" fill="currentColor" stroke="none" />
+          </svg>
+        </a>
         <button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Toggle dark theme">
           <svg class="theme-glyph-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
             stroke-linecap="round">
@@ -73,51 +80,20 @@
 
         <!-- Left column: About / What's next, equal width, stacked -->
         <div class="left-stack">
-          <div class="side-panel panel-about flip-card" data-flip>
-            <div class="flip-card-inner">
-              <div class="flip-card-front">
-                <canvas class="card-figure" data-figure="wave" aria-hidden="true"></canvas>
-                <div class="flip-front-footer">
-                  <span class="flip-label">About</span>
-                  <span class="flip-hint">Hover to read</span>
-                </div>
-              </div>
-              <div class="flip-card-back">
-                <span class="panel-badge">About</span>
-                <div class="panel-content">
-                  <div class="panel-line">
-                    <span class="panel-idx">01</span>
-                    <p>We create products because we needed them ourselves.</p>
-                  </div>
-                  <div class="panel-line">
-                    <span class="panel-idx">02</span>
-                    <p>Life doesn't need to be optimized. It's important to <span class="black-pill">feel</span> it.</p>
-                  </div>
-                  <div class="panel-line">
-                    <span class="panel-idx">03</span>
-                    <p>Our apps don't rush, demand, or evaluate — they're just there when needed.</p>
-                  </div>
-                </div>
-              </div>
+          <div class="side-panel panel-about">
+            <span class="panel-badge">About</span>
+            <div class="panel-content">
+              <p>We create products because we needed them ourselves.</p>
+              <p>Life doesn't need to be optimized. It's important to <span class="black-pill">feel</span> it.</p>
+              <p>Our apps don't rush, demand, or evaluate — they're just there when needed.</p>
             </div>
           </div>
 
-          <div class="side-panel panel-whats-next flip-card" data-flip>
-            <div class="flip-card-inner">
-              <div class="flip-card-front">
-                <canvas class="card-figure" data-figure="bloom" aria-hidden="true"></canvas>
-                <div class="flip-front-footer">
-                  <span class="flip-label">What's next</span>
-                  <span class="flip-hint">Hover to read</span>
-                </div>
-              </div>
-              <div class="flip-card-back">
-                <span class="panel-badge">What's next</span>
-                <div class="panel-content panel-content--next">
-                  <p class="panel-lead">Simple tools for attention, clarity and&nbsp;space.</p>
-                  <p class="panel-note">We build only when something is truly&nbsp;missing — never sooner.</p>
-                </div>
-              </div>
+          <div class="side-panel panel-whats-next">
+            <span class="panel-badge">What's next</span>
+            <div class="panel-content panel-content--next">
+              <p class="panel-lead">Simple tools for attention, clarity and&nbsp;space.</p>
+              <p class="panel-note">We build only when something is truly&nbsp;missing — never sooner.</p>
             </div>
           </div>
         </div>
@@ -149,7 +125,7 @@
         <!-- Dock: app switcher -->
         <div class="dock" id="dock">
           <div class="dock-apps" id="dock-apps">
-            <button class="dock-app" type="button" data-app="sileo" data-name="Sileo" data-status="open"
+            <button class="dock-app" type="button" data-app="sileo" data-name="Sileo" data-status="dev"
               data-desc="Space to pause, breathe and notice the small wins." data-href="space.html#sileo"
               data-model="1" aria-label="Sileo">
               <img class="dock-icon" data-app-icon="sileo" src="style/icons/icon_sileo.svg" alt="Sileo">
@@ -173,11 +149,10 @@
     </section>
   </main>
 
-  <script src="js/bg.js?v=15"></script>
-  <script src="js/card-figures.js?v=15"></script>
-  <script src="js/site.js?v=15"></script>
-  <script src="js/dock.js?v=15"></script>
-  <script src="js/app.js?v=15"></script>
+  <script src="js/bg.js?v=19"></script>
+  <script src="js/site.js?v=19"></script>
+  <script src="js/dock.js?v=19"></script>
+  <script src="js/app.js?v=19"></script>
 </body>
 
 </html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support</title>
+
+    <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
+    <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
+
+    <link rel="stylesheet" href="style/main.css?v=19">
+    <link rel="stylesheet" href="style/support.css?v=19">
+    <link rel="stylesheet" href="style/mobile.css?v=19">
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('invercaro-theme');
+                if (t) document.documentElement.setAttribute('data-theme', t);
+            } catch (e) {}
+            document.documentElement.classList.add('is-loading');
+        })();
+    </script>
+</head>
+
+<body>
+    <canvas class="dots-canvas" id="dots-canvas" aria-hidden="true"></canvas>
+    <header class="main-header">
+        <div class="header-top">
+            <nav class="nav-left">
+                <a href="index.html" class="nav-item" id="link-invercaro">
+                    <img src="style/icons/icon_invercaro.svg" alt="Invercaro Icon" class="logo-icon">
+                    <span class="logo-text">Invercaro</span>
+                </a>
+                <a href="space.html" class="nav-item space-text" id="link-space">Space</a>
+            </nav>
+            <div class="social-right">
+                <a href="support.html" class="header-icon-btn" id="link-support" aria-label="Support">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9.5" />
+                    <path d="M9.4 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.6 2.4-2.6 4" />
+                    <circle cx="12" cy="17.4" r="0.6" fill="currentColor" stroke="none" />
+                  </svg>
+                </a>
+                <button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Toggle dark theme">
+                    <svg class="theme-glyph-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
+                    </svg>
+                    <svg class="theme-glyph-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="track-gray">
+                <div class="indicator-black" id="nav-indicator"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="su-container">
+        <section class="su-hero">
+            <h1 class="su-title">Support</h1>
+            <p class="su-subtitle">How can we help?</p>
+        </section>
+
+        <div class="su-layout">
+            <nav class="su-apps" aria-label="Apps">
+                <button type="button" class="su-app is-active" data-app="mono">
+                    <img src="style/icons/icon_mono.svg" data-app-icon="mono" alt="" class="su-app-icon">
+                    <span class="su-app-text"><strong>Mono</strong><span>Open</span></span>
+                </button>
+                <button type="button" class="su-app" data-app="sileo">
+                    <img src="style/icons/icon_sileo.svg" data-app-icon="sileo" alt="" class="su-app-icon">
+                    <span class="su-app-text"><strong>Sileo</strong><span>In development</span></span>
+                </button>
+            </nav>
+
+            <div class="su-panels">
+                <article class="su-panel is-active" id="su-mono">
+                    <header class="su-panel-head">
+                        <img src="style/icons/icon_mono.svg" data-app-icon="mono" alt="" class="su-panel-icon">
+                        <div>
+                            <h2>Mono</h2>
+                            <p class="su-tagline">Track spending. Nothing more.</p>
+                        </div>
+                    </header>
+                    <p class="su-desc">Mono is a minimalist personal finance tracker for iPhone. Create spending categories called blocks and log your expenses manually in a couple of seconds. Everything stays on your device — no account, no sign-up.</p>
+
+                    <a class="su-link-card" href="mailto:misharomaniuk15@icloud.com?subject=Mono%20Support">
+                        <span class="su-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" /><path d="m4 7 8 6 8-6" /></svg></span>
+                        <span class="su-link-text">
+                            <strong>Contact support</strong>
+                            <span>misharomaniuk15@icloud.com</span>
+                            <small>We usually reply within 2–3 business days.</small>
+                        </span>
+                        <span class="su-arrow" aria-hidden="true">→</span>
+                    </a>
+
+                    <section class="su-faq">
+                        <h3>Frequently asked questions</h3>
+                        <div class="su-faq-item">
+                            <button type="button" class="su-faq-q" aria-expanded="false">
+                                <span>How do I add an expense?</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                            </button>
+                            <div class="su-faq-a"><div><p>On the main screen, choose the amount, currency and block, then slide the button to the right.</p></div></div>
+                        </div>
+                        <div class="su-faq-item">
+                            <button type="button" class="su-faq-q" aria-expanded="false">
+                                <span>How do I create, rename, reorder or delete a block?</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                            </button>
+                            <div class="su-faq-a"><div><p>Open Blocks. Tap a card to edit it, or long-press a card to reorder or delete it.</p></div></div>
+                        </div>
+                        <div class="su-faq-item">
+                            <button type="button" class="su-faq-q" aria-expanded="false">
+                                <span>How do I delete a transaction?</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                            </button>
+                            <div class="su-faq-a"><div><p>Open a block and swipe the transaction to the left.</p></div></div>
+                        </div>
+                        <div class="su-faq-item">
+                            <button type="button" class="su-faq-q" aria-expanded="false">
+                                <span>Where is my data stored? Can I sync between devices?</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                            </button>
+                            <div class="su-faq-a"><div><p>Your data is stored only on this device. Mono has no account and no server, so there is no sync between devices.</p></div></div>
+                        </div>
+                        <div class="su-faq-item">
+                            <button type="button" class="su-faq-q" aria-expanded="false">
+                                <span>I deleted the app — can I restore my data?</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                            </button>
+                            <div class="su-faq-a"><div><p>Only from your own device backup (iCloud or a computer backup). Mono keeps no copy of your data anywhere else.</p></div></div>
+                        </div>
+                    </section>
+
+                    <a class="su-link-card" href="space.html#privacy">
+                        <span class="su-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" /><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3" /></svg></span>
+                        <span class="su-link-text">
+                            <strong>Privacy Policy</strong>
+                            <span>Mono collects no data. Read how your information is handled.</span>
+                        </span>
+                        <span class="su-arrow" aria-hidden="true">→</span>
+                    </a>
+                </article>
+
+                <article class="su-panel" id="su-sileo">
+                    <header class="su-panel-head">
+                        <img src="style/icons/icon_sileo.svg" data-app-icon="sileo" alt="" class="su-panel-icon">
+                        <div>
+                            <h2>Sileo</h2>
+                            <p class="su-tagline">Take a moment.</p>
+                        </div>
+                    </header>
+                    <p class="su-desc">Sileo gives you space to pause, breathe and notice the small wins. It is still in development, so help articles will appear here when it launches. Questions or ideas in the meantime? We’d love to hear from you.</p>
+
+                    <a class="su-link-card" href="mailto:misharomaniuk15@icloud.com?subject=Sileo">
+                        <span class="su-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" /><path d="m4 7 8 6 8-6" /></svg></span>
+                        <span class="su-link-text">
+                            <strong>Contact support</strong>
+                            <span>misharomaniuk15@icloud.com</span>
+                            <small>We usually reply within 2–3 business days.</small>
+                        </span>
+                        <span class="su-arrow" aria-hidden="true">→</span>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/bg.js?v=19"></script>
+    <script src="js/site.js?v=19"></script>
+    <script src="js/app.js?v=19"></script>
+    <script src="js/support.js?v=19"></script>
+</body>
+
+</html>

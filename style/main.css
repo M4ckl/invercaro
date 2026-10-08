@@ -153,7 +153,7 @@ html[data-theme="dark"] .logo-icon {
 .social-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
 }
 
 .header-bottom {
@@ -271,108 +271,19 @@ html[data-theme="dark"] .logo-icon {
     position: relative;
     width: 324px;
     z-index: 2;
-}
-
-.flip-card {
-    perspective: 1800px;
-    background: transparent;
-    transition: transform var(--dur-hover) var(--ease-out);
-}
-
-.panel-about.flip-card { height: 400px; }
-.panel-whats-next.flip-card { height: 240px; }
-
-.flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: transform 0.75s var(--ease-in-out);
-    will-change: transform;
-}
-
-.flip-card:hover .flip-card-inner,
-.flip-card.is-flipped .flip-card-inner {
-    transform: rotateY(180deg);
-}
-
-.flip-card-front,
-.flip-card-back {
-    position: absolute;
-    inset: 0;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    border-radius: 24px;
-    background-color: var(--bg-card);
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--card-border);
-    overflow: hidden;
-    transition: box-shadow var(--dur-hover) var(--ease-out), background-color var(--dur-slow) var(--ease-out);
-}
-
-.flip-card:hover .flip-card-front,
-.flip-card:hover .flip-card-back {
-    box-shadow: var(--card-shadow-hover);
-}
-
-.flip-card-front {
-    display: block;
-}
-
-.card-figure {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-.flip-front-footer {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 44px 28px 26px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    background: linear-gradient(to top, var(--bg-card) 14%, rgba(0, 0, 0, 0) 100%);
-    pointer-events: none;
-}
-
-.flip-label {
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--text-primary);
-}
-
-.flip-hint {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.flip-hint::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-}
-
-.flip-card-back {
-    transform: rotateY(180deg);
     padding: 58px 28px 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    border-radius: 24px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    transition: background-color var(--dur-slow) var(--ease-out), border-color var(--dur-slow) var(--ease-out);
 }
+
+.panel-about { height: 400px; }
+.panel-whats-next { height: 240px; }
 
 .panel-badge {
     position: absolute;
@@ -393,7 +304,7 @@ html[data-theme="dark"] .logo-icon {
     width: 24px;
     height: 2px;
     border-radius: 2px;
-    background: var(--accent);
+    background: var(--text-strong);
 }
 
 .panel-content {
@@ -404,27 +315,13 @@ html[data-theme="dark"] .logo-icon {
     gap: 20px;
 }
 
-.panel-line {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 14px;
-    align-items: start;
-}
 
-.panel-idx {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-    padding-top: 3px;
-}
 
 .panel-content p {
-    font-size: 14.5px;
+    font-size: 15px;
     line-height: 1.5;
     letter-spacing: -0.01em;
-    color: var(--text-primary);
+    color: var(--text-strong);
     margin: 0;
 }
 
@@ -438,7 +335,7 @@ html[data-theme="dark"] .logo-icon {
     font-weight: 500;
     line-height: 1.28;
     letter-spacing: -0.02em;
-    color: var(--text-primary);
+    color: var(--text-strong);
     margin: 0;
 }
 
@@ -679,7 +576,8 @@ html[data-theme="dark"] .logo-icon {
     border-radius: 999px;
 }
 
-.app-panel-status.is-open { color: #0f8f43; background: rgba(2, 172, 63, 0.14); }
+.app-panel-status.is-open { color: var(--text-inverse); background: var(--text-strong); }
+.app-panel-status.is-dev,
 .app-panel-status.is-soon { color: var(--text-secondary); background: var(--color-gray-line); }
 
 .app-panel-desc {
@@ -690,18 +588,32 @@ html[data-theme="dark"] .logo-icon {
 }
 
 .app-panel-cta {
+    margin-top: 2px;
+    padding: 8px 16px;
+    border-radius: 999px;
     font-size: 13px;
     font-weight: 600;
-    color: var(--accent);
+    color: var(--text-inverse);
+    background-color: var(--text-strong);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     width: fit-content;
+    transition: transform var(--dur-press) var(--ease-out), opacity var(--dur-hover) var(--ease-out), background-color var(--dur-slow) var(--ease-out), color var(--dur-slow) var(--ease-out);
+}
+
+.app-panel-cta:hover {
+    opacity: 0.85;
+}
+
+.app-panel-cta:active {
+    transform: scale(0.97);
 }
 
 .app-panel-cta.muted {
     color: var(--text-secondary);
+    background-color: var(--color-gray-line);
     pointer-events: none;
 }
 
@@ -716,7 +628,8 @@ html[data-theme="dark"] .logo-icon {
 html[data-theme="light"] .theme-glyph-sun { display: none; }
 html[data-theme="dark"] .theme-glyph-moon { display: none; }
 
-.theme-toggle-btn {
+.theme-toggle-btn,
+.header-icon-btn {
     background: none;
     border: 0;
     padding: 0;
@@ -731,23 +644,26 @@ html[data-theme="dark"] .theme-glyph-moon { display: none; }
     transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out), color var(--dur-hover) var(--ease-out);
 }
 
-.theme-toggle-btn:hover {
+.theme-toggle-btn:hover,
+.header-icon-btn:hover {
     opacity: 1;
     color: var(--accent);
 }
 
-.theme-toggle-btn:active {
+.theme-toggle-btn:active,
+.header-icon-btn:active {
     transform: scale(0.9);
 }
 
-.theme-toggle-btn svg {
-    width: 22px;
-    height: 22px;
+.header-icon-btn.nav-current {
+    opacity: 1;
+    color: var(--text-strong);
 }
 
-/* ====== HOVER STATES ====== */
-.flip-card:hover {
-    transform: translateY(-6px);
+.theme-toggle-btn svg,
+.header-icon-btn svg {
+    width: 22px;
+    height: 22px;
 }
 
 /* ====== ENTRANCE ====== */

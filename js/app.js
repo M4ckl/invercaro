@@ -1,4 +1,4 @@
-/* Shared page behaviour: nav indicator, entrance, typewriter title, touch flip. */
+/* Shared page behaviour: nav indicator, entrance, typewriter title. */
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.documentElement;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -8,14 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const track = document.querySelector('.track-gray');
     const invercaroLink = document.getElementById('link-invercaro');
     const spaceLink = document.getElementById('link-space');
+    const supportLink = document.getElementById('link-support');
     const isSpacePage = window.location.pathname.includes('space.html');
+    const isSupportPage = window.location.pathname.includes('support.html');
 
     function updateIndicatorPosition() {
         if (!track || !indicator) return;
         const trackRect = track.getBoundingClientRect();
         const extraWidth = 18;
 
-        if (!isSpacePage) {
+        if (isSupportPage) {
+            const supportRect = supportLink.getBoundingClientRect();
+            indicator.style.left = `${(supportRect.left - trackRect.left) - extraWidth}px`;
+            indicator.style.width = `${supportRect.width + (extraWidth * 2)}px`;
+            supportLink.classList.add('nav-current');
+        } else if (!isSpacePage) {
             const invRect = invercaroLink.getBoundingClientRect();
             indicator.style.left = '0px';
             indicator.style.width = `${(invRect.right - trackRect.left) + extraWidth}px`;
@@ -59,12 +66,5 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             setTimeout(type, 850);
         }
-    }
-
-    /* ---------------- Flip cards (tap support on touch) ---------------- */
-    if (window.matchMedia('(hover: none)').matches) {
-        document.querySelectorAll('[data-flip]').forEach((card) => {
-            card.addEventListener('click', () => card.classList.toggle('is-flipped'));
-        });
     }
 });
