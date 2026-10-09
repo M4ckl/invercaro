@@ -1,171 +1,126 @@
-/* Space page — Mono / Sileo tab switcher, Mono stacked panels, progress scrollbar and privacy link. */
+/* Space page — Mono / Sileo window (hash routed), in-window overlay scrollbar, scroll reveal and privacy link. */
 document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.sp-tab');
-    const tabIndicator = document.getElementById('sp-tab-indicator');
-    const sections = document.querySelectorAll('.sp-content-section');
-    const monoTab = document.querySelector('.sp-tab[data-target="sp-mono"]');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const mobile = window.matchMedia('(max-width: 900px)');
-
-    const stack = document.querySelector('.mn-stack');
-    const panels = stack ? Array.from(stack.querySelectorAll('.mn-panel')) : [];
+    const sections = Array.from(document.querySelectorAll('.sp-content-section'));
+    const title = document.getElementById('sp-window-title');
+    const body = document.querySelector('.sp-window-body');
+    const scroller = document.getElementById('sp-window-scroll');
+    const bar = document.getElementById('sp-scrollbar');
+    const thumb = document.getElementById('sp-scrollbar-thumb');
     const privacy = document.getElementById('privacy');
-    const localNav = document.querySelector('.sp-tabs-wrapper');
-    const bar = document.getElementById('mn-scrollbar');
-    const barFill = document.getElementById('mn-scrollbar-fill');
-    const barTicks = document.getElementById('mn-scrollbar-ticks');
-    const STACK_GAP = 24;
-    const BOTTOM_GAP = 20;
-    let targets = [];
-    let ticks = [];
-    let ticking = false;
+    const panels = Array.from(document.querySelectorAll('.mn-panel'));
+    let hideTimer = 0;
 
-    /* ---- tabs ---- */
-    function updateTabIndicator(activeTab) {
-        tabIndicator.style.transform = `translateX(${activeTab.offsetLeft - 4}px)`;
-        tabIndicator.style.width = `${activeTab.offsetWidth}px`;
-    }
-
-    function activate(tab) {
-        tabs.forEach((t) => t.classList.remove('sp-active'));
-        tab.classList.add('sp-active');
-        updateTabIndicator(tab);
-
-        const targetId = tab.getAttribute('data-target');
-        sections.forEach((section) => {
-            section.classList.toggle('sp-active-section', section.id === targetId);
-        });
-
-        const isMono = targetId === 'sp-mono';
+    /* ---- sections ---- */
+    function activate(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+        sections.forEach((section) => section.classList.toggle('sp-active-section', section === target));
+        title.textContent = target.dataset.title || '';
+        scroller.scrollTop = 0;
         window.scrollTo(0, 0);
-        document.body.classList.toggle('sp-scroll', isMono);
         layout();
     }
 
-    /* ---- layout ---- */
-    function docTop(el) {
-        let top = 0;
-        for (let node = el; node; node = node.offsetParent) top += node.offsetTop;
-        return top;
+    function sectionForHash(hash) {
+        return hash === '#sileo' ? 'sp-sileo' : 'sp-mono';
     }
 
-    function stickTopOf(i) {
-        if (mobile.matches) return 16;
-        const css = getComputedStyle(stack);
-        return parseFloat(css.getPropertyValue('--mn-stack-top')) + i * parseFloat(css.getPropertyValue('--mn-step'));
+    function goToPrivacy(smooth) {
+        activate('sp-mono');
+        privacy.scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto', block: 'start' });
     }
 
+    function route(smooth) {
+        const hash = window.location.hash;
+        if (hash === '#privacy') goToPrivacy(smooth);
+        else activate(sectionForHash(hash));
+    }
+
+    /* ---- overlay scrollbar ---- */
     function layout() {
-        if (!stack || !document.body.classList.contains('sp-scroll')) return;
-        const stackTop = docTop(stack);
-
-        panels.forEach((panel, i) => {
-            if (mobile.matches) panel.style.removeProperty('--mn-panel-h');
-            else panel.style.setProperty('--mn-panel-h', `${Math.round(window.innerHeight - stickTopOf(i) - BOTTOM_GAP)}px`);
-        });
-
-        let staticTop = stackTop;
-        targets = panels.map((panel, i) => {
-            const target = Math.max(0, staticTop - stickTopOf(i));
-            staticTop += panel.offsetHeight + STACK_GAP;
-            return target;
-        });
-
-        buildTicks();
-        update();
+        body.style.setProperty('--sp-view-h', `${scroller.clientHeight}px`);
+        updateBar();
     }
 
-    /* ---- progress scrollbar ---- */
-    function buildTicks() {
-        if (!barTicks) return;
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        if (!ticks.length) {
-            ticks = panels.map((panel, i) => {
-                const tick = document.createElement('button');
-                tick.type = 'button';
-                tick.className = 'mn-tick';
-                tick.dataset.label = panel.querySelector('.mn-title').textContent;
-                tick.setAttribute('aria-label', tick.dataset.label);
-                tick.addEventListener('click', () => {
-                    window.scrollTo({ top: targets[i], behavior: reduceMotion ? 'auto' : 'smooth' });
-                });
-                barTicks.appendChild(tick);
-                return tick;
+    function metrics() {
+        const view = scroller.clientHeight;
+        const full = scroller.scrollHeight;
+        const track = bar.clientHeight;
+        const size = Math.max(32, Math.round(track * view / full));
+        return { view, full, track, size, max: full - view };
+    }
+
+    function updateBar() {
+        const m = metrics();
+        const scrollable = m.max > 1;
+        bar.classList.toggle('is-scrollable', scrollable);
+        if (!scrollable) return;
+        thumb.style.height = `${m.size}px`;
+        thumb.style.transform = `translateY(${(m.track - m.size) * (scroller.scrollTop / m.max)}px)`;
+    }
+
+    function flashBar() {
+        bar.classList.add('is-active');
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(() => bar.classList.remove('is-active'), 1000);
+    }
+
+    scroller.addEventListener('scroll', () => {
+        updateBar();
+        if (bar.classList.contains('is-scrollable')) flashBar();
+    }, { passive: true });
+
+    thumb.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const startY = e.clientY;
+        const startTop = scroller.scrollTop;
+        const m = metrics();
+        const ratio = m.max / Math.max(1, m.track - m.size);
+        bar.classList.add('is-dragging');
+        thumb.setPointerCapture(e.pointerId);
+        const move = (ev) => { scroller.scrollTop = startTop + (ev.clientY - startY) * ratio; };
+        const up = () => {
+            bar.classList.remove('is-dragging');
+            thumb.removeEventListener('pointermove', move);
+            flashBar();
+        };
+        thumb.addEventListener('pointermove', move);
+        thumb.addEventListener('pointerup', up, { once: true });
+        thumb.addEventListener('pointercancel', up, { once: true });
+    });
+
+    bar.addEventListener('pointerdown', (e) => {
+        if (e.target !== bar) return;
+        const m = metrics();
+        const y = e.clientY - bar.getBoundingClientRect().top - m.size / 2;
+        scroller.scrollTo({
+            top: (y / Math.max(1, m.track - m.size)) * m.max,
+            behavior: reduceMotion ? 'auto' : 'smooth',
+        });
+    });
+
+    window.addEventListener('resize', layout);
+    window.addEventListener('load', layout);
+    if ('ResizeObserver' in window) new ResizeObserver(updateBar).observe(scroller.firstElementChild);
+
+    /* ---- scroll reveal ---- */
+    if (!reduceMotion && 'IntersectionObserver' in window && panels.length) {
+        panels[0].parentElement.classList.add('mn-reveal');
+        const narrow = window.matchMedia('(max-width: 900px)').matches;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-in');
+                    observer.unobserve(entry.target);
+                }
             });
-        }
-        ticks.forEach((tick, i) => {
-            tick.style.top = `${max > 0 ? Math.min(1, targets[i] / max) * 100 : 0}%`;
-        });
-        bar.classList.toggle('is-ready', max > 0);
-    }
-
-    function update() {
-        ticking = false;
-        const y = window.scrollY;
-        localNav.classList.toggle('is-stuck', y > 0 && localNav.getBoundingClientRect().top <= parseFloat(getComputedStyle(localNav).top) + 0.5);
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        if (barFill) barFill.style.setProperty('--progress', max > 0 ? Math.min(1, y / max).toFixed(4) : 0);
-        if (privacy) privacy.classList.toggle('is-docked', !mobile.matches && y >= max - 2);
-
-        let current = -1;
-        targets.forEach((target, i) => { if (y >= target - 4) current = i; });
-        ticks.forEach((tick, i) => {
-            tick.classList.toggle('is-passed', i <= current);
-            tick.classList.toggle('is-current', i === current);
-        });
-
-        if (reduceMotion || mobile.matches) {
-            panels.forEach((panel) => panel.style.setProperty('--p', 0));
-            return;
-        }
-        for (let i = 0; i < panels.length - 1; i++) {
-            const panel = panels[i];
-            const stickTop = stickTopOf(i);
-            const nextTop = panels[i + 1].getBoundingClientRect().top;
-            const progress = 1 - (nextTop - stickTop) / panel.offsetHeight;
-            panel.style.setProperty('--p', Math.min(1, Math.max(0, progress)).toFixed(3));
-        }
-    }
-
-    function requestUpdate() {
-        if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(update);
-        }
-    }
-
-    if (stack) {
-        window.addEventListener('scroll', requestUpdate, { passive: true });
-        window.addEventListener('resize', layout);
-        window.addEventListener('load', layout);
-
-        if (!reduceMotion && 'IntersectionObserver' in window) {
-            stack.classList.add('mn-reveal');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-in');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.2 });
-            panels.forEach((panel) => observer.observe(panel));
-        }
+        }, { root: narrow ? null : scroller, threshold: 0.2 });
+        panels.forEach((panel) => observer.observe(panel));
     }
 
     /* ---- privacy link ---- */
-    function goToPrivacy(smooth) {
-        if (!monoTab.classList.contains('sp-active')) activate(monoTab);
-        privacy.scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto' });
-        history.replaceState(null, '', '#privacy');
-    }
-
-    const privacyLink = document.getElementById('sp-privacy-link');
-    if (privacyLink) privacyLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        goToPrivacy(true);
-    });
-
     const copyBtn = document.getElementById('mn-copy-link');
     if (copyBtn) copyBtn.addEventListener('click', () => {
         const url = `${location.origin}${location.pathname}#privacy`;
@@ -178,38 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ---- init ---- */
-    function tabForHash(hash) {
-        if (hash === '#sileo') return document.querySelector('.sp-tab[data-target="sp-sileo"]');
-        if (hash === '#mono' || hash === '#privacy') return monoTab;
-        return null;
-    }
-
-    tabs.forEach((tab) => tab.addEventListener('click', () => {
-        if (tab.classList.contains('sp-active')) {
-            window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
-            return;
-        }
-        activate(tab);
-        history.replaceState(null, '', tab === monoTab ? '#mono' : '#sileo');
-    }));
-
-    window.addEventListener('hashchange', () => {
-        const tab = tabForHash(window.location.hash);
-        if (!tab) return;
-        if (window.location.hash === '#privacy') goToPrivacy(true);
-        else if (!tab.classList.contains('sp-active')) activate(tab);
-    });
-
-    const hash = window.location.hash;
-    const initial = tabForHash(hash) || monoTab;
-    layout();
-    if (initial) setTimeout(() => {
-        activate(initial);
-        if (hash === '#privacy') goToPrivacy(false);
-    }, 50);
-
-    window.addEventListener('resize', () => {
-        const activeTab = document.querySelector('.sp-tab.sp-active');
-        if (activeTab) updateTabIndicator(activeTab);
-    });
+    window.addEventListener('hashchange', () => route(true));
+    route(false);
 });

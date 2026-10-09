@@ -15,56 +15,60 @@
         display: block !important;
     }
 
-    /* ====== HEADER ====== */
-    .main-header {
-        margin: 16px 0 0;
+    /* ====== MENU BAR ====== */
+    .menubar {
+        height: 40px;
+        padding: 0 8px;
+    }
+
+    .menubar-item {
+        padding: 0 8px;
+    }
+
+    .menu {
         position: static;
     }
 
-    .header-top {
-        padding: 0 6px;
-        position: static !important;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 48px;
-    }
-
-    .nav-left {
+    .menu-pop {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 8px;
+        right: 8px;
         width: auto;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 16px;
-        position: static;
+        transform-origin: top center;
     }
 
-    .nav-item .logo-icon {
-        position: static;
-        transform: none;
-        width: 26px !important;
-        height: 26px !important;
+    @media (max-width: 520px) {
+        .menubar {
+            padding: 0 4px;
+        }
+
+        .menubar-clock {
+            display: none;
+        }
+
+        .menubar-left {
+            gap: 0;
+        }
+
+        .menubar-right {
+            gap: 0;
+        }
+
+        .menubar-logo {
+            padding: 0 6px;
+        }
+
+        .menubar-item {
+            padding: 0 6px;
+            font-size: 13px;
+        }
     }
 
-    .logo-text,
-    .space-text {
-        font-size: 16px;
-    }
-
-    .header-bottom {
-        display: none !important;
-    }
-
-    .social-right {
-        position: static;
-        transform: none;
-        bottom: auto;
-        left: auto;
-        gap: 16px;
-    }
-
-    .intro {
-        display: none !important;
+    @media (max-width: 360px) {
+        .menubar-logo {
+            display: none;
+        }
     }
 
     /* ====== STAGE ====== */
@@ -85,7 +89,6 @@
     .stage-center { order: 1; }
     .dock         { order: 2; }
     .app-panel    { order: 3; }
-    .left-stack   { order: 4; }
 
     .stage-center {
         position: static !important;
@@ -98,10 +101,6 @@
         width: min(80vw, 340px);
         height: min(80vw, 340px);
         max-width: none;
-    }
-
-    .model-hint {
-        width: min(82vw, 300px);
     }
 
     .dock {
@@ -132,54 +131,42 @@
         display: none;
     }
 
-    .left-stack {
-        position: static !important;
-        width: 100%;
-        max-width: 440px;
-        gap: 18px;
-    }
-
-    .side-panel {
-        width: 100%;
-        max-width: none;
-        height: auto !important;
-        padding: 60px 26px 32px;
-    }
-
     /* ====== SPACE PAGE ====== */
+    body.sp-page {
+        display: block;
+    }
+
     .sp-container {
-        padding: 0 16px;
-        height: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
+        display: block;
+        padding: 12px 10px 0;
     }
 
-    .sp-tabs-wrapper {
-        top: 8px;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-        margin: 12px 0 8px;
-        padding: 4px 6px;
+    .sp-window {
+        border-radius: 16px;
+        overflow: clip;
     }
 
-    .sp-tab {
-        padding: 7px 16px;
-        font-size: 15px;
+    .sp-window-bar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        height: 48px;
+        padding: 0 10px;
+        gap: 10px;
     }
 
-    .sp-actions {
-        position: static;
-        transform: none;
-        gap: 12px;
-    }
-
-    .sp-app-store-btn {
-        position: static !important;
-        transform: none !important;
-        padding: 8px 14px;
-        width: fit-content;
+    .sp-window-title {
         font-size: 13px;
+    }
+
+    .sp-window-body,
+    .sp-window-scroll {
+        position: static;
+        overflow: visible;
+    }
+
+    .sp-scrollbar {
+        display: none;
     }
 
     .sp-content-section {
@@ -234,32 +221,16 @@
         width: 80% !important;
     }
 
-    .mn-hero {
-        padding: 8px 8px 24px;
-    }
-
-    .mn-hero-sub {
-        font-size: 30px;
-    }
-
-    .mn-stack {
-        gap: 16px;
-    }
-
     .mn-panel,
     .mn-privacy {
-        position: relative;
-        top: auto;
         height: auto;
-        min-height: 0;
-        max-height: none;
-        transform: none;
         grid-template-columns: 1fr;
-        border-radius: 28px;
+        padding: 12px;
     }
 
-    .mn-panel::after {
-        display: none;
+    #sp-sileo.sp-active-section {
+        height: auto;
+        padding: 12px;
     }
 
     .mn-media {
@@ -309,39 +280,17 @@
         padding: 13px 20px;
     }
 
-    .mn-scrollbar {
-        right: 3px;
-        width: 4px;
-        height: 36vh;
-    }
-
-    body.sp-scroll .mn-scrollbar.is-ready {
-        pointer-events: none;
-    }
-
-    .mn-scrollbar-ticks {
-        display: none;
-    }
-
     .mn-body {
         margin-top: 24px;
         padding-top: 22px;
     }
 
     .mn-privacy {
-        height: auto;
         padding: 32px 22px;
         gap: 28px;
     }
 
     .mn-privacy-head {
-        padding: 0;
-    }
-
-    .mn-privacy .mn-policy {
-        overflow: visible;
-        padding: 0;
-        -webkit-mask-image: none;
-        mask-image: none;
+        position: static;
     }
 }

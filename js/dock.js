@@ -14,7 +14,6 @@
 
   const modelStage = document.getElementById('model-stage');
   const modelViewer = document.getElementById('app-model');
-  const modelHint = document.getElementById('model-hint');
 
   /* ---------------- macOS-style dock magnification ---------------- */
   const RANGE = 95;
@@ -78,7 +77,6 @@
 
   function showModel(app) {
     if (!modelViewer) return;
-    modelHint.hidden = true;
     modelViewer.classList.remove('is-swapping');
     modelViewer.hidden = false;
     const src = modelSrc(app);
@@ -124,7 +122,6 @@
     modelActive = false;
     apps.forEach((a) => a.classList.remove('is-active'));
     if (modelViewer) modelViewer.hidden = true;
-    modelHint.hidden = false;
     modelStage.classList.remove('has-model');
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
@@ -169,7 +166,4 @@
   }
 
   window.addEventListener('mousemove', onMouse, { passive: true });
-
-  /* Open the first app on load (runs last, after every const above is set). */
-  if (apps.length) select(apps[0]);
 })();

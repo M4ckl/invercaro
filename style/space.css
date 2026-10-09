@@ -1,31 +1,9 @@
 /* ====== GLOBAL & LAYOUT ====== */
-body {
+body.sp-page {
+    height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-}
-
-html {
-    scrollbar-width: none;
-}
-
-html::-webkit-scrollbar {
-    display: none;
-}
-
-body.sp-scroll {
-    overflow: visible;
-    display: block;
-    height: auto;
-}
-
-body.sp-scroll .sp-container {
-    padding-bottom: var(--mn-bottom-gap, 20px);
-}
-
-body.sp-scroll .sp-content-section {
-    flex: none;
 }
 
 .main-header {
@@ -34,122 +12,153 @@ body.sp-scroll .sp-content-section {
 
 .sp-container {
     flex: 1 1 0;
-    padding: 0 2vw 2vw;
-    max-width: 1800px;
+    min-height: 0;
     width: 100%;
+    max-width: 1800px;
     margin: 0 auto;
+    padding: 18px 2vw 2vw;
+    display: flex;
+}
+
+/* ====== WINDOW ====== */
+.sp-window {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    min-height: 0;
-    box-sizing: border-box;
+    border-radius: 18px;
+    overflow: hidden;
+    background-color: var(--bg-card);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.10), 0 4px 14px rgba(0, 0, 0, 0.05);
+    transition: background-color var(--dur-slow) var(--ease-out), border-color var(--dur-slow) var(--ease-out);
 }
 
-/* ====== TABS ====== */
-.sp-tabs-wrapper {
-    position: sticky;
-    top: 12px;
-    z-index: 40;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 4px;
-    padding: 6px 10px;
+html[data-theme="dark"] .sp-window {
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.sp-window-bar {
     flex-shrink: 0;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    transition: background-color var(--dur-slow) var(--ease-out), border-color var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out);
-}
-
-.sp-tabs-wrapper.is-stuck {
-    background-color: color-mix(in srgb, var(--bg-card) 72%, transparent);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    backdrop-filter: saturate(180%) blur(20px);
-    border-color: var(--card-border);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-}
-
-.sp-tabs {
-    position: relative;
-    display: inline-flex;
-    padding: 4px;
-}
-
-.sp-tab-bg {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    height: calc(100% - 8px);
-    background-color: var(--color-gray-line, #E5E5EA);
-    border-radius: 999px;
-    z-index: 1;
-    transition: transform var(--dur-slow) var(--ease-spring), width var(--dur-slow) var(--ease-spring);
-}
-
-.sp-tab {
-    position: relative;
-    z-index: 2;
-    background: transparent;
-    border: none;
-    padding: 8px 28px;
-    font-size: 16px;
-    font-weight: 300;
-    color: var(--text-primary, #000000);
-    cursor: pointer;
-    border-radius: 999px;
-    transition: color var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
-}
-
-.sp-tab:active {
-    transform: scale(0.96);
-}
-
-/* ====== APP STORE BUTTON ====== */
-.sp-actions {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 14px;
+    height: 52px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--color-gray-line);
+    background-color: color-mix(in srgb, var(--bg-main) 45%, var(--bg-card));
+    transition: background-color var(--dur-slow) var(--ease-out), border-color var(--dur-slow) var(--ease-out);
 }
 
-
-
 .sp-app-store-btn {
-    background-color: var(--text-primary, #000000);
-    color: var(--text-inverse, #FFFFFF);
-    text-decoration: none;
-    padding: 10px 24px;
+    flex-shrink: 0;
+    padding: 6px 14px;
     border-radius: 999px;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
     white-space: nowrap;
-
-    transition: transform var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
+    text-decoration: none;
+    color: var(--text-inverse);
+    background-color: var(--text-strong);
+    transition: transform var(--dur-press) var(--ease-out), opacity var(--dur-hover) var(--ease-out), background-color var(--dur-slow) var(--ease-out), color var(--dur-slow) var(--ease-out);
 }
 
 .sp-app-store-btn:hover {
-    transform: scale(1.05);
-    background-color: #333333;
+    opacity: 0.85;
 }
 
 .sp-app-store-btn:active {
-    transform: scale(0.97);
+    transform: scale(0.96);
 }
 
-/* ====== CONTENT & ANIMATIONS ====== */
+.sp-window-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-strong);
+}
+
+.sp-window-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+.sp-window-scroll {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+}
+
+.sp-window-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* ====== WINDOW SCROLLBAR ====== */
+.sp-scrollbar {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    bottom: 4px;
+    width: 14px;
+    z-index: 5;
+    border-radius: 999px;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.sp-scrollbar.is-scrollable:hover,
+.sp-scrollbar.is-active,
+.sp-scrollbar.is-dragging {
+    opacity: 1;
+    transition: opacity 120ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.sp-scrollbar:hover,
+.sp-scrollbar.is-dragging {
+    background-color: color-mix(in srgb, var(--text-strong) 5%, transparent);
+}
+
+.sp-scrollbar-thumb {
+    position: absolute;
+    top: 0;
+    right: 3px;
+    width: 7px;
+    min-height: 32px;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--text-strong) 38%, transparent);
+    transition: width 160ms var(--ease-out), right 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.sp-scrollbar:hover .sp-scrollbar-thumb,
+.sp-scrollbar.is-dragging .sp-scrollbar-thumb {
+    width: 9px;
+    right: 2.5px;
+    background-color: color-mix(in srgb, var(--text-strong) 52%, transparent);
+}
+
+/* ====== CONTENT ====== */
 .sp-content-section {
     display: none;
-    flex: 1 1 0;
-    min-height: 0;
     animation: fade 300ms var(--ease-out) both;
 }
 
 .sp-content-section.sp-active-section {
+    display: block;
+}
+
+#sp-sileo.sp-active-section {
     display: flex;
-    flex-direction: column;
+    height: 100%;
+    padding: 20px;
 }
 
 .sp-active-section .sp-col-center {
@@ -166,7 +175,11 @@ body.sp-scroll .sp-content-section {
     animation: rise 550ms var(--ease-out) 200ms both;
 }
 
-/* ====== GRID ====== */
+html.is-loaded .sp-window {
+    animation: rise 700ms var(--ease-out) 120ms both;
+}
+
+/* ====== SILEO · GRID ====== */
 .sp-main-grid {
     flex: 1 1 0;
     min-height: 0;
@@ -330,87 +343,22 @@ body.sp-scroll .sp-content-section {
     max-height: 60vh;
 }
 
-/* ====== THEME & ENTRANCE ====== */
-.sp-tab {
-    transition: color var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
-}
-
-.sp-tab-bg,
-.sp-app-store-btn {
-    transition: transform var(--dur-slow) var(--ease-spring), width var(--dur-slow) var(--ease-spring), background-color var(--dur-slow) var(--ease-out), color var(--dur-slow) var(--ease-out);
-}
-
-html.is-loaded .sp-tabs-wrapper {
-    animation: fade 600ms var(--ease-out) 150ms both;
-}
-/* ====== MONO · HERO ====== */
-#sp-mono {
-    --mn-gutter: 24px;
-    --mn-stack-top: 84px;
-    --mn-step: 14px;
-    --mn-radius: 40px;
-}
-
-.mn-hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px 16px 36px;
-}
-
-
-
-.mn-hero-sub {
-    font-size: clamp(32px, 3.6vw, 52px);
-    font-weight: 700;
-    letter-spacing: -0.035em;
-    line-height: 1.08;
-    color: var(--text-strong);
-}
-
-.mn-hero-sub span {
-    display: inline-block;
-}
-
-.sp-active-section .mn-hero-sub { animation: rise 700ms var(--ease-out) 120ms both; }
-.sp-active-section .mn-stack { animation: rise 800ms var(--ease-out) 240ms both; }
-
-/* ====== MONO · STACKED PANELS ====== */
+/* ====== MONO · SECTIONS ====== */
 .mn-stack {
     display: flex;
     flex-direction: column;
-    gap: var(--mn-gutter);
 }
 
 .mn-panel {
     --a1: #FF133E;
     --a2: #FF8FA3;
-    --p: 0;
-    position: sticky;
-    top: calc(var(--mn-stack-top) + var(--i) * var(--mn-step));
-    height: var(--mn-panel-h, calc(100vh - 120px));
-    min-height: 520px;
     display: grid;
     grid-template-columns: 1.08fr 1fr;
-    background-color: var(--bg-card);
-    border: 1px solid var(--card-border);
-    border-radius: var(--mn-radius);
-    box-shadow: var(--card-shadow);
-    overflow: hidden;
-    transform-origin: 50% 0;
-    transform: scale(calc(1 - var(--p) * 0.05));
-    transition: background-color var(--dur-slow) var(--ease-out), border-color var(--dur-slow) var(--ease-out);
-    will-change: transform;
-}
-
-.mn-panel::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: var(--bg-main);
-    opacity: calc(var(--p) * 0.55);
-    pointer-events: none;
+    gap: 8px;
+    height: max(560px, var(--sp-view-h, 720px));
+    padding: 20px;
+    border-bottom: 1px solid var(--color-gray-line);
+    scroll-margin-top: 0;
 }
 
 .mn-accent-green { --a1: #02AC3F; --a2: #6EDB8F; }
@@ -425,6 +373,7 @@ html.is-loaded .sp-tabs-wrapper {
     justify-content: center;
     gap: 3%;
     padding: 6% 6%;
+    border-radius: 22px;
     background:
         radial-gradient(55% 50% at 50% 55%, color-mix(in srgb, var(--a1) 16%, transparent), transparent 72%),
         color-mix(in srgb, var(--bg-main) 70%, var(--bg-card));
@@ -556,41 +505,18 @@ html.is-loaded .sp-tabs-wrapper {
 .mn-privacy {
     --a1: #8E8E93;
     --a2: #C7C7CC;
-    position: relative;
-    top: auto;
-    transform: none;
+    height: auto;
     grid-template-columns: minmax(280px, 0.8fr) 1.2fr;
-    grid-template-rows: minmax(0, 1fr);
+    align-items: start;
     gap: clamp(40px, 5vw, 96px);
-    padding: 0 clamp(48px, 6vw, 96px);
-    scroll-margin-top: calc(var(--mn-stack-top) + 4 * var(--mn-step));
-}
-
-.mn-privacy::after {
-    display: none;
+    padding: 72px clamp(48px, 6vw, 96px) 88px;
+    border-bottom: none;
 }
 
 .mn-privacy-head {
-    align-self: center;
-    padding: 48px 0;
+    position: sticky;
+    top: 40px;
 }
-
-.mn-privacy .mn-policy {
-    overflow-y: hidden;
-    padding: 56px 0 72px;
-    scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 40px, #000 calc(100% - 64px), transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0, #000 40px, #000 calc(100% - 64px), transparent 100%);
-}
-
-.mn-privacy .mn-policy::-webkit-scrollbar {
-    display: none;
-}
-
-.mn-privacy.is-docked .mn-policy {
-    overflow-y: auto;
-}
-
 
 .mn-meta {
     margin-top: 36px;
@@ -700,117 +626,4 @@ html.is-loaded .sp-tabs-wrapper {
 
 .mn-copy-link:active {
     transform: scale(0.97);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .mn-panel {
-        transform: none;
-    }
-
-    .mn-panel::after {
-        display: none;
-    }
-}
-
-/* ====== MONO · PROGRESS SCROLLBAR ====== */
-.mn-scrollbar {
-    position: fixed;
-    top: 50%;
-    right: 4px;
-    z-index: 50;
-    height: min(46vh, 420px);
-    width: 20px;
-    transform: translate(8px, -50%);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
-}
-
-body.sp-scroll .mn-scrollbar.is-ready {
-    opacity: 1;
-    transform: translate(0, -50%);
-    pointer-events: auto;
-}
-
-.mn-scrollbar-track {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 3px;
-    margin-left: -1.5px;
-    border-radius: 999px;
-    background-color: var(--color-gray-line);
-    overflow: hidden;
-    transition: width var(--dur-hover) var(--ease-out), margin-left var(--dur-hover) var(--ease-out);
-}
-
-.mn-scrollbar-fill {
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
-    background-color: var(--text-strong);
-    transform-origin: 50% 0;
-    transform: scaleY(var(--progress, 0));
-}
-
-.mn-scrollbar:hover .mn-scrollbar-track {
-    width: 5px;
-    margin-left: -2.5px;
-}
-
-.mn-scrollbar-ticks {
-    position: absolute;
-    inset: 0;
-}
-
-.mn-tick {
-    position: absolute;
-    left: 50%;
-    width: 9px;
-    height: 9px;
-    padding: 0;
-    border: 2px solid var(--color-gray-line);
-    border-radius: 50%;
-    background-color: var(--bg-main);
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-    transition: border-color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-spring);
-}
-
-.mn-tick.is-passed {
-    border-color: var(--text-strong);
-    background-color: var(--text-strong);
-}
-
-.mn-tick.is-current {
-    transform: translate(-50%, -50%) scale(1.35);
-}
-
-.mn-tick:hover {
-    transform: translate(-50%, -50%) scale(1.5);
-}
-
-.mn-tick::after {
-    content: attr(data-label);
-    position: absolute;
-    right: calc(100% + 12px);
-    top: 50%;
-    padding: 5px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    color: var(--text-inverse);
-    background-color: var(--text-strong);
-    opacity: 0;
-    transform: translate(6px, -50%) scale(calc(1 / 1.5));
-    transform-origin: right center;
-    pointer-events: none;
-    transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
-}
-
-.mn-tick:hover::after {
-    opacity: 1;
-    transform: translate(0, -50%) scale(calc(1 / 1.5));
 }
