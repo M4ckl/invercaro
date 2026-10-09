@@ -1,4 +1,4 @@
-/* Interactive background dot field (canvas): soft glow, cursor repel, edge fade. */
+/* Interactive background dot field (canvas): cursor repel, edge fade. */
 (function () {
   const canvas = document.getElementById('dots-canvas');
   if (!canvas) return;
@@ -10,7 +10,6 @@
   const GAP = 32;
   const BASE_RADIUS = 1.5;
   const CURSOR_R = 140;
-  const GLOW_FRACTION = 0.55;
   const REPEL_R = 116;
   const REPEL_FORCE = 1.7;
   const SPRING = 0.055;
@@ -24,7 +23,7 @@
   let dpr = Math.min(window.devicePixelRatio || 1, 2);
 
   const pointer = { x: -9999, y: -9999, active: false };
-  const theme = { dot: [199, 199, 204], glow: [124, 109, 242] };
+  const theme = { dot: [199, 199, 204] };
 
   let reveal = reduceMotion ? 1 : 0;
   let revealStart = 0;
@@ -47,7 +46,6 @@
   function readTheme() {
     const cs = getComputedStyle(document.documentElement);
     theme.dot = parseColor(cs.getPropertyValue('--dot-color')) || theme.dot;
-    theme.glow = parseColor(cs.getPropertyValue('--dot-glow')) || theme.glow;
   }
 
   function parseColor(str) {
@@ -100,11 +98,6 @@
           vx: 0, vy: 0,
           dist: Math.hypot(bx - cx, by - cy),
           edgeFade: smoothstep(0, margin, distEdge),
-          canGlow: Math.random() < GLOW_FRACTION,
-          active: false,
-          wait: 1 + Math.random() * 9,
-          elapsed: 0,
-          dur: 0,
         });
       }
     }
@@ -125,20 +118,14 @@
   function clearPointer() { pointer.active = false; pointer.x = pointer.y = -9999; }
 
   /* ---------------- Render loop ---------------- */
-  let last = 0;
   function frame(now) {
     if (!revealStart) revealStart = now;
     if (!reduceMotion) reveal = Math.min(1, (now - revealStart) / REVEAL_DUR);
-
-    let dt = (now - last) / 1000;
-    if (!last || dt > 0.1) dt = 0.016;
-    last = now;
 
     ctx.clearRect(0, 0, w, h);
 
     const revealFront = reveal * maxDist;
     const dotRGB = theme.dot;
-    const glowRGB = theme.glow;
 
     for (let i = 0; i < dots.length; i++) {
       const d = dots[i];
@@ -170,61 +157,22 @@
         d.y += d.vy;
       }
 
-      let glow = 0;
-      if (d.canGlow && !reduceMotion) {
-        if (d.active) {
-          d.elapsed += dt;
-          const p = d.elapsed / d.dur;
-          if (p >= 1) {
-            d.active = false;
-            d.wait = 5 + Math.random() * 9;
-          } else {
-            glow = Math.sin(p * Math.PI);
-            glow *= glow;
-          }
-        } else {
-          d.wait -= dt;
-          if (d.wait <= 0) {
-            d.active = true;
-            d.elapsed = 0;
-            d.dur = 3 + Math.random() * 3.5;
-          }
-        }
-      }
-
       let cursorFactor = 1;
       if (pointer.active) {
         const dx = d.x - pointer.x;
         const dy = d.y - pointer.y;
         cursorFactor = smoothstep(CURSOR_R * 0.35, CURSOR_R, Math.sqrt(dx * dx + dy * dy));
       }
-      glow *= cursorFactor;
 
       const fade = d.edgeFade * revealAlpha;
       if (fade <= 0.002) continue;
 
       const baseAlpha = 0.42 * fade * (0.6 + 0.4 * cursorFactor);
 
-      if (glow > 0.02) {
-        const gAlpha = glow * 0.42 * fade;
-        const gr = BASE_RADIUS + glow * 1.1;
-        const grad = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, gr * 3);
-        grad.addColorStop(0, `rgba(${glowRGB[0]},${glowRGB[1]},${glowRGB[2]},${gAlpha})`);
-        grad.addColorStop(1, `rgba(${glowRGB[0]},${glowRGB[1]},${glowRGB[2]},0)`);
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, gr * 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = `rgba(${glowRGB[0]},${glowRGB[1]},${glowRGB[2]},${Math.min(0.75, gAlpha + 0.25) * fade})`;
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, gr, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        ctx.fillStyle = `rgba(${dotRGB[0]},${dotRGB[1]},${dotRGB[2]},${baseAlpha})`;
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, BASE_RADIUS, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      ctx.fillStyle = `rgba(${dotRGB[0]},${dotRGB[1]},${dotRGB[2]},${baseAlpha})`;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, BASE_RADIUS, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     if (!reduceMotion) requestAnimationFrame(frame);
