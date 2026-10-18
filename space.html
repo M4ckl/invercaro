@@ -10,8 +10,8 @@
     <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
 
     <link rel="stylesheet" href="style/main.css?v=23">
-    <link rel="stylesheet" href="style/space.css?v=23">
-    <link rel="stylesheet" href="style/mobile.css?v=23">
+    <link rel="stylesheet" href="style/space.css?v=24">
+    <link rel="stylesheet" href="style/mobile.css?v=24">
     <script>
         (function () {
             try {
@@ -153,6 +153,29 @@
                                 </div>
                             </article>
 
+                            <article class="mn-panel mn-accent-teal">
+                                <div class="mn-media">
+                                    <div class="mn-widgets">
+                                        <img src="style/images/mono/image_mono_widget_big.svg" width="740" height="776" alt="Large Mono widget showing two blocks, each with its own chart" class="mn-widget mn-widget-large" loading="lazy" decoding="async">
+                                        <img src="style/images/mono/image_mono_widget_middle.svg" width="740" height="340" alt="Medium Mono widget with the month total, a daily chart and needs, extra and wants" class="mn-widget mn-widget-medium" loading="lazy" decoding="async">
+                                        <img src="style/images/mono/image_mono_widget_small.svg" width="346" height="340" alt="Small Mono widget with one block’s total for the month" class="mn-widget mn-widget-small" loading="lazy" decoding="async">
+                                    </div>
+                                </div>
+                                <div class="mn-copy">
+                                    <h2 class="mn-title">Your Month at&nbsp;a&nbsp;Glance</h2>
+                                    <p class="mn-subtitle">Widgets for your Home Screen.<br>One tap to add an expense.</p>
+                                    <div class="mn-body">
+                                        <p class="mn-lead">See where your month is going, without opening the&nbsp;app.</p>
+                                        <ul class="mn-list">
+                                            <li><strong>Small</strong><span>This month’s total, for all your blocks or just one.</span></li>
+                                            <li><strong>Medium</strong><span>Adds a daily chart and your needs, extra and wants.</span></li>
+                                            <li><strong>Large</strong><span>Two or three blocks, each with its own chart.</span></li>
+                                        </ul>
+                                        <p>Choose what each size shows in Settings. Amounts and block names stay hidden while your iPhone is locked.</p>
+                                    </div>
+                                </div>
+                            </article>
+
                             <article class="mn-panel mn-accent-blue">
                                 <div class="mn-media">
                                     <img src="style/images/mono/image_mono_block_more.svg" width="418" height="850" alt="Mono block settings and history" class="mn-phone" loading="lazy" decoding="async">
@@ -162,8 +185,8 @@
                                     <p class="mn-subtitle">Seamless transaction history<br>and custom block management.</p>
                                     <div class="mn-body">
                                         <ul class="mn-list">
-                                            <li><strong>Custom Rates</strong><span>Set your own conversion coefficients or use live market rates.</span></li>
-                                            <li><strong>Transaction History</strong><span>Review, edit, or delete logged entries with ease.</span></li>
+                                            <li><strong>Custom Rates</strong><span>Set your own conversion coefficients or use Mono’s built-in rates.</span></li>
+                                            <li><strong>Transaction History</strong><span>Review your entries and delete any of them with a swipe.</span></li>
                                             <li><strong>Block Customization</strong><span>Rename categories and adjust currency settings on the fly.</span></li>
                                         </ul>
                                     </div>
@@ -175,7 +198,7 @@
                                     <h2 class="mn-title">Privacy Policy</h2>
                                     <p class="mn-subtitle">Your data stays on your iPhone.<br>We never see it.</p>
                                     <dl class="mn-meta">
-                                        <div><dt>Effective date</dt><dd>October 8, 2026</dd></div>
+                                        <div><dt>Effective date</dt><dd>October 18, 2026</dd></div>
                                         <div><dt>Developer</dt><dd>Michail Romaniuk, Poland</dd></div>
                                         <div><dt>App</dt><dd>Mono for iPhone</dd></div>
                                     </dl>
@@ -197,30 +220,37 @@
                                     <section>
                                         <h3>2. Where Your Data Is Stored</h3>
                                         <p>Everything you enter is stored only on your device, using Apple’s SwiftData and UserDefaults. Nothing is sent over the internet. Currency conversion uses fixed rates built into the app and makes no network requests.</p>
+                                        <p>Mono’s database is protected with iOS Data Protection, so it can’t be read while your iPhone is locked.</p>
                                         <p>Your Mono data may be included in your own iCloud or iTunes device backup. Those backups are controlled by Apple, not by the developer.</p>
                                     </section>
                                     <section>
-                                        <h3>3. Sharing, Selling, and Tracking</h3>
+                                        <h3>3. Home Screen Widgets</h3>
+                                        <p>If you add a Mono widget, the app saves a small summary for it on your device: this month’s totals, the needs, extra and wants split, the daily totals for the chart, and the names of the blocks you chose to show. Individual expenses and their names are not included.</p>
+                                        <p>The summary is kept in a storage area that only Mono and its own widget can read, it is updated whenever your data changes, and it never leaves your device. Amounts and block names in the widget are hidden while your iPhone is locked.</p>
+                                    </section>
+                                    <section>
+                                        <h3>4. Sharing, Selling, and Tracking</h3>
                                         <p>We do not share, sell, or rent any data, and we do not track you. Mono contains no analytics, no advertising, and no third-party SDKs. No third parties receive any information from the app.</p>
                                     </section>
                                     <section>
-                                        <h3>4. Data Retention and Deletion</h3>
-                                        <p>Your data remains on your device until you remove it. You can delete individual blocks and transactions inside the app at any time. Deleting the app permanently deletes all of its data.</p>
+                                        <h3>5. Data Retention and Deletion</h3>
+                                        <p>Your data remains on your device until you remove it. You can delete individual blocks and transactions inside the app at any time, or delete everything at once with Settings → Erase All Data. Deleting the app permanently deletes all of its data, including the widget summary.</p>
+                                        <p>Before an app update changes how data is stored, Mono keeps a temporary safety copy on your device. It is deleted automatically once the update has opened successfully a few times, or right away with Erase All Data, and it is never included in device backups.</p>
                                     </section>
                                     <section>
-                                        <h3>5. Children’s Privacy</h3>
+                                        <h3>6. Children’s Privacy</h3>
                                         <p>Mono is not directed at children under 13. The app collects no data from anyone, including children.</p>
                                     </section>
                                     <section>
-                                        <h3>6. Your Rights (GDPR &amp; CCPA)</h3>
+                                        <h3>7. Your Rights (GDPR &amp; CCPA)</h3>
                                         <p>Data protection laws such as the GDPR and CCPA give you the right to access, correct, and delete personal data held about you. Because Mono collects no personal data, we hold nothing about you, so there is nothing to access or delete on our side. All of your data is under your control on your device.</p>
                                     </section>
                                     <section>
-                                        <h3>7. Changes to This Policy</h3>
+                                        <h3>8. Changes to This Policy</h3>
                                         <p>If this policy changes, the updated version will be posted on this page with a new effective date.</p>
                                     </section>
                                     <section>
-                                        <h3>8. Contact</h3>
+                                        <h3>9. Contact</h3>
                                         <p>Questions about this policy? Contact us at <a href="mailto:misharomaniuk15@icloud.com">misharomaniuk15@icloud.com</a>.</p>
                                     </section>
                                 </div>

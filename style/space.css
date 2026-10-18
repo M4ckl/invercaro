@@ -364,6 +364,7 @@ html.is-loaded .sp-window {
 .mn-accent-green { --a1: #02AC3F; --a2: #6EDB8F; }
 .mn-accent-orange { --a1: #FF6A1A; --a2: #FFB21E; }
 .mn-accent-blue { --a1: #0A84FF; --a2: #7C6DF2; }
+.mn-accent-teal { --a1: #0FB5C9; --a2: #64D2FF; }
 
 .mn-media {
     position: relative;
@@ -478,9 +479,51 @@ html.is-loaded .sp-window {
     background: linear-gradient(135deg, var(--a1), var(--a2));
 }
 
+/* ====== MONO · WIDGETS ======
+   Scattered at different angles, overlapping a little. Positions and widths are percentages of a 100×120 box;
+   the tilt uses `rotate`, so the reveal's `transform` doesn't override it. */
+.mn-widgets {
+    position: relative;
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: 100 / 120;
+}
+
+.mn-widget {
+    position: absolute;
+    height: auto;
+    filter: drop-shadow(0 26px 34px rgba(0, 0, 0, 0.22));
+    transition: transform 900ms var(--ease-out), opacity 900ms var(--ease-out);
+}
+
+.mn-widget-large {
+    left: 4%;
+    top: 27%;
+    width: 62%;
+    rotate: -6deg;
+    z-index: 1;
+}
+
+.mn-widget-medium {
+    left: 30%;
+    top: 5%;
+    width: 66%;
+    rotate: 5deg;
+    z-index: 2;
+}
+
+.mn-widget-small {
+    left: 59%;
+    top: 66%;
+    width: 35%;
+    rotate: 10deg;
+    z-index: 3;
+}
+
 /* ====== MONO · SCROLL REVEAL ====== */
 .mn-reveal .mn-panel:not(.is-in) .mn-copy > *,
-.mn-reveal .mn-panel:not(.is-in) .mn-phone {
+.mn-reveal .mn-panel:not(.is-in) .mn-phone,
+.mn-reveal .mn-panel:not(.is-in) .mn-widgets > * {
     opacity: 0;
 }
 
@@ -488,7 +531,8 @@ html.is-loaded .sp-window {
     transform: translateY(24px);
 }
 
-.mn-reveal .mn-panel:not(.is-in) .mn-phone {
+.mn-reveal .mn-panel:not(.is-in) .mn-phone,
+.mn-reveal .mn-panel:not(.is-in) .mn-widgets > * {
     transform: translateY(10%) scale(0.96);
 }
 
@@ -500,6 +544,9 @@ html.is-loaded .sp-window {
 .mn-reveal .mn-copy > :nth-child(3) { transition-delay: 140ms; }
 .mn-reveal .mn-copy > :nth-child(4) { transition-delay: 210ms; }
 .mn-reveal .mn-phone + .mn-phone { transition-delay: 120ms; }
+.mn-reveal .mn-widgets > :nth-child(2) { transition-delay: 80ms; }
+.mn-reveal .mn-widgets > :nth-child(3) { transition-delay: 140ms; }
+.mn-reveal .mn-widgets > :nth-child(4) { transition-delay: 200ms; }
 
 /* ====== MONO · PRIVACY ====== */
 .mn-privacy {
