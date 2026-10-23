@@ -115,6 +115,19 @@
         transform: none !important;
     }
 
+    .space-host {
+        padding: 12px 10px 0;
+    }
+
+    .space-frame {
+        border-radius: 16px 16px 0 0;
+    }
+
+    html.space-open,
+    html.space-open body {
+        overflow: hidden;
+    }
+
     /* ====== SPACE PAGE ====== */
     body.sp-page {
         display: block;
@@ -139,10 +152,6 @@
         gap: 10px;
     }
 
-    .sp-window-title {
-        font-size: 13px;
-    }
-
     .sp-window-body,
     .sp-window-scroll {
         position: static;
@@ -153,128 +162,11 @@
         display: none;
     }
 
-    .sp-content-section {
-        display: none !important;
+    .ap {
+        --ap-pad: 20px;
     }
 
-    .sp-content-section.sp-active-section {
-        display: flex !important; 
-        flex-direction: column !important;
-        height: auto !important;
-    }
-
-    .sp-main-grid,
-    .sp-col-left, 
-    .sp-col-center, 
-    .sp-col-right {
-        display: flex !important;
-        flex-direction: column !important;
-        height: auto !important;
-        min-height: 0 !important;
-        flex: none !important; 
-        gap: 16px;
-    }
-
-    .sp-card {
-        flex: none !important; 
-        height: auto !important;
-        width: 100%;
-        min-height: 200px;
-        padding: 32px 24px !important;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .sp-card-mono-bottom, .sp-card-85 {
-        align-items: center !important;
-        text-align: center !important;
-    }
-
-    .sp-img, .sp-img-large, .sp-img-center {
-        display: block;
-        max-width: 100% !important;
-        height: auto !important;
-        max-height: 300px !important; 
-        object-fit: contain !important;
-        margin: 16px auto !important;
-    }
-
-    #sp-sileo .sp-col-center .sp-img-large {
-        content: url("images/sileo/image_sileo_mobile_main.svg");
-        width: 80% !important;
-    }
-
-    .mn-panel,
-    .mn-privacy {
-        height: auto;
-        grid-template-columns: 1fr;
-        padding: 12px;
-    }
-
-    #sp-sileo.sp-active-section {
-        height: auto;
-        padding: 12px;
-    }
-
-    .mn-media {
-        padding: 28px 16px;
-        height: min(104vw, 460px);
-    }
-
-    .mn-phone {
-        max-width: 45%;
-    }
-
-    .mn-phone:only-child {
-        max-width: 56%;
-    }
-
-    .mn-copy {
-        padding: 28px 22px 32px;
-    }
-
-    .mn-title {
-        font-size: 32px;
-    }
-
-    .mn-subtitle {
-        font-size: 20px;
-    }
-
-    .mn-body,
-    .mn-policy p {
-        font-size: 16px;
-    }
-
-    .mn-policy h3 {
-        font-size: 19px;
-    }
-
-    .mn-policy section {
-        padding: 22px 0;
-    }
-
-    .mn-meta div {
-        font-size: 14px;
-    }
-
-    .mn-copy-link {
-        width: 100%;
-        padding: 13px 20px;
-    }
-
-    .mn-body {
-        margin-top: 24px;
-        padding-top: 22px;
-    }
-
-    .mn-privacy {
-        padding: 32px 22px;
-        gap: 28px;
-    }
-
-    .mn-privacy-head {
-        position: static;
+    .ap-rail-btn {
+        display: none;
     }
 }

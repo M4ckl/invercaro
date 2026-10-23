@@ -75,6 +75,7 @@
 
   let leaving = false;
   document.addEventListener('click', (e) => {
+    if (e.defaultPrevented) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
     const a = e.target.closest('a');
     if (!a || !isInternal(a)) return;

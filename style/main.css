@@ -674,6 +674,77 @@ html[data-theme="dark"] .theme-glyph-moon { display: none; }
     height: 22px;
 }
 
+/* ====== SPACE WINDOW (HOME) ====== */
+.space-host {
+    position: fixed;
+    inset: 32px 0 0;
+    z-index: 40;
+    display: flex;
+    justify-content: center;
+    padding: 18px 2vw 2vw;
+    pointer-events: none;
+    transition: inset 420ms var(--ease-spring), padding 420ms var(--ease-spring);
+}
+
+.space-host[hidden] {
+    display: none;
+}
+
+.space-frame {
+    flex: 1;
+    max-width: 1800px;
+    border: 0;
+    border-radius: 18px;
+    background: transparent;
+    color-scheme: normal;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.14), 0 4px 14px rgba(0, 0, 0, 0.06);
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+    transform-origin: 50% 60%;
+    transition:
+        opacity 380ms var(--ease-out),
+        transform 560ms var(--ease-spring),
+        border-radius 420ms var(--ease-spring);
+}
+
+html[data-theme="dark"] .space-frame {
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.space-host.is-open .space-frame {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+.space-host.is-closing .space-frame {
+    transition: opacity 260ms var(--ease-out), transform 320ms var(--ease-out);
+    transform: scale(0.96);
+}
+
+.space-host.is-minimizing .space-frame {
+    transition: opacity 480ms var(--ease-in-out), transform 500ms var(--ease-in-out);
+    transform-origin: 50% 100%;
+    transform: translateY(40%) scale(0.08, 0.04);
+}
+
+.space-host.is-max {
+    inset: 0;
+    z-index: 60;
+    padding: 0;
+}
+
+.space-host.is-max .space-frame {
+    max-width: none;
+    border-radius: 0;
+}
+
+html.space-open .dock,
+html.space-open .stage-center {
+    visibility: hidden;
+    transition: visibility 0s 400ms;
+}
+
 /* ====== ENTRANCE ====== */
 html:not(.is-loaded) .main-header,
 html:not(.is-loaded) main {

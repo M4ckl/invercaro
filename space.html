@@ -9,15 +9,19 @@
     <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
     <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
 
-    <link rel="stylesheet" href="style/main.css?v=25">
-    <link rel="stylesheet" href="style/space.css?v=25">
-    <link rel="stylesheet" href="style/mobile.css?v=25">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap">
+    <link rel="stylesheet" href="style/main.css?v=28">
+    <link rel="stylesheet" href="style/space.css?v=28">
+    <link rel="stylesheet" href="style/mobile.css?v=28">
     <script>
         (function () {
             try {
                 var t = localStorage.getItem('invercaro-theme');
                 if (t) document.documentElement.setAttribute('data-theme', t);
             } catch (e) {}
+            if (window.self !== window.top) document.documentElement.classList.add('is-embed');
             document.documentElement.classList.add('is-loading');
         })();
     </script>
@@ -90,369 +94,303 @@
     <main class="sp-container">
         <div class="sp-window" id="sp-window">
             <div class="sp-window-bar">
-                <span class="sp-window-title" id="sp-window-title">Track spending. Nothing more.</span>
+                <div class="sp-lights" role="group" aria-label="Window controls">
+                    <button type="button" class="sp-light sp-light--close" data-win="close" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 3.5l5 5M8.5 3.5l-5 5"/></svg></button>
+                    <button type="button" class="sp-light sp-light--min" data-win="minimize" aria-label="Minimize"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h6"/></svg></button>
+                    <button type="button" class="sp-light sp-light--zoom" data-win="zoom" aria-label="Enter full screen"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3.2 8.8V4.6l4.2 4.2zM8.8 3.2v4.2L4.6 3.2z"/></svg></button>
+                </div>
                 <a href="#" id="sp-app-store-link" class="sp-app-store-btn" target="_blank">App Store soon</a>
             </div>
 
             <div class="sp-window-body">
                 <div class="sp-window-scroll" id="sp-window-scroll">
-                    <div id="sp-mono" class="sp-content-section sp-active-section" data-title="Track spending. Nothing more.">
-                        <div class="mn-stack">
-                            <article class="mn-panel mn-accent-red">
-                                <div class="mn-media">
-                                    <img src="style/images/mono/image_mono_main_1.svg" width="418" height="850" alt="Mono expense entry screen" class="mn-phone">
-                                    <img src="style/images/mono/image_mono_main_2.svg" width="418" height="850" alt="Swiping to add an expense in Mono" class="mn-phone">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Just Two Steps</h2>
-                                    <p class="mn-subtitle">Enter amount, swipe right.<br>Expense added.</p>
-                                    <div class="mn-body">
-                                        <p class="mn-lead">Track expenses at the speed of thought.</p>
-                                        <p>Forget complex forms and endless categories. Just type the number and swipe. Financial tracking has never been this smooth.</p>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-accent-green">
-                                <div class="mn-media">
-                                    <img src="style/images/mono/image_mono_blocks.svg" width="418" height="850" alt="Mono category blocks" class="mn-phone" loading="lazy" decoding="async">
-                                    <img src="style/images/mono/image_mono_blocks_edit.svg" width="418" height="850" alt="Editing a block in Mono" class="mn-phone" loading="lazy" decoding="async">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Smart Category Blocks</h2>
-                                    <p class="mn-subtitle">Create, customize, and edit<br>your budget blocks effortlessly.</p>
-                                    <div class="mn-body">
-                                        <p class="mn-lead">Smarter insights without the clutter.</p>
-                                        <p>Organize your finances into custom blocks. Get instant, color-coded feedback showing whether you spent more or less than yesterday—keeping you mindful of every dollar.</p>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-accent-orange">
-                                <div class="mn-media">
-                                    <img src="style/images/mono/image_mono_trends.svg" width="418" height="850" alt="Mono spending trends" class="mn-phone" loading="lazy" decoding="async">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Beyond Simple Totals</h2>
-                                    <p class="mn-subtitle">Your spending, sorted<br>automatically.</p>
-                                    <div class="mn-body">
-                                        <p>We go beyond simple categories. Our smart algorithm learns your daily baseline to automatically organize your expenses:</p>
-                                        <ul class="mn-list">
-                                            <li><strong>Needs</strong><span>Your essential daily routine expenses.</span></li>
-                                            <li><strong>Wants</strong><span>Upgrades for comfort, leisure, and lifestyle.</span></li>
-                                            <li><strong>Extra</strong><span>One-off splurges and major outliers.</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-accent-teal">
-                                <div class="mn-media">
-                                    <div class="mn-widgets">
-                                        <img src="style/images/mono/image_mono_widget_big.svg" width="740" height="776" alt="Large Mono widget showing two blocks, each with its own chart" class="mn-widget mn-widget-large" loading="lazy" decoding="async">
-                                        <img src="style/images/mono/image_mono_widget_middle.svg" width="740" height="340" alt="Medium Mono widget with the month total, a daily chart and needs, extra and wants" class="mn-widget mn-widget-medium" loading="lazy" decoding="async">
-                                        <img src="style/images/mono/image_mono_widget_small.svg" width="346" height="340" alt="Small Mono widget with one block’s total for the month" class="mn-widget mn-widget-small" loading="lazy" decoding="async">
-                                    </div>
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Your Month at&nbsp;a&nbsp;Glance</h2>
-                                    <p class="mn-subtitle">Widgets for your Home Screen.<br>One tap to add an expense.</p>
-                                    <div class="mn-body">
-                                        <p class="mn-lead">See where your month is going, without opening the&nbsp;app.</p>
-                                        <ul class="mn-list">
-                                            <li><strong>Small</strong><span>This month’s total, for all your blocks or just one.</span></li>
-                                            <li><strong>Medium</strong><span>Adds a daily chart and your needs, extra and wants.</span></li>
-                                            <li><strong>Large</strong><span>Two or three blocks, each with its own chart.</span></li>
-                                        </ul>
-                                        <p>Choose what each size shows in Settings. Amounts and block names stay hidden while your iPhone is locked.</p>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-accent-blue">
-                                <div class="mn-media">
-                                    <img src="style/images/mono/image_mono_block_more.svg" width="418" height="850" alt="Mono block settings and history" class="mn-phone" loading="lazy" decoding="async">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Tailor Every Detail</h2>
-                                    <p class="mn-subtitle">Seamless transaction history<br>and custom block management.</p>
-                                    <div class="mn-body">
-                                        <ul class="mn-list">
-                                            <li><strong>Custom Rates</strong><span>Set your own conversion coefficients or use Mono’s built-in rates.</span></li>
-                                            <li><strong>Transaction History</strong><span>Review your entries and delete any of them with a swipe.</span></li>
-                                            <li><strong>Block Customization</strong><span>Rename categories and adjust currency settings on the fly.</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-privacy" id="privacy">
-                                <header class="mn-privacy-head">
-                                    <h2 class="mn-title">Privacy Policy</h2>
-                                    <p class="mn-subtitle">Your data stays on your iPhone.<br>We never see it.</p>
-                                    <dl class="mn-meta">
-                                        <div><dt>Effective date</dt><dd>October 18, 2026</dd></div>
-                                        <div><dt>Developer</dt><dd>Michail Romaniuk, Poland</dd></div>
-                                        <div><dt>App</dt><dd>Mono for iPhone</dd></div>
-                                    </dl>
-                                    <ul class="mn-chips">
-                                        <li>No account</li>
-                                        <li>No data collected</li>
-                                        <li>No tracking</li>
-                                        <li>No ads</li>
-                                        <li>No third parties</li>
-                                    </ul>
-                                    <button type="button" class="mn-copy-link" data-hash="privacy">Copy link to this policy</button>
-                                </header>
-
-                                <div class="mn-policy">
-                                    <section>
-                                        <h3>1. Information We Collect</h3>
-                                        <p>Mono is a minimalist personal finance tracker. You create spending categories (“blocks”) and log expenses manually. Mono does not collect any personal data. There is no account, no sign-up, no server, and no backend.</p>
-                                    </section>
-                                    <section>
-                                        <h3>2. Where Your Data Is Stored</h3>
-                                        <p>Everything you enter is stored only on your device, using Apple’s SwiftData and UserDefaults. Nothing is sent over the internet. Currency conversion uses fixed rates built into the app and makes no network requests.</p>
-                                        <p>Mono’s database is protected with iOS Data Protection, so it can’t be read while your iPhone is locked.</p>
-                                        <p>Your Mono data may be included in your own iCloud or iTunes device backup. Those backups are controlled by Apple, not by the developer.</p>
-                                    </section>
-                                    <section>
-                                        <h3>3. Home Screen Widgets</h3>
-                                        <p>If you add a Mono widget, the app saves a small summary for it on your device: this month’s totals, the needs, extra and wants split, the daily totals for the chart, and the names of the blocks you chose to show. Individual expenses and their names are not included.</p>
-                                        <p>The summary is kept in a storage area that only Mono and its own widget can read, it is updated whenever your data changes, and it never leaves your device. Amounts and block names in the widget are hidden while your iPhone is locked.</p>
-                                    </section>
-                                    <section>
-                                        <h3>4. Sharing, Selling, and Tracking</h3>
-                                        <p>We do not share, sell, or rent any data, and we do not track you. Mono contains no analytics, no advertising, and no third-party SDKs. No third parties receive any information from the app.</p>
-                                    </section>
-                                    <section>
-                                        <h3>5. Data Retention and Deletion</h3>
-                                        <p>Your data remains on your device until you remove it. You can delete individual blocks and transactions inside the app at any time, or delete everything at once with Settings → Erase All Data. Deleting the app permanently deletes all of its data, including the widget summary.</p>
-                                        <p>Before an app update changes how data is stored, Mono keeps a temporary safety copy on your device. It is deleted automatically once the update has opened successfully a few times, or right away with Erase All Data, and it is never included in device backups.</p>
-                                    </section>
-                                    <section>
-                                        <h3>6. Children’s Privacy</h3>
-                                        <p>Mono is not directed at children under 13. The app collects no data from anyone, including children.</p>
-                                    </section>
-                                    <section>
-                                        <h3>7. Your Rights (GDPR &amp; CCPA)</h3>
-                                        <p>Data protection laws such as the GDPR and CCPA give you the right to access, correct, and delete personal data held about you. Because Mono collects no personal data, we hold nothing about you, so there is nothing to access or delete on our side. All of your data is under your control on your device.</p>
-                                    </section>
-                                    <section>
-                                        <h3>8. Changes to This Policy</h3>
-                                        <p>If this policy changes, the updated version will be posted on this page with a new effective date.</p>
-                                    </section>
-                                    <section>
-                                        <h3>9. Contact</h3>
-                                        <p>Questions about this policy? Contact us at <a href="mailto:misharomaniuk15@icloud.com">misharomaniuk15@icloud.com</a>.</p>
-                                    </section>
-                                </div>
-                            </article>
+                    <div id="sp-mono" class="sp-content-section sp-active-section ap ap--mono" data-title="Track spending. Nothing more.">
+                    <header class="ap-hero ap-hero--video ap-block">
+                        <div class="ap-hero-media" aria-hidden="true">
+                            <video class="ap-hero-video" data-src="style/videos/mono/mono_hero.mp4" poster="style/videos/mono/mono_hero_poster.jpg" muted loop playsinline preload="none"></video>
                         </div>
+                        <h1 class="ap-display rv">Track spending.<br>Nothing more.</h1>
+                        <p class="ap-lead rv">A calm expense tracker. Type the amount, swipe, and get on with your day. Mono sorts the rest on its own.</p>
+                    </header>
+
+                    <section class="ap-center ap-block">
+                        <div class="ap-center-head">
+                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5L13 3z"/></svg></span>Quick entry</span>
+                            <h2 class="ap-h2 rv">Just two<br>steps.</h2>
+                            <p class="ap-p rv">Track expenses at the speed of thought. Forget complex forms and endless categories. Just type the number and swipe.</p>
+                            <ol class="ap-steps rv"><li><span>1</span>Enter amount</li><li><span>2</span>Swipe right</li><li><span>3</span>Expense added</li></ol>
+                        </div>
+                        <figure class="ap-shots rv"><img src="style/images/mono/image_mono_main_1.svg" width="418" height="850" alt="Mono expense entry screen" class="ap-phone"><img src="style/images/mono/image_mono_main_2.svg" width="418" height="850" alt="Swiping to add an expense in Mono" class="ap-phone"></figure>
+                    </section>
+
+                    <section class="ap-lede ap-block">
+                        <figure class="ap-shots rv"><img src="style/images/mono/image_mono_blocks.svg" width="418" height="850" alt="Mono category blocks" class="ap-phone" loading="lazy" decoding="async"><img src="style/images/mono/image_mono_blocks_edit.svg" width="418" height="850" alt="Editing a block in Mono" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg></span>Blocks</span>
+                            <h2 class="ap-h2 rv">Smart category<br>blocks.</h2>
+                            <p class="ap-p rv">Organize your finances into custom blocks. Smarter insights without the clutter.</p>
+                            <ul class="ap-ticks rv"><li>Create, customize and edit blocks effortlessly</li><li>Color-coded feedback: more or less than yesterday</li><li>Mindful of every dollar, without the spreadsheet</li></ul></div>
+                    </section>
+
+                    <section class="ap-lede ap-block ap-lede--flip">
+                        <figure class="ap-shots rv"><img src="style/images/mono/image_mono_trends.svg" width="418" height="850" alt="Mono spending trends" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20v-6M12 20V4M19 20v-10"/></svg></span>Trends</span>
+                            <h2 class="ap-h2 rv">Beyond simple<br>totals.</h2>
+                            <p class="ap-p rv">Mono learns your daily baseline and sorts every expense automatically.</p>
+                            <ul class="ap-features rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M10 20.5v-5h4v5"/></svg></span><div><strong>Needs</strong><span>Your essential daily routine expenses.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.9 5.6 5.6 1.9-5.6 1.9L12 18.5l-1.9-5.6L4.5 11l5.6-1.9z"/></svg></span><div><strong>Wants</strong><span>Upgrades for comfort, leisure and lifestyle.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span><div><strong>Extra</strong><span>One-off splurges and major outliers.</span></div></li></ul></div>
+                    </section>
+
+                    <section class="ap-center ap-block">
+                        <div class="ap-center-head">
+                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M3.5 12h17M12 12v8.5"/></svg></span>Widgets</span>
+                            <h2 class="ap-h2 rv">Your month<br>at a glance.</h2>
+                            <p class="ap-p rv">See where your month is going without opening the app. One tap to add an expense.</p>
+                        </div>
+                        <figure class="ap-widgets rv">
+                            <img src="style/images/mono/image_mono_widget_small.svg" width="346" height="340" alt="Small Mono widget with one block’s total for the month" class="ap-widget ap-widget--small" loading="lazy" decoding="async">
+                            <img src="style/images/mono/image_mono_widget_middle.svg" width="740" height="340" alt="Medium Mono widget with the month total, a daily chart and needs, extra and wants" class="ap-widget ap-widget--medium" loading="lazy" decoding="async">
+                            <img src="style/images/mono/image_mono_widget_big.svg" width="740" height="776" alt="Large Mono widget showing two blocks, each with its own chart" class="ap-widget ap-widget--large" loading="lazy" decoding="async">
+                        </figure>
+                        <ul class="ap-sizes rv">
+                            <li><strong>Small</strong><span>This month’s total, for all your blocks or just one.</span></li>
+                            <li><strong>Medium</strong><span>Adds a daily chart and your needs, extra and wants.</span></li>
+                            <li><strong>Large</strong><span>Two or three blocks, each with its own chart.</span></li>
+                        </ul>
+                        <p class="ap-note rv">Choose what each size shows in Settings. Amounts and block names stay hidden while your iPhone is locked.</p>
+                    </section>
+
+                    <section class="ap-lede ap-block">
+                        <figure class="ap-shots rv"><img src="style/images/mono/image_mono_block_more.svg" width="418" height="850" alt="Mono block settings and history" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.5"/><circle cx="8" cy="17" r="2.5"/></svg></span>Settings</span>
+                            <h2 class="ap-h2 rv">Tailor every<br>detail.</h2>
+                            <p class="ap-p rv">Seamless transaction history and custom block management.</p>
+                            <ul class="ap-ticks rv"><li><strong>Custom rates.</strong> Your own conversion coefficients, or Mono’s built-in rates.</li><li><strong>History.</strong> Review your entries and delete any of them with a swipe.</li><li><strong>Blocks.</strong> Rename categories and adjust currency on the fly.</li></ul></div>
+                    </section>
+
+                    <section class="ap-privacy ap-block" id="privacy">
+                        <div class="ap-center-head">
+                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span>Privacy</span>
+                            <h2 class="ap-h2 rv">Private<br>by design.</h2>
+                            <p class="ap-p rv">Your data stays on your iPhone. We never see it.</p>
+                        </div>
+                        <ul class="ap-promises rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg></span><span>No account</span></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19.5 6v6c0 4.6-3.2 7.8-7.5 9-4.3-1.2-7.5-4.4-7.5-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span>No data collected</span></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 6.1A9.6 9.6 0 0 1 12 6c5 0 9 6 9 6a16.7 16.7 0 0 1-2.6 3.3M6.6 6.6A16.6 16.6 0 0 0 3 12s4 6 9 6a8.9 8.9 0 0 0 4-.9"/></svg></span><span>No tracking</span></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><span>No ads</span></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span><span>No third parties</span></li></ul>
+                        <div class="ap-policy">
+                            <aside class="ap-policy-head rv">
+                                <h3 class="ap-h3">Privacy Policy</h3>
+                                <dl class="mn-meta">
+                                    <div><dt>Effective date</dt><dd>October 18, 2026</dd></div>
+                                    <div><dt>Developer</dt><dd>Michail Romaniuk, Poland</dd></div>
+                                    <div><dt>App</dt><dd>Mono for iPhone</dd></div>
+                                </dl>
+                                <button type="button" class="mn-copy-link" data-hash="privacy">Copy link to this policy</button>
+                            </aside>
+                            <div class="mn-policy">
+                                <section>
+                                    <h3>1. Information We Collect</h3>
+                                    <p>Mono is a minimalist personal finance tracker. You create spending categories (“blocks”) and log expenses manually. Mono does not collect any personal data. There is no account, no sign-up, no server, and no backend.</p>
+                                </section>
+                                <section>
+                                    <h3>2. Where Your Data Is Stored</h3>
+                                    <p>Everything you enter is stored only on your device, using Apple’s SwiftData and UserDefaults. Nothing is sent over the internet. Currency conversion uses fixed rates built into the app and makes no network requests.</p>
+                                    <p>Mono’s database is protected with iOS Data Protection, so it can’t be read while your iPhone is locked.</p>
+                                    <p>Your Mono data may be included in your own iCloud or iTunes device backup. Those backups are controlled by Apple, not by the developer.</p>
+                                </section>
+                                <section>
+                                    <h3>3. Home Screen Widgets</h3>
+                                    <p>If you add a Mono widget, the app saves a small summary for it on your device: this month’s totals, the needs, extra and wants split, the daily totals for the chart, and the names of the blocks you chose to show. Individual expenses and their names are not included.</p>
+                                    <p>The summary is kept in a storage area that only Mono and its own widget can read, it is updated whenever your data changes, and it never leaves your device. Amounts and block names in the widget are hidden while your iPhone is locked.</p>
+                                </section>
+                                <section>
+                                    <h3>4. Sharing, Selling, and Tracking</h3>
+                                    <p>We do not share, sell, or rent any data, and we do not track you. Mono contains no analytics, no advertising, and no third-party SDKs. No third parties receive any information from the app.</p>
+                                </section>
+                                <section>
+                                    <h3>5. Data Retention and Deletion</h3>
+                                    <p>Your data remains on your device until you remove it. You can delete individual blocks and transactions inside the app at any time, or delete everything at once with Settings → Erase All Data. Deleting the app permanently deletes all of its data, including the widget summary.</p>
+                                    <p>Before an app update changes how data is stored, Mono keeps a temporary safety copy on your device. It is deleted automatically once the update has opened successfully a few times, or right away with Erase All Data, and it is never included in device backups.</p>
+                                </section>
+                                <section>
+                                    <h3>6. Children’s Privacy</h3>
+                                    <p>Mono is not directed at children under 13. The app collects no data from anyone, including children.</p>
+                                </section>
+                                <section>
+                                    <h3>7. Your Rights (GDPR &amp; CCPA)</h3>
+                                    <p>Data protection laws such as the GDPR and CCPA give you the right to access, correct, and delete personal data held about you. Because Mono collects no personal data, we hold nothing about you, so there is nothing to access or delete on our side. All of your data is under your control on your device.</p>
+                                </section>
+                                <section>
+                                    <h3>8. Changes to This Policy</h3>
+                                    <p>If this policy changes, the updated version will be posted on this page with a new effective date.</p>
+                                </section>
+                                <section>
+                                    <h3>9. Contact</h3>
+                                    <p>Questions about this policy? Contact us at <a href="mailto:misharomaniuk15@icloud.com">misharomaniuk15@icloud.com</a>.</p>
+                                </section>
+                            </div>
+                        </div>
+                    </section>
                     </div>
 
-                    <div id="sp-intent" class="sp-content-section" data-title="Plan the trip. Keep the journey.">
-                        <div class="mn-stack">
-                            <article class="mn-panel mn-accent-blue">
-                                <div class="mn-media">
-                                    <img src="style/images/intent/image_intent_main.svg" width="418" height="850" alt="Intent’s My Trips list with a trip to Spain" class="mn-phone">
-                                    <img src="style/images/intent/image_intent_travel_note.svg" width="418" height="850" alt="A trip to Spain opened as a travel note" class="mn-phone">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Every Trip, a&nbsp;Travel&nbsp;Note</h2>
-                                    <p class="mn-subtitle">Pick a country and dates.<br>The note is ready.</p>
-                                    <div class="mn-body">
-                                        <p class="mn-lead">Your next trip is always on top.</p>
-                                        <p>Each trip gets a photo of its country, its stops and its length at a glance. Upcoming trips are grouped by season, and finished ones move to the archive by themselves.</p>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-accent-orange">
-                                <div class="mn-media">
-                                    <img src="style/images/intent/image_intent_step.svg" width="418" height="850" alt="Barcelona with its plan by day" class="mn-phone" loading="lazy" decoding="async">
-                                    <img src="style/images/intent/image_intent_calendar.svg" width="418" height="850" alt="The trip calendar, one card for every day" class="mn-phone" loading="lazy" decoding="async">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Plan City by City</h2>
-                                    <p class="mn-subtitle">Add the cities you’ll visit,<br>then fill in each day.</p>
-                                    <div class="mn-body">
-                                        <p class="mn-lead">One place for everything you want to see.</p>
-                                        <ul class="mn-list">
-                                            <li><strong>Places &amp; notes</strong><span>Give each one a day and a time, or keep it for any time that day.</span></li>
-                                            <li><strong>Calendar</strong><span>Every day of the trip, built from your cities, with how you get between them.</span></li>
-                                            <li><strong>Not planned yet</strong><span>Ideas wait here until you find them a day.</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-accent-teal">
-                                <div class="mn-media">
-                                    <img src="style/images/intent/image_intent_documents.svg" width="418" height="850" alt="The trip’s documents, filtered into tickets, bookings and personal" class="mn-phone" loading="lazy" decoding="async">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Every Ticket in&nbsp;Its&nbsp;Place</h2>
-                                    <p class="mn-subtitle">Boarding passes, bookings and<br>papers, right where you need them.</p>
-                                    <div class="mn-body">
-                                        <p>Add files and photos to the trip, a city, a place or the journey between cities. They open right in the app, even offline.</p>
-                                        <ul class="mn-list">
-                                            <li><strong>Tickets</strong><span>Flights show as boarding-pass cards with the route and flight number.</span></li>
-                                            <li><strong>Bookings</strong><span>Hotels and tours, kept with the city they’re for.</span></li>
-                                            <li><strong>Personal</strong><span>Insurance and other papers for the whole trip.</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-accent-green">
-                                <div class="mn-media">
-                                    <img src="style/images/intent/image_intent_map.svg" width="418" height="850" alt="The world map with visited countries filled in" class="mn-phone" loading="lazy" decoding="async">
-                                    <img src="style/images/intent/image_intent_country_wall.svg" width="418" height="850" alt="The Country Wall with a photo for every visited country" class="mn-phone" loading="lazy" decoding="async">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Fill In Your World&nbsp;Map</h2>
-                                    <p class="mn-subtitle">Finished trips color in<br>their countries.</p>
-                                    <div class="mn-body">
-                                        <p class="mn-lead">See how far you’ve come.</p>
-                                        <p>Mark the countries you visited before, find any country with search, and watch countries, continents and cities add up. The Country Wall puts a photo of every place you’ve been on one page.</p>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel">
-                                <div class="mn-media">
-                                    <img src="style/images/intent/image_intent_archive_card.svg" width="418" height="850" alt="Italy’s country card with photos from the album" class="mn-phone" loading="lazy" decoding="async">
-                                    <img src="style/images/intent/image_intent_share.svg" width="418" height="850" alt="Sharing a card of your travel map" class="mn-phone" loading="lazy" decoding="async">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Memories, Ready to&nbsp;Share</h2>
-                                    <p class="mn-subtitle">A card for every country<br>you’ve been to.</p>
-                                    <div class="mn-body">
-                                        <p>Each visited country gets its own card: the cities, the days and the places, with an album for your photos. Share a card, your whole map, or a trip itself, so a friend can open it in Intent.</p>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-accent-indigo">
-                                <div class="mn-media">
-                                    <img src="style/images/intent/image_intent_compare.svg" width="418" height="850" alt="Your map and a friend’s map compared" class="mn-phone" loading="lazy" decoding="async">
-                                </div>
-                                <div class="mn-copy">
-                                    <h2 class="mn-title">Compare with Friends</h2>
-                                    <p class="mn-subtitle">Scan a friend’s code and see<br>where your maps meet.</p>
-                                    <div class="mn-body">
-                                        <ul class="mn-list">
-                                            <li><strong>Both</strong><span>The countries you’ve both been to.</span></li>
-                                            <li><strong>You</strong><span>Places only you have seen.</span></li>
-                                            <li><strong>Friend</strong><span>Ideas for your next trip.</span></li>
-                                        </ul>
-                                        <p>A map code holds only a name, the countries and a city count. Never your trips, dates or files.</p>
-                                    </div>
-                                </div>
-                            </article>
-
-                            <article class="mn-panel mn-privacy" id="intent-privacy">
-                                <header class="mn-privacy-head">
-                                    <h2 class="mn-title">Privacy Policy</h2>
-                                    <p class="mn-subtitle">Your trips stay on your iPhone.<br>We never see them.</p>
-                                    <dl class="mn-meta">
-                                        <div><dt>Effective date</dt><dd>October 22, 2026</dd></div>
-                                        <div><dt>Developer</dt><dd>Michail Romaniuk, Poland</dd></div>
-                                        <div><dt>App</dt><dd>Intent for iPhone</dd></div>
-                                    </dl>
-                                    <ul class="mn-chips">
-                                        <li>No account</li>
-                                        <li>No data collected</li>
-                                        <li>No tracking</li>
-                                        <li>No ads</li>
-                                        <li>No analytics</li>
-                                    </ul>
-                                    <button type="button" class="mn-copy-link" data-hash="intent-privacy">Copy link to this policy</button>
-                                </header>
-
-                                <div class="mn-policy">
-                                    <section>
-                                        <h3>1. Information We Collect</h3>
-                                        <p>Intent is a trip planner. You create trips, add cities, places, notes and files, and mark the countries you have visited. The developer does not collect any of it. There is no account, no sign-up and no server of ours that your data is sent to.</p>
-                                    </section>
-                                    <section>
-                                        <h3>2. Where Your Data Is Stored</h3>
-                                        <p>Everything you enter, the files and photos you add and the photos in your country albums are stored only on your device, in the app’s private storage. Settings such as the app language and the name on your shared map are stored on your device as well.</p>
-                                        <p>Your Intent data may be included in your own iCloud or computer backup of the device. Those backups are controlled by Apple, not by the developer.</p>
-                                    </section>
-                                    <section>
-                                        <h3>3. Internet Services Intent Uses</h3>
-                                        <p>Intent works without the internet, except for two features that ask other services for public information. Neither request contains your trips, notes, files or anything that identifies you.</p>
-                                        <ul class="mn-policy-list">
-                                            <li><strong>Country photos.</strong> To show a picture of a country, Intent asks Wikimedia Commons and Wikipedia (run by the Wikimedia Foundation) for photos of that country. The request contains the country’s name and, like any web request, your IP address. Downloaded photos are kept in a cache on your device. See the <a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy" target="_blank" rel="noopener">Wikimedia Foundation Privacy Policy</a>.</li>
-                                            <li><strong>City search.</strong> When you search for a city to add to a trip, the text you type is sent to Apple Maps to find matching cities. Intent does not use your location. See <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple’s Privacy Policy</a>.</li>
-                                        </ul>
-                                    </section>
-                                    <section>
-                                        <h3>4. Camera, Photos and Files</h3>
-                                        <p>Intent uses the camera only to scan a friend’s map code, and only while the scanner is open. Nothing is recorded or saved. Photos and files are added only when you pick them, and copies are kept in the app. Reading the route from a flight ticket happens on your device.</p>
-                                    </section>
-                                    <section>
-                                        <h3>5. Sharing</h3>
-                                        <p>Intent shares only when you ask it to. A shared trip contains that trip with its cities, places, notes and files. A shared map or map code contains the name you chose, the countries you have visited and the number of cities. You choose who receives them through the iOS share sheet. Trips and maps you receive are saved only on your device.</p>
-                                    </section>
-                                    <section>
-                                        <h3>6. Sharing, Selling, and Tracking</h3>
-                                        <p>We do not share, sell, or rent any data, and we do not track you. Intent contains no analytics, no advertising and no third-party SDKs.</p>
-                                    </section>
-                                    <section>
-                                        <h3>7. Data Retention and Deletion</h3>
-                                        <p>Your data stays on your device until you remove it. You can delete any trip, city, place, note, file or album photo in the app. Deleting a trip also deletes its files. Deleting the app permanently deletes all of its data.</p>
-                                    </section>
-                                    <section>
-                                        <h3>8. Children’s Privacy</h3>
-                                        <p>Intent is not directed at children under 13. The app collects no data from anyone, including children.</p>
-                                    </section>
-                                    <section>
-                                        <h3>9. Your Rights (GDPR &amp; CCPA)</h3>
-                                        <p>Data protection laws such as the GDPR and CCPA give you the right to access, correct, and delete personal data held about you. Because Intent collects no personal data, we hold nothing about you, so there is nothing to access or delete on our side. All of your data is under your control on your device.</p>
-                                    </section>
-                                    <section>
-                                        <h3>10. Changes to This Policy</h3>
-                                        <p>If this policy changes, the updated version will be posted on this page with a new effective date.</p>
-                                    </section>
-                                    <section>
-                                        <h3>11. Contact</h3>
-                                        <p>Questions about this policy? Contact us at <a href="mailto:misharomaniuk15@icloud.com?subject=Intent%20Privacy">misharomaniuk15@icloud.com</a>.</p>
-                                    </section>
-                                </div>
-                            </article>
+                    <div id="sp-intent" class="sp-content-section ap ap--intent" data-title="Plan the trip. Keep the journey.">
+                    <header class="ap-hero ap-hero--video ap-block">
+                        <div class="ap-hero-media" aria-hidden="true">
+                            <video class="ap-hero-video" data-src="style/videos/intent/intent_hero.mp4" poster="style/videos/intent/intent_hero_poster.jpg" muted loop playsinline preload="none"></video>
                         </div>
+                        <h1 class="ap-display rv">Plan the trip.<br>Keep the journey.</h1>
+                        <p class="ap-lead rv">Every trip becomes a travel note: cities, days, tickets and photos in one place. And when you’re back, your map fills in.</p>
+                    </header>
+
+                    <section class="ap-center ap-block">
+                        <div class="ap-center-head">
+                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>Trips</span>
+                            <h2 class="ap-h2 rv">Every trip,<br>a travel note.</h2>
+                            <p class="ap-p rv">Pick a country and dates. The note is ready. Each trip gets a photo of its country, its stops and its length at a glance.</p>
+                            <ul class="ap-ticks rv"><li>Your next trip is always on top</li><li>Upcoming trips grouped by season</li><li>Finished ones move to the archive by themselves</li></ul>
+                        </div>
+                        <figure class="ap-shots rv"><img src="style/images/intent/image_intent_main.svg" width="418" height="850" alt="Intent’s My Trips list with a trip to Spain" class="ap-phone"><img src="style/images/intent/image_intent_travel_note.svg" width="418" height="850" alt="A trip to Spain opened as a travel note" class="ap-phone"></figure>
+                    </section>
+
+                    <section class="ap-lede ap-block">
+                        <figure class="ap-shots rv"><img src="style/images/intent/image_intent_step.svg" width="418" height="850" alt="Barcelona with its plan by day" class="ap-phone" loading="lazy" decoding="async"><img src="style/images/intent/image_intent_calendar.svg" width="418" height="850" alt="The trip calendar, one card for every day" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>Planning</span>
+                            <h2 class="ap-h2 rv">Plan city<br>by city.</h2>
+                            <p class="ap-p rv">Add the cities you’ll visit, then fill in each day. One place for everything you want to see.</p>
+                            <ul class="ap-features rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></span><div><strong>Places &amp; notes</strong><span>Give each one a day and a time, or keep it for any time that day.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><div><strong>Calendar</strong><span>Every day of the trip, built from your cities, with how you get between them.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.9 5.6 5.6 1.9-5.6 1.9L12 18.5l-1.9-5.6L4.5 11l5.6-1.9z"/></svg></span><div><strong>Not planned yet</strong><span>Ideas wait here until you find them a day.</span></div></li></ul></div>
+                    </section>
+
+                    <section class="ap-lede ap-block ap-lede--flip">
+                        <figure class="ap-shots rv"><img src="style/images/intent/image_intent_documents.svg" width="418" height="850" alt="The trip’s documents, filtered into tickets, bookings and personal" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5h17v3a2 2 0 0 0 0 3v3h-17v-3a2 2 0 0 0 0-3z"/><path d="M14.5 7.5v9" stroke-dasharray="1.5 2"/></svg></span>Documents</span>
+                            <h2 class="ap-h2 rv">Every ticket<br>in its place.</h2>
+                            <p class="ap-p rv">Add files and photos to the trip, a city, a place or the journey between cities. They open right in the app, even offline.</p>
+                            <ul class="ap-ticks rv"><li><strong>Tickets.</strong> Flights show as boarding-pass cards with the route and flight number.</li><li><strong>Bookings.</strong> Hotels and tours, kept with the city they’re for.</li><li><strong>Personal.</strong> Insurance and other papers for the whole trip.</li></ul></div>
+                    </section>
+
+                    <section class="ap-rail-block ap-block">
+                        <div class="ap-center-head">
+                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg></span>After the trip</span>
+                            <h2 class="ap-h2 rv">See how far<br>you’ve come.</h2>
+                        </div>
+                        <div class="ap-rail" data-rail tabindex="0" role="group" aria-label="Intent map, cards and friends">
+                            <div class="ap-rail-track">
+                        <article class="ap-slide">
+                            <div class="ap-slide-text">
+                                <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg></span>Map</span>
+                                <h3 class="ap-h2 ap-h2--slide rv">Fill in your<br>world map.</h3>
+                                <p class="ap-p rv">Finished trips color in their countries. Mark the ones you visited before and watch countries, continents and cities add up. The Country Wall puts a photo of every place on one page.</p>
+
+                            </div>
+                            <figure class="ap-shots ap-shots--slide rv"><img src="style/images/intent/image_intent_map.svg" width="418" height="850" alt="The world map with visited countries filled in" class="ap-phone" loading="lazy" decoding="async"><img src="style/images/intent/image_intent_country_wall.svg" width="418" height="850" alt="The Country Wall with a photo for every visited country" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        </article>
+                        <article class="ap-slide">
+                            <div class="ap-slide-text">
+                                <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3.5M8 7l4-3.5L16 7M5.5 12v6.5a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V12"/></svg></span>Cards</span>
+                                <h3 class="ap-h2 ap-h2--slide rv">Memories,<br>ready to share.</h3>
+                                <p class="ap-p rv">Each visited country gets its own card: the cities, the days and the places, with an album for your photos. Share a card, your whole map, or a trip itself.</p>
+
+                            </div>
+                            <figure class="ap-shots ap-shots--slide rv"><img src="style/images/intent/image_intent_archive_card.svg" width="418" height="850" alt="Italy’s country card with photos from the album" class="ap-phone" loading="lazy" decoding="async"><img src="style/images/intent/image_intent_share.svg" width="418" height="850" alt="Sharing a card of your travel map" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        </article>
+                        <article class="ap-slide">
+                            <div class="ap-slide-text">
+                                <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14a4.5 4.5 0 0 1 4.5 5"/></svg></span>Friends</span>
+                                <h3 class="ap-h2 ap-h2--slide rv">Compare<br>with friends.</h3>
+                                <p class="ap-p rv">Scan a friend’s code and see where your maps meet. A map code holds only a name, the countries and a city count.</p>
+                                <ul class="ap-ticks rv"><li><strong>Both.</strong> Countries you’ve both been to.</li><li><strong>You.</strong> Places only you have seen.</li><li><strong>Friend.</strong> Ideas for your next trip.</li></ul>
+                            </div>
+                            <figure class="ap-shots ap-shots--slide rv"><img src="style/images/intent/image_intent_compare.svg" width="418" height="850" alt="Your map and a friend’s map compared" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        </article>
+                            </div>
+                        </div>
+                        <div class="ap-rail-nav">
+                            <button type="button" class="ap-rail-btn" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+                            <div class="ap-rail-dots" role="tablist"></div>
+                            <button type="button" class="ap-rail-btn" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+                        </div>
+                    </section>
+
+                    <section class="ap-privacy ap-block" id="intent-privacy">
+                        <div class="ap-center-head">
+                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span>Privacy</span>
+                            <h2 class="ap-h2 rv">Private<br>by design.</h2>
+                            <p class="ap-p rv">Your trips stay on your iPhone. We never see them.</p>
+                        </div>
+                        <ul class="ap-promises rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg></span><span>No account</span></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19.5 6v6c0 4.6-3.2 7.8-7.5 9-4.3-1.2-7.5-4.4-7.5-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span>No data collected</span></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 6.1A9.6 9.6 0 0 1 12 6c5 0 9 6 9 6a16.7 16.7 0 0 1-2.6 3.3M6.6 6.6A16.6 16.6 0 0 0 3 12s4 6 9 6a8.9 8.9 0 0 0 4-.9"/></svg></span><span>No tracking</span></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><span>No ads</span></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20v-6M12 20V4M19 20v-10"/></svg></span><span>No analytics</span></li></ul>
+                        <div class="ap-policy">
+                            <aside class="ap-policy-head rv">
+                                <h3 class="ap-h3">Privacy Policy</h3>
+                                <dl class="mn-meta">
+                                    <div><dt>Effective date</dt><dd>October 22, 2026</dd></div>
+                                    <div><dt>Developer</dt><dd>Michail Romaniuk, Poland</dd></div>
+                                    <div><dt>App</dt><dd>Intent for iPhone</dd></div>
+                                </dl>
+                                <button type="button" class="mn-copy-link" data-hash="intent-privacy">Copy link to this policy</button>
+                            </aside>
+                            <div class="mn-policy">
+                                <section>
+                                    <h3>1. Information We Collect</h3>
+                                    <p>Intent is a trip planner. You create trips, add cities, places, notes and files, and mark the countries you have visited. The developer does not collect any of it. There is no account, no sign-up and no server of ours that your data is sent to.</p>
+                                </section>
+                                <section>
+                                    <h3>2. Where Your Data Is Stored</h3>
+                                    <p>Everything you enter, the files and photos you add and the photos in your country albums are stored only on your device, in the app’s private storage. Settings such as the app language and the name on your shared map are stored on your device as well.</p>
+                                    <p>Your Intent data may be included in your own iCloud or computer backup of the device. Those backups are controlled by Apple, not by the developer.</p>
+                                </section>
+                                <section>
+                                    <h3>3. Internet Services Intent Uses</h3>
+                                    <p>Intent works without the internet, except for two features that ask other services for public information. Neither request contains your trips, notes, files or anything that identifies you.</p>
+                                    <ul class="mn-policy-list">
+                                        <li><strong>Country photos.</strong> To show a picture of a country, Intent asks Wikimedia Commons and Wikipedia (run by the Wikimedia Foundation) for photos of that country. The request contains the country’s name and, like any web request, your IP address. Downloaded photos are kept in a cache on your device. See the <a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy" target="_blank" rel="noopener">Wikimedia Foundation Privacy Policy</a>.</li>
+                                        <li><strong>City search.</strong> When you search for a city to add to a trip, the text you type is sent to Apple Maps to find matching cities. Intent does not use your location. See <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple’s Privacy Policy</a>.</li>
+                                    </ul>
+                                </section>
+                                <section>
+                                    <h3>4. Camera, Photos and Files</h3>
+                                    <p>Intent uses the camera only to scan a friend’s map code, and only while the scanner is open. Nothing is recorded or saved. Photos and files are added only when you pick them, and copies are kept in the app. Reading the route from a flight ticket happens on your device.</p>
+                                </section>
+                                <section>
+                                    <h3>5. Sharing</h3>
+                                    <p>Intent shares only when you ask it to. A shared trip contains that trip with its cities, places, notes and files. A shared map or map code contains the name you chose, the countries you have visited and the number of cities. You choose who receives them through the iOS share sheet. Trips and maps you receive are saved only on your device.</p>
+                                </section>
+                                <section>
+                                    <h3>6. Sharing, Selling, and Tracking</h3>
+                                    <p>We do not share, sell, or rent any data, and we do not track you. Intent contains no analytics, no advertising and no third-party SDKs.</p>
+                                </section>
+                                <section>
+                                    <h3>7. Data Retention and Deletion</h3>
+                                    <p>Your data stays on your device until you remove it. You can delete any trip, city, place, note, file or album photo in the app. Deleting a trip also deletes its files. Deleting the app permanently deletes all of its data.</p>
+                                </section>
+                                <section>
+                                    <h3>8. Children’s Privacy</h3>
+                                    <p>Intent is not directed at children under 13. The app collects no data from anyone, including children.</p>
+                                </section>
+                                <section>
+                                    <h3>9. Your Rights (GDPR &amp; CCPA)</h3>
+                                    <p>Data protection laws such as the GDPR and CCPA give you the right to access, correct, and delete personal data held about you. Because Intent collects no personal data, we hold nothing about you, so there is nothing to access or delete on our side. All of your data is under your control on your device.</p>
+                                </section>
+                                <section>
+                                    <h3>10. Changes to This Policy</h3>
+                                    <p>If this policy changes, the updated version will be posted on this page with a new effective date.</p>
+                                </section>
+                                <section>
+                                    <h3>11. Contact</h3>
+                                    <p>Questions about this policy? Contact us at <a href="mailto:misharomaniuk15@icloud.com?subject=Intent%20Privacy">misharomaniuk15@icloud.com</a>.</p>
+                                </section>
+                            </div>
+                        </div>
+                    </section>
                     </div>
 
-                    <div id="sp-sileo" class="sp-content-section" data-title="Take a moment.">
-                        <div class="sp-main-grid">
-                            <div class="sp-col-left">
-                                <div class="sp-card sp-card-sileo-top">
-                                    <h3 class="sp-gradient-sileo-history">Moments that matter</h3>
-                                    <img src="style/images/sileo/image_sileo_history.svg" alt="History" class="sp-img">
-                                </div>
-                                <div class="sp-card sp-card-sileo-bottom">
-                                    <span class="sp-small-text">More ways to pause</span>
-                                    <img src="style/images/sileo/image_sileo_sub.svg" alt="Sileo Sub" class="sp-img">
-                                    <span class="sp-small-text">with SILEO</span>
-                                </div>
-                            </div>
-                            <div class="sp-col-center sp-card">
-                                <h2 class="sp-gradient-sileo-main">Take a moment</h2>
-                                <img src="style/images/sileo/image_sileo_main.svg" alt="Sileo Main" class="sp-img-large">
-                            </div>
-                            <div class="sp-col-right">
-                                <div class="sp-card sp-card-15">
-                                    <img src="style/images/sileo/image_sileo_theme.svg" alt="Theme" class="sp-img-center">
-                                </div>
-                                <div class="sp-card sp-card-85">
-                                    <img src="style/images/sileo/image_sileo_achive.svg" alt="Achieve" class="sp-img">
-                                    <h3 class="sp-gradient-sileo-achieve">Small wins</h3>
-                                </div>
-                            </div>
+                    <div id="sp-sileo" class="sp-content-section ap ap--sileo" data-title="Take a moment.">
+                    <header class="ap-hero ap-hero--video ap-block">
+                        <div class="ap-hero-media" aria-hidden="true">
+                            <video class="ap-hero-video" data-src="style/videos/sileo/sileo_hero.mp4" poster="style/videos/sileo/sileo_hero_poster.jpg" muted loop playsinline preload="none"></video>
                         </div>
+                        <h1 class="ap-display rv">Take<br>a moment.</h1>
+                        <p class="ap-lead rv">A quiet place to pause, breathe and notice the small wins. Sileo is still on the drawing board.</p>
+                    </header>
+                    <section class="ap-center ap-block ap-sileo">
+                        <figure class="ap-sileo-shot rv"><img src="style/images/sileo/image_sileo_main.svg" width="1045" height="1070" alt="Early Sileo designs" loading="lazy" decoding="async"></figure>
+                        <ul class="ap-pills rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Moments that matter</li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span>More ways to pause</li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></svg></span>Small wins</li></ul>
+                    </section>
                     </div>
                 </div>
 
@@ -463,10 +401,10 @@
         </div>
     </main>
 
-    <script src="js/bg.js?v=25"></script>
-    <script src="js/site.js?v=25"></script>
-    <script src="js/app.js?v=25"></script>
-    <script src="js/space.js?v=25"></script>
+    <script src="js/bg.js?v=28"></script>
+    <script src="js/site.js?v=28"></script>
+    <script src="js/app.js?v=28"></script>
+    <script src="js/space.js?v=28"></script>
 </body>
 
 </html>
