@@ -1,4 +1,4 @@
-/* Space page — Mono / Sileo window (hash routed), in-window overlay scrollbar, scroll reveal and privacy link. */
+/* Space page — Mono / Intent / Sileo window (hash routed), in-window overlay scrollbar, scroll reveal and privacy links. */
 document.addEventListener('DOMContentLoaded', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const sections = Array.from(document.querySelectorAll('.sp-content-section'));
@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const scroller = document.getElementById('sp-window-scroll');
     const bar = document.getElementById('sp-scrollbar');
     const thumb = document.getElementById('sp-scrollbar-thumb');
-    const privacy = document.getElementById('privacy');
+    /* Each app's privacy policy: its anchor, and the section it lives in. */
+    const policies = { '#privacy': 'sp-mono', '#intent-privacy': 'sp-intent' };
     const panels = Array.from(document.querySelectorAll('.mn-panel'));
     let hideTimer = 0;
 
@@ -23,17 +24,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function sectionForHash(hash) {
-        return hash === '#sileo' ? 'sp-sileo' : 'sp-mono';
+        if (hash === '#sileo') return 'sp-sileo';
+        if (hash === '#intent') return 'sp-intent';
+        return 'sp-mono';
     }
 
-    function goToPrivacy(smooth) {
-        activate('sp-mono');
-        privacy.scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto', block: 'start' });
+    function goToPrivacy(hash, smooth) {
+        activate(policies[hash]);
+        document.getElementById(hash.slice(1))
+            .scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto', block: 'start' });
     }
 
     function route(smooth) {
         const hash = window.location.hash;
-        if (hash === '#privacy') goToPrivacy(smooth);
+        if (policies[hash]) goToPrivacy(hash, smooth);
         else activate(sectionForHash(hash));
     }
 
@@ -107,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---- scroll reveal ---- */
     if (!reduceMotion && 'IntersectionObserver' in window && panels.length) {
-        panels[0].parentElement.classList.add('mn-reveal');
+        document.querySelectorAll('.mn-stack').forEach((stack) => stack.classList.add('mn-reveal'));
         const narrow = window.matchMedia('(max-width: 900px)').matches;
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
@@ -120,17 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
         panels.forEach((panel) => observer.observe(panel));
     }
 
-    /* ---- privacy link ---- */
-    const copyBtn = document.getElementById('mn-copy-link');
-    if (copyBtn) copyBtn.addEventListener('click', () => {
-        const url = `${location.origin}${location.pathname}#privacy`;
+    /* ---- privacy links ---- */
+    document.querySelectorAll('.mn-copy-link').forEach((copyBtn) => copyBtn.addEventListener('click', () => {
+        const url = `${location.origin}${location.pathname}#${copyBtn.dataset.hash}`;
         const done = () => {
             copyBtn.textContent = 'Link copied';
             setTimeout(() => { copyBtn.textContent = 'Copy link to this policy'; }, 2000);
         };
         if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => window.prompt('Copy this link:', url));
         else window.prompt('Copy this link:', url);
-    });
+    }));
 
     /* ---- init ---- */
     window.addEventListener('hashchange', () => route(true));

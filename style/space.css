@@ -365,6 +365,7 @@ html.is-loaded .sp-window {
 .mn-accent-orange { --a1: #FF6A1A; --a2: #FFB21E; }
 .mn-accent-blue { --a1: #0A84FF; --a2: #7C6DF2; }
 .mn-accent-teal { --a1: #0FB5C9; --a2: #64D2FF; }
+.mn-accent-indigo { --a1: #5E5CE6; --a2: #BF5AF2; }
 
 .mn-media {
     position: relative;
@@ -646,6 +647,18 @@ html.is-loaded .sp-window {
 
 .mn-policy p + p {
     margin-top: 10px;
+}
+
+.mn-policy-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+    padding-left: 20px;
+    font-size: 17px;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+    color: var(--text-strong);
 }
 
 .mn-policy a {

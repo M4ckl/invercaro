@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
 
     <link rel="stylesheet" href="style/main.css?v=23">
-    <link rel="stylesheet" href="style/space.css?v=24">
+    <link rel="stylesheet" href="style/space.css?v=25">
     <link rel="stylesheet" href="style/mobile.css?v=24">
     <script>
         (function () {
@@ -36,6 +36,7 @@
           <button class="menubar-item menu-trigger" id="link-space" type="button" aria-expanded="false" aria-controls="menu-space">Space</button>
           <div class="menu-pop menu-pop--apps" id="menu-space" role="menu" aria-label="Space">
             <a class="menu-app" href="space.html#mono" role="menuitem">Mono</a>
+            <a class="menu-app" href="space.html#intent" role="menuitem">Intent</a>
             <a class="menu-app" href="space.html#sileo" role="menuitem">Sileo</a>
           </div>
         </div>
@@ -209,7 +210,7 @@
                                         <li>No ads</li>
                                         <li>No third parties</li>
                                     </ul>
-                                    <button type="button" class="mn-copy-link" id="mn-copy-link">Copy link to this policy</button>
+                                    <button type="button" class="mn-copy-link" data-hash="privacy">Copy link to this policy</button>
                                 </header>
 
                                 <div class="mn-policy">
@@ -258,6 +259,181 @@
                         </div>
                     </div>
 
+                    <div id="sp-intent" class="sp-content-section" data-title="Plan the trip. Keep the journey.">
+                        <div class="mn-stack">
+                            <article class="mn-panel mn-accent-blue">
+                                <div class="mn-media">
+                                    <img src="style/images/intent/image_intent_main.svg" width="418" height="850" alt="Intent’s My Trips list with a trip to Spain" class="mn-phone">
+                                    <img src="style/images/intent/image_intent_travel_note.svg" width="418" height="850" alt="A trip to Spain opened as a travel note" class="mn-phone">
+                                </div>
+                                <div class="mn-copy">
+                                    <h2 class="mn-title">Every Trip, a&nbsp;Travel&nbsp;Note</h2>
+                                    <p class="mn-subtitle">Pick a country and dates.<br>The note is ready.</p>
+                                    <div class="mn-body">
+                                        <p class="mn-lead">Your next trip is always on top.</p>
+                                        <p>Each trip gets a photo of its country, its stops and its length at a glance. Upcoming trips are grouped by season, and finished ones move to the archive by themselves.</p>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="mn-panel mn-accent-orange">
+                                <div class="mn-media">
+                                    <img src="style/images/intent/image_intent_step.svg" width="418" height="850" alt="Barcelona with its plan by day" class="mn-phone" loading="lazy" decoding="async">
+                                    <img src="style/images/intent/image_intent_calendar.svg" width="418" height="850" alt="The trip calendar, one card for every day" class="mn-phone" loading="lazy" decoding="async">
+                                </div>
+                                <div class="mn-copy">
+                                    <h2 class="mn-title">Plan City by City</h2>
+                                    <p class="mn-subtitle">Add the cities you’ll visit,<br>then fill in each day.</p>
+                                    <div class="mn-body">
+                                        <p class="mn-lead">One place for everything you want to see.</p>
+                                        <ul class="mn-list">
+                                            <li><strong>Places &amp; notes</strong><span>Give each one a day and a time, or keep it for any time that day.</span></li>
+                                            <li><strong>Calendar</strong><span>Every day of the trip, built from your cities, with how you get between them.</span></li>
+                                            <li><strong>Not planned yet</strong><span>Ideas wait here until you find them a day.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="mn-panel mn-accent-teal">
+                                <div class="mn-media">
+                                    <img src="style/images/intent/image_intent_documents.svg" width="418" height="850" alt="The trip’s documents, filtered into tickets, bookings and personal" class="mn-phone" loading="lazy" decoding="async">
+                                </div>
+                                <div class="mn-copy">
+                                    <h2 class="mn-title">Every Ticket in&nbsp;Its&nbsp;Place</h2>
+                                    <p class="mn-subtitle">Boarding passes, bookings and<br>papers, right where you need them.</p>
+                                    <div class="mn-body">
+                                        <p>Add files and photos to the trip, a city, a place or the journey between cities. They open right in the app, even offline.</p>
+                                        <ul class="mn-list">
+                                            <li><strong>Tickets</strong><span>Flights show as boarding-pass cards with the route and flight number.</span></li>
+                                            <li><strong>Bookings</strong><span>Hotels and tours, kept with the city they’re for.</span></li>
+                                            <li><strong>Personal</strong><span>Insurance and other papers for the whole trip.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="mn-panel mn-accent-green">
+                                <div class="mn-media">
+                                    <img src="style/images/intent/image_intent_map.svg" width="418" height="850" alt="The world map with visited countries filled in" class="mn-phone" loading="lazy" decoding="async">
+                                    <img src="style/images/intent/image_intent_country_wall.svg" width="418" height="850" alt="The Country Wall with a photo for every visited country" class="mn-phone" loading="lazy" decoding="async">
+                                </div>
+                                <div class="mn-copy">
+                                    <h2 class="mn-title">Fill In Your World&nbsp;Map</h2>
+                                    <p class="mn-subtitle">Finished trips color in<br>their countries.</p>
+                                    <div class="mn-body">
+                                        <p class="mn-lead">See how far you’ve come.</p>
+                                        <p>Mark the countries you visited before, find any country with search, and watch countries, continents and cities add up. The Country Wall puts a photo of every place you’ve been on one page.</p>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="mn-panel">
+                                <div class="mn-media">
+                                    <img src="style/images/intent/image_intent_archive_card.svg" width="418" height="850" alt="Italy’s country card with photos from the album" class="mn-phone" loading="lazy" decoding="async">
+                                    <img src="style/images/intent/image_intent_share.svg" width="418" height="850" alt="Sharing a card of your travel map" class="mn-phone" loading="lazy" decoding="async">
+                                </div>
+                                <div class="mn-copy">
+                                    <h2 class="mn-title">Memories, Ready to&nbsp;Share</h2>
+                                    <p class="mn-subtitle">A card for every country<br>you’ve been to.</p>
+                                    <div class="mn-body">
+                                        <p>Each visited country gets its own card: the cities, the days and the places, with an album for your photos. Share a card, your whole map, or a trip itself, so a friend can open it in Intent.</p>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="mn-panel mn-accent-indigo">
+                                <div class="mn-media">
+                                    <img src="style/images/intent/image_intent_compare.svg" width="418" height="850" alt="Your map and a friend’s map compared" class="mn-phone" loading="lazy" decoding="async">
+                                </div>
+                                <div class="mn-copy">
+                                    <h2 class="mn-title">Compare with Friends</h2>
+                                    <p class="mn-subtitle">Scan a friend’s code and see<br>where your maps meet.</p>
+                                    <div class="mn-body">
+                                        <ul class="mn-list">
+                                            <li><strong>Both</strong><span>The countries you’ve both been to.</span></li>
+                                            <li><strong>You</strong><span>Places only you have seen.</span></li>
+                                            <li><strong>Friend</strong><span>Ideas for your next trip.</span></li>
+                                        </ul>
+                                        <p>A map code holds only a name, the countries and a city count. Never your trips, dates or files.</p>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="mn-panel mn-privacy" id="intent-privacy">
+                                <header class="mn-privacy-head">
+                                    <h2 class="mn-title">Privacy Policy</h2>
+                                    <p class="mn-subtitle">Your trips stay on your iPhone.<br>We never see them.</p>
+                                    <dl class="mn-meta">
+                                        <div><dt>Effective date</dt><dd>October 22, 2026</dd></div>
+                                        <div><dt>Developer</dt><dd>Michail Romaniuk, Poland</dd></div>
+                                        <div><dt>App</dt><dd>Intent for iPhone</dd></div>
+                                    </dl>
+                                    <ul class="mn-chips">
+                                        <li>No account</li>
+                                        <li>No data collected</li>
+                                        <li>No tracking</li>
+                                        <li>No ads</li>
+                                        <li>No analytics</li>
+                                    </ul>
+                                    <button type="button" class="mn-copy-link" data-hash="intent-privacy">Copy link to this policy</button>
+                                </header>
+
+                                <div class="mn-policy">
+                                    <section>
+                                        <h3>1. Information We Collect</h3>
+                                        <p>Intent is a trip planner. You create trips, add cities, places, notes and files, and mark the countries you have visited. The developer does not collect any of it. There is no account, no sign-up and no server of ours that your data is sent to.</p>
+                                    </section>
+                                    <section>
+                                        <h3>2. Where Your Data Is Stored</h3>
+                                        <p>Everything you enter, the files and photos you add and the photos in your country albums are stored only on your device, in the app’s private storage. Settings such as the app language and the name on your shared map are stored on your device as well.</p>
+                                        <p>Your Intent data may be included in your own iCloud or computer backup of the device. Those backups are controlled by Apple, not by the developer.</p>
+                                    </section>
+                                    <section>
+                                        <h3>3. Internet Services Intent Uses</h3>
+                                        <p>Intent works without the internet, except for two features that ask other services for public information. Neither request contains your trips, notes, files or anything that identifies you.</p>
+                                        <ul class="mn-policy-list">
+                                            <li><strong>Country photos.</strong> To show a picture of a country, Intent asks Wikimedia Commons and Wikipedia (run by the Wikimedia Foundation) for photos of that country. The request contains the country’s name and, like any web request, your IP address. Downloaded photos are kept in a cache on your device. See the <a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy" target="_blank" rel="noopener">Wikimedia Foundation Privacy Policy</a>.</li>
+                                            <li><strong>City search.</strong> When you search for a city to add to a trip, the text you type is sent to Apple Maps to find matching cities. Intent does not use your location. See <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple’s Privacy Policy</a>.</li>
+                                        </ul>
+                                    </section>
+                                    <section>
+                                        <h3>4. Camera, Photos and Files</h3>
+                                        <p>Intent uses the camera only to scan a friend’s map code, and only while the scanner is open. Nothing is recorded or saved. Photos and files are added only when you pick them, and copies are kept in the app. Reading the route from a flight ticket happens on your device.</p>
+                                    </section>
+                                    <section>
+                                        <h3>5. Sharing</h3>
+                                        <p>Intent shares only when you ask it to. A shared trip contains that trip with its cities, places, notes and files. A shared map or map code contains the name you chose, the countries you have visited and the number of cities. You choose who receives them through the iOS share sheet. Trips and maps you receive are saved only on your device.</p>
+                                    </section>
+                                    <section>
+                                        <h3>6. Sharing, Selling, and Tracking</h3>
+                                        <p>We do not share, sell, or rent any data, and we do not track you. Intent contains no analytics, no advertising and no third-party SDKs.</p>
+                                    </section>
+                                    <section>
+                                        <h3>7. Data Retention and Deletion</h3>
+                                        <p>Your data stays on your device until you remove it. You can delete any trip, city, place, note, file or album photo in the app. Deleting a trip also deletes its files. Deleting the app permanently deletes all of its data.</p>
+                                    </section>
+                                    <section>
+                                        <h3>8. Children’s Privacy</h3>
+                                        <p>Intent is not directed at children under 13. The app collects no data from anyone, including children.</p>
+                                    </section>
+                                    <section>
+                                        <h3>9. Your Rights (GDPR &amp; CCPA)</h3>
+                                        <p>Data protection laws such as the GDPR and CCPA give you the right to access, correct, and delete personal data held about you. Because Intent collects no personal data, we hold nothing about you, so there is nothing to access or delete on our side. All of your data is under your control on your device.</p>
+                                    </section>
+                                    <section>
+                                        <h3>10. Changes to This Policy</h3>
+                                        <p>If this policy changes, the updated version will be posted on this page with a new effective date.</p>
+                                    </section>
+                                    <section>
+                                        <h3>11. Contact</h3>
+                                        <p>Questions about this policy? Contact us at <a href="mailto:misharomaniuk15@icloud.com?subject=Intent%20Privacy">misharomaniuk15@icloud.com</a>.</p>
+                                    </section>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
                     <div id="sp-sileo" class="sp-content-section" data-title="Take a moment.">
                         <div class="sp-main-grid">
                             <div class="sp-col-left">
@@ -298,7 +474,7 @@
     <script src="js/bg.js?v=23"></script>
     <script src="js/site.js?v=23"></script>
     <script src="js/app.js?v=23"></script>
-    <script src="js/space.js?v=23"></script>
+    <script src="js/space.js?v=24"></script>
 </body>
 
 </html>
