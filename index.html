@@ -7,8 +7,8 @@
   <title>Invercaro</title>
   <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
   <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
-  <link rel="stylesheet" href="style/main.css?v=23">
-  <link rel="stylesheet" href="style/mobile.css?v=23">
+  <link rel="stylesheet" href="style/main.css?v=25">
+  <link rel="stylesheet" href="style/mobile.css?v=25">
   <script>
     (function () {
       try {
@@ -42,31 +42,54 @@
       <a href="index.html" class="menubar-logo" aria-label="Invercaro home">
         <img src="style/icons/icon_invercaro.svg" alt="" class="logo-icon">
       </a>
-      <button class="menubar-item" id="link-invercaro" type="button" aria-haspopup="dialog" aria-controls="studio-window">Invercaro</button>
-
       <div class="menu">
-        <button class="menubar-item menu-trigger" id="link-space" type="button" aria-expanded="false" aria-controls="menu-space">Space</button>
-        <div class="menu-pop menu-pop--apps" id="menu-space" role="menu" aria-label="Space">
-          <a class="menu-app" href="space.html#mono" role="menuitem">Mono</a>
-          <a class="menu-app" href="space.html#intent" role="menuitem">Intent</a>
-          <a class="menu-app" href="space.html#sileo" role="menuitem">Sileo</a>
+        <button class="menubar-item menu-trigger" id="link-invercaro" type="button" aria-expanded="false" aria-controls="menu-invercaro">Invercaro</button>
+        <div class="menu-pop menu-pop--list" id="menu-invercaro" role="dialog" aria-label="Invercaro">
+          <p class="menu-row">We create products that leave space.</p>
+          <p class="menu-row">An independent app studio crafting quiet, minimalist tools for&nbsp;iOS.</p>
+          <p class="menu-row">Software that respects your attention, removes clutter, and leaves space for what truly&nbsp;matters.</p>
         </div>
       </div>
 
-      <div class="menu">
-        <button class="menubar-item menu-trigger" type="button" aria-expanded="false" aria-controls="menu-about">About</button>
-        <div class="menu-pop menu-pop--list" id="menu-about" role="dialog" aria-label="About">
-          <p class="menu-row">We create products because we needed them ourselves.</p>
-          <p class="menu-row">Life doesn't need to be optimized. It's important to feel it.</p>
-          <p class="menu-row">Our apps don't rush, demand, or evaluate — they're just there when needed.</p>
-        </div>
-      </div>
+      <div class="menubar-swap">
+        <div class="menubar-group menubar-group--site" id="menubar-site">
+          <div class="menu">
+            <button class="menubar-item menu-trigger" id="link-space" type="button" aria-expanded="false" aria-controls="menu-space">Space</button>
+            <div class="menu-pop menu-pop--apps" id="menu-space" role="menu" aria-label="Space">
+              <a class="menu-app" href="space.html#mono" role="menuitem">Mono</a>
+              <a class="menu-app" href="space.html#intent" role="menuitem">Intent</a>
+              <a class="menu-app" href="space.html#sileo" role="menuitem">Sileo</a>
+            </div>
+          </div>
 
-      <div class="menu">
-        <button class="menubar-item menu-trigger" type="button" aria-expanded="false" aria-controls="menu-next">What's next</button>
-        <div class="menu-pop menu-pop--list" id="menu-next" role="dialog" aria-label="What's next">
-          <p class="menu-row">Simple tools for attention, clarity and&nbsp;space.</p>
-          <p class="menu-row">We build only when something is truly&nbsp;missing — never sooner.</p>
+          <div class="menu">
+            <button class="menubar-item menu-trigger" type="button" aria-expanded="false" aria-controls="menu-about">About</button>
+            <div class="menu-pop menu-pop--list" id="menu-about" role="dialog" aria-label="About">
+              <p class="menu-row">We create products because we needed them ourselves.</p>
+              <p class="menu-row">Life doesn't need to be optimized. It's important to feel it.</p>
+              <p class="menu-row">Our apps don't rush, demand, or evaluate — they're just there when needed.</p>
+            </div>
+          </div>
+
+          <div class="menu">
+            <button class="menubar-item menu-trigger" type="button" aria-expanded="false" aria-controls="menu-next">What's next</button>
+            <div class="menu-pop menu-pop--list" id="menu-next" role="dialog" aria-label="What's next">
+              <p class="menu-row">Simple tools for attention, clarity and&nbsp;space.</p>
+              <p class="menu-row">We build only when something is truly&nbsp;missing — never sooner.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="menubar-group menubar-group--app" id="menubar-app" inert>
+          <a class="menubar-item" id="menubar-app-explore" href="space.html#mono">Explore</a>
+
+          <div class="menu">
+            <button class="menubar-item menu-trigger" id="menubar-app-about" type="button" aria-expanded="false" aria-controls="menu-app">About Mono</button>
+            <div class="menu-pop menu-pop--list" id="menu-app" role="dialog" aria-label="About the app">
+              <p class="menu-row menu-row--head"><span id="menu-app-name">Mono</span><span class="menu-status" id="menu-app-status">Testing</span></p>
+              <p class="menu-row" id="menu-app-desc"></p>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
@@ -92,21 +115,6 @@
     </div>
   </header>
 
-  <div class="studio-overlay" id="studio-overlay">
-    <div class="studio-window" id="studio-window" role="dialog" aria-modal="true" aria-labelledby="studio-title" tabindex="-1">
-      <div class="studio-window-bar">
-        <button class="traffic traffic-close" id="studio-close" type="button" aria-label="Close"></button>
-        <span class="traffic traffic-min" aria-hidden="true"></span>
-        <span class="traffic traffic-max" aria-hidden="true"></span>
-      </div>
-      <div class="studio-window-body">
-        <img src="style/icons/icon_invercaro.svg" alt="" class="studio-icon">
-        <h2 class="studio-title" id="studio-title">We create products that leave space.</h2>
-        <p class="studio-text">Invercaro is an independent app studio crafting quiet, minimalist tools for iOS. We design software that respects your attention, removes clutter, and leaves space for what truly matters.</p>
-      </div>
-    </div>
-  </div>
-
   <main>
     <section class="projects-canvas">
       <div class="stage">
@@ -114,38 +122,30 @@
         <!-- Center: 3D model of the selected app -->
         <div class="stage-center">
           <div class="model-stage" id="model-stage">
-            <model-viewer id="app-model" class="app-model" hidden camera-orbit="0deg 90deg 95%"
-              camera-target="0m 0m 0m" interaction-prompt="none" disable-zoom disable-pan disable-tap
-              shadow-intensity="0" exposure="1" environment-image="neutral" interpolation-decay="140"
-              loading="eager"></model-viewer>
+            <div class="model-float" id="model-float">
+              <model-viewer id="app-model" class="app-model" hidden camera-orbit="0deg 90deg 95%"
+                camera-target="0m 0m 0m" interaction-prompt="none" disable-zoom disable-pan disable-tap
+                shadow-intensity="0" exposure="1" environment-image="neutral" interpolation-decay="140"
+                loading="eager"></model-viewer>
+            </div>
           </div>
-        </div>
-
-        <!-- App info panel -->
-        <div class="app-panel" id="app-panel" aria-hidden="true">
-          <div class="app-panel-head">
-            <span class="app-panel-name" id="app-panel-name">Sileo</span>
-            <span class="app-panel-status" id="app-panel-status">Open</span>
-          </div>
-          <p class="app-panel-desc" id="app-panel-desc"></p>
-          <a class="app-panel-cta" id="app-panel-cta" href="#">Explore <span class="arrow">→</span></a>
         </div>
 
         <!-- Dock: app switcher -->
         <div class="dock" id="dock">
           <div class="dock-apps" id="dock-apps">
-            <button class="dock-app" type="button" data-app="sileo" data-name="Sileo" data-status="dev"
+            <button class="dock-app" type="button" data-app="sileo" data-name="Sileo" data-status="design"
               data-desc="Space to pause, breathe and notice the small wins." data-href="space.html#sileo"
               data-model="1" aria-label="Sileo">
               <img class="dock-icon" data-app-icon="sileo" src="style/icons/icon_sileo.svg" alt="Sileo">
               <span class="dock-dot"></span>
             </button>
-            <button class="dock-app" type="button" data-app="mono" data-name="Mono" data-status="open"
+            <button class="dock-app" type="button" data-app="mono" data-name="Mono" data-status="testing"
               data-desc="Track spending. Nothing more." data-href="space.html#mono" data-model="1" aria-label="Mono">
               <img class="dock-icon" data-app-icon="mono" src="style/icons/icon_mono.svg" alt="Mono">
               <span class="dock-dot"></span>
             </button>
-            <button class="dock-app" type="button" data-app="intent" data-name="Intent" data-status="soon"
+            <button class="dock-app" type="button" data-app="intent" data-name="Intent" data-status="testing"
               data-desc="Plan the trip. Keep the journey." data-href="space.html#intent" data-model="1"
               aria-label="Intent">
               <img class="dock-icon" data-app-icon="intent" src="style/icons/icon_intent.svg" alt="Intent">
@@ -158,10 +158,10 @@
     </section>
   </main>
 
-  <script src="js/bg.js?v=23"></script>
-  <script src="js/site.js?v=23"></script>
-  <script src="js/dock.js?v=23"></script>
-  <script src="js/app.js?v=23"></script>
+  <script src="js/bg.js?v=25"></script>
+  <script src="js/site.js?v=25"></script>
+  <script src="js/dock.js?v=25"></script>
+  <script src="js/app.js?v=25"></script>
 </body>
 
 </html>

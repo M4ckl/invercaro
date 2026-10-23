@@ -9,9 +9,9 @@
     <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
     <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
 
-    <link rel="stylesheet" href="style/main.css?v=23">
-    <link rel="stylesheet" href="style/support.css?v=23">
-    <link rel="stylesheet" href="style/mobile.css?v=23">
+    <link rel="stylesheet" href="style/main.css?v=25">
+    <link rel="stylesheet" href="style/support.css?v=25">
+    <link rel="stylesheet" href="style/mobile.css?v=25">
     <script>
         (function () {
             try {
@@ -30,7 +30,14 @@
         <a href="index.html" class="menubar-logo" aria-label="Invercaro home">
           <img src="style/icons/icon_invercaro.svg" alt="" class="logo-icon">
         </a>
-        <button class="menubar-item" id="link-invercaro" type="button" aria-haspopup="dialog" aria-controls="studio-window">Invercaro</button>
+        <div class="menu">
+          <button class="menubar-item menu-trigger" id="link-invercaro" type="button" aria-expanded="false" aria-controls="menu-invercaro">Invercaro</button>
+          <div class="menu-pop menu-pop--list" id="menu-invercaro" role="dialog" aria-label="Invercaro">
+            <p class="menu-row">We create products that leave space.</p>
+            <p class="menu-row">An independent app studio crafting quiet, minimalist tools for&nbsp;iOS.</p>
+            <p class="menu-row">Software that respects your attention, removes clutter, and leaves space for what truly&nbsp;matters.</p>
+          </div>
+        </div>
 
         <div class="menu">
           <button class="menubar-item menu-trigger" id="link-space" type="button" aria-expanded="false" aria-controls="menu-space">Space</button>
@@ -80,20 +87,6 @@
       </div>
     </header>
 
-    <div class="studio-overlay" id="studio-overlay">
-      <div class="studio-window" id="studio-window" role="dialog" aria-modal="true" aria-labelledby="studio-title" tabindex="-1">
-        <div class="studio-window-bar">
-          <button class="traffic traffic-close" id="studio-close" type="button" aria-label="Close"></button>
-          <span class="traffic traffic-min" aria-hidden="true"></span>
-          <span class="traffic traffic-max" aria-hidden="true"></span>
-        </div>
-        <div class="studio-window-body">
-          <img src="style/icons/icon_invercaro.svg" alt="" class="studio-icon">
-          <h2 class="studio-title" id="studio-title">We create products that leave space.</h2>
-          <p class="studio-text">Invercaro is an independent app studio crafting quiet, minimalist tools for iOS. We design software that respects your attention, removes clutter, and leaves space for what truly matters.</p>
-        </div>
-      </div>
-    </div>
 
     <main class="su-container">
         <section class="su-hero">
@@ -105,15 +98,15 @@
             <nav class="su-apps" aria-label="Apps">
                 <button type="button" class="su-app is-active" data-app="mono">
                     <img src="style/icons/icon_mono.svg" data-app-icon="mono" alt="" class="su-app-icon">
-                    <span class="su-app-text"><strong>Mono</strong><span>Open</span></span>
+                    <span class="su-app-text"><strong>Mono</strong><span>Testing</span></span>
                 </button>
                 <button type="button" class="su-app" data-app="intent">
                     <img src="style/icons/icon_intent.svg" data-app-icon="intent" alt="" class="su-app-icon">
-                    <span class="su-app-text"><strong>Intent</strong><span>Coming soon</span></span>
+                    <span class="su-app-text"><strong>Intent</strong><span>Testing</span></span>
                 </button>
                 <button type="button" class="su-app" data-app="sileo">
                     <img src="style/icons/icon_sileo.svg" data-app-icon="sileo" alt="" class="su-app-icon">
-                    <span class="su-app-text"><strong>Sileo</strong><span>In development</span></span>
+                    <span class="su-app-text"><strong>Sileo</strong><span>Design</span></span>
                 </button>
             </nav>
 
@@ -350,10 +343,10 @@
         </div>
     </main>
 
-    <script src="js/bg.js?v=23"></script>
-    <script src="js/site.js?v=23"></script>
-    <script src="js/app.js?v=23"></script>
-    <script src="js/support.js?v=23"></script>
+    <script src="js/bg.js?v=25"></script>
+    <script src="js/site.js?v=25"></script>
+    <script src="js/app.js?v=25"></script>
+    <script src="js/support.js?v=25"></script>
 </body>
 
 </html>

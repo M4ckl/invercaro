@@ -1,4 +1,4 @@
-/* Shared page behaviour: menu bar (current page, clock, menus, studio window), splash, entrance. */
+/* Shared page behaviour: menu bar (current page, clock, menus), splash, entrance. */
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.documentElement;
 
@@ -33,14 +33,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setMenu(trigger) {
         if (openTrigger === trigger) return;
-        if (openTrigger) {
-            openTrigger.setAttribute('aria-expanded', 'false');
-            openTrigger.parentElement.classList.remove('is-open');
+        const prev = openTrigger;
+        const dir = prev && trigger ? Math.sign(triggers.indexOf(trigger) - triggers.indexOf(prev)) : 0;
+        if (prev) {
+            prev.setAttribute('aria-expanded', 'false');
+            prev.parentElement.style.setProperty('--slide', `${-dir * 18}px`);
+            prev.parentElement.classList.remove('is-open');
         }
         openTrigger = trigger;
         if (trigger) {
+            const menu = trigger.parentElement;
+            menu.classList.add('no-anim');
+            menu.style.setProperty('--slide', `${dir * 18}px`);
+            void menu.offsetWidth;
+            menu.classList.remove('no-anim');
             trigger.setAttribute('aria-expanded', 'true');
-            trigger.parentElement.classList.add('is-open');
+            menu.classList.add('is-open');
         }
     }
 
@@ -58,41 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (openTrigger && (!e.target.closest('.menu-pop') || e.target.closest('.menu-pop a'))) setMenu(null);
     });
 
-    /* ---------------- Studio window ---------------- */
-    const studioTrigger = document.getElementById('link-invercaro');
-    const studioOverlay = document.getElementById('studio-overlay');
-    const studioWindow = document.getElementById('studio-window');
-    const studioClose = document.getElementById('studio-close');
-
-    function setStudio(open) {
-        if (!studioOverlay) return;
-        studioOverlay.classList.toggle('is-open', open);
-        studioTrigger.setAttribute('aria-expanded', String(open));
-        if (open) studioWindow.focus();
-        else studioTrigger.focus();
-    }
-
-    if (studioTrigger && studioOverlay) {
-        studioTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            setMenu(null);
-            setStudio(!studioOverlay.classList.contains('is-open'));
-        });
-        studioOverlay.addEventListener('click', (e) => {
-            if (e.target === studioOverlay) setStudio(false);
-        });
-        studioClose.addEventListener('click', () => setStudio(false));
-    }
-
     document.addEventListener('keydown', (e) => {
-        if (e.key !== 'Escape') return;
-        if (studioOverlay && studioOverlay.classList.contains('is-open')) {
-            setStudio(false);
-        } else if (openTrigger) {
-            const t = openTrigger;
-            setMenu(null);
-            t.focus();
-        }
+        if (e.key !== 'Escape' || !openTrigger) return;
+        const t = openTrigger;
+        setMenu(null);
+        t.focus();
     });
 
     /* ---------------- Splash + entrance ---------------- */

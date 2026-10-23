@@ -88,7 +88,6 @@
 
     .stage-center { order: 1; }
     .dock         { order: 2; }
-    .app-panel    { order: 3; }
 
     .stage-center {
         position: static !important;
@@ -114,21 +113,6 @@
 
     .dock-icon {
         transform: none !important;
-    }
-
-    .app-panel {
-        position: static !important;
-        right: auto;
-        bottom: auto;
-        width: 100%;
-        max-width: 360px;
-        transform: none !important;
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .app-panel:not(.is-open) {
-        display: none;
     }
 
     /* ====== SPACE PAGE ====== */

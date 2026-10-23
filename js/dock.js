@@ -1,4 +1,4 @@
-/* Home dock: app switcher that drives the centre 3D model + info panel. */
+/* Home dock: app switcher that drives the centre 3D model + the menu bar's app menus. */
 (function () {
   const dock = document.getElementById('dock');
   if (!dock) return;
@@ -6,14 +6,20 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const apps = Array.from(dock.querySelectorAll('.dock-app'));
 
-  const panel = document.getElementById('app-panel');
-  const panelName = document.getElementById('app-panel-name');
-  const panelStatus = document.getElementById('app-panel-status');
-  const panelDesc = document.getElementById('app-panel-desc');
-  const panelCta = document.getElementById('app-panel-cta');
+  const menubar = document.querySelector('.menubar');
+  const siteGroup = document.getElementById('menubar-site');
+  const appGroup = document.getElementById('menubar-app');
+  const appExplore = document.getElementById('menubar-app-explore');
+  const appAbout = document.getElementById('menubar-app-about');
+  const appName = document.getElementById('menu-app-name');
+  const appStatus = document.getElementById('menu-app-status');
+  const appDesc = document.getElementById('menu-app-desc');
 
   const modelStage = document.getElementById('model-stage');
-  const modelViewer = document.getElementById('app-model');
+  const modelFloat = document.getElementById('model-float');
+  let modelViewer = document.getElementById('app-model');
+  let incoming = null;
+  let orbit = '0deg 90deg 95%';
 
   /* ---------------- macOS-style dock magnification ---------------- */
   const RANGE = 95;
@@ -41,24 +47,40 @@
   }
 
   /* ---------------- App selection ---------------- */
-  const STATUS_LABELS = { open: 'Open', dev: 'In development', soon: 'Soon' };
+  const STATUS_LABELS = { design: 'Design', testing: 'Testing' };
   let active = null;
   let modelActive = false;
+  let swapT = 0;
 
-  function fillPanel(app) {
+  function fillMenus(app) {
     const d = app.dataset;
-    panelName.textContent = d.name;
-    panelStatus.textContent = STATUS_LABELS[d.status] || 'Open';
-    panelStatus.className = 'app-panel-status is-' + d.status;
-    panelDesc.textContent = d.desc;
-    if (d.href) {
-      panelCta.href = d.href;
-      panelCta.classList.remove('muted');
-      panelCta.innerHTML = 'Explore <span class="arrow">→</span>';
+    appExplore.href = d.href;
+    appAbout.textContent = 'About ' + d.name;
+    appName.textContent = d.name;
+    appStatus.textContent = STATUS_LABELS[d.status] || d.status;
+    appDesc.textContent = d.desc;
+  }
+
+  function setAppMenus(app) {
+    clearTimeout(swapT);
+    if (!app) {
+      menubar.classList.remove('is-app');
+      appGroup.classList.remove('is-refreshing');
+      appGroup.inert = true;
+      siteGroup.inert = false;
+      return;
+    }
+    siteGroup.inert = true;
+    appGroup.inert = false;
+    if (menubar.classList.contains('is-app') && !reduceMotion) {
+      appGroup.classList.add('is-refreshing');
+      swapT = setTimeout(() => {
+        fillMenus(app);
+        appGroup.classList.remove('is-refreshing');
+      }, 180);
     } else {
-      panelCta.removeAttribute('href');
-      panelCta.classList.add('muted');
-      panelCta.textContent = 'Coming soon';
+      fillMenus(app);
+      menubar.classList.add('is-app');
     }
   }
 
@@ -69,15 +91,29 @@
     modelStage.classList.add('pop');
   }
 
-  function modelSrc(app) {
+  function currentTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function modelSrc(app, theme = currentTheme()) {
     const name = app.dataset.app;
-    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
     return `style/3d%20models/${name}/icon_${name}_3d_${theme}.glb`;
+  }
+
+  function prefetchOtherTheme(app) {
+    const other = currentTheme() === 'dark' ? 'light' : 'dark';
+    fetch(modelSrc(app, other)).catch(() => {});
+  }
+
+  function cancelSwap() {
+    if (!incoming) return;
+    incoming.remove();
+    incoming = null;
   }
 
   function showModel(app) {
     if (!modelViewer) return;
-    modelViewer.classList.remove('is-swapping');
+    cancelSwap();
     modelViewer.hidden = false;
     const src = modelSrc(app);
     if (modelViewer.getAttribute('src') !== src) modelViewer.setAttribute('src', src);
@@ -85,53 +121,63 @@
     modelActive = true;
     resetOrbit();
     popStage();
+    prefetchOtherTheme(app);
   }
 
+  /* ---------------- Theme cross-fade: new model dissolves in over the old one ---------------- */
   function swapModelForTheme() {
     if (!modelActive || !modelViewer || !active) return;
     const src = modelSrc(active);
     if (modelViewer.getAttribute('src') === src) return;
-    modelViewer.classList.add('is-swapping');
-    setTimeout(() => modelViewer.setAttribute('src', src), 220);
-  }
+    if (reduceMotion) { modelViewer.setAttribute('src', src); return; }
 
-  function openPanel(app) {
-    panel.setAttribute('aria-hidden', 'false');
-    if (panel.classList.contains('is-open')) {
-      panel.classList.remove('is-open');
-      setTimeout(() => {
-        fillPanel(app);
-        requestAnimationFrame(() => panel.classList.add('is-open'));
-      }, 200);
-    } else {
-      fillPanel(app);
-      requestAnimationFrame(() => panel.classList.add('is-open'));
-    }
+    cancelSwap();
+    const next = modelViewer.cloneNode(false);
+    next.removeAttribute('id');
+    next.classList.remove('is-leaving');
+    next.classList.add('is-entering');
+    next.setAttribute('camera-orbit', orbit);
+    next.setAttribute('src', src);
+    modelFloat.appendChild(next);
+    incoming = next;
+
+    next.addEventListener('load', () => {
+      if (incoming !== next) return;
+      incoming = null;
+      const old = modelViewer;
+      old.removeAttribute('id');
+      next.id = 'app-model';
+      next.cameraOrbit = orbit;
+      modelViewer = next;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        next.classList.remove('is-entering');
+        old.classList.add('is-leaving');
+      }));
+      setTimeout(() => old.remove(), 1000);
+      prefetchOtherTheme(active);
+    }, { once: true });
   }
 
   function select(app) {
     if (active === app) { deselect(); return; }
     active = app;
     apps.forEach((a) => a.classList.toggle('is-active', a === app));
-    openPanel(app);
+    setAppMenus(app);
     showModel(app);
   }
 
   function deselect() {
+    cancelSwap();
     active = null;
     modelActive = false;
     apps.forEach((a) => a.classList.remove('is-active'));
     if (modelViewer) modelViewer.hidden = true;
     modelStage.classList.remove('has-model');
-    panel.classList.remove('is-open');
-    panel.setAttribute('aria-hidden', 'true');
+    setAppMenus(null);
   }
 
   apps.forEach((app) => app.addEventListener('click', () => select(app)));
 
-  if (modelViewer) {
-    modelViewer.addEventListener('load', () => modelViewer.classList.remove('is-swapping'));
-  }
   document.addEventListener('themechange', swapModelForTheme);
 
   /* ---------------- Cursor-reactive tilt (no spin) ---------------- */
@@ -143,7 +189,8 @@
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
   function resetOrbit() {
-    if (modelViewer) modelViewer.cameraOrbit = `0deg ${REST_PHI}deg ${RADIUS}`;
+    orbit = `0deg ${REST_PHI}deg ${RADIUS}`;
+    if (modelViewer) modelViewer.cameraOrbit = orbit;
   }
 
   let rafPending = false;
@@ -160,7 +207,9 @@
       rafPending = true;
       requestAnimationFrame(() => {
         rafPending = false;
-        modelViewer.cameraOrbit = `${pendTheta.toFixed(1)}deg ${pendPhi.toFixed(1)}deg ${RADIUS}`;
+        orbit = `${pendTheta.toFixed(1)}deg ${pendPhi.toFixed(1)}deg ${RADIUS}`;
+        modelViewer.cameraOrbit = orbit;
+        if (incoming) incoming.cameraOrbit = orbit;
       });
     }
   }
