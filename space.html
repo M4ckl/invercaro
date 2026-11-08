@@ -12,9 +12,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap">
-    <link rel="stylesheet" href="style/main.css?v=28">
-    <link rel="stylesheet" href="style/space.css?v=28">
-    <link rel="stylesheet" href="style/mobile.css?v=28">
+    <link rel="stylesheet" href="style/main.css?v=44">
+    <link rel="stylesheet" href="style/space.css?v=44">
+    <link rel="stylesheet" href="style/mobile.css?v=44">
     <script>
         (function () {
             try {
@@ -105,19 +105,74 @@
             <div class="sp-window-body">
                 <div class="sp-window-scroll" id="sp-window-scroll">
                     <div id="sp-mono" class="sp-content-section sp-active-section ap ap--mono" data-title="Track spending. Nothing more.">
-                    <header class="ap-hero ap-hero--video ap-block">
+                    <!-- Stage 1 (the hero) fills the window; the next page arrives with an animation, not a scroll (desktop). -->
+                    <div class="ap-deck" data-stages>
+                    <header class="ap-hero ap-hero--video ap-block ap-stage" data-stage="0" aria-label="Mono">
                         <div class="ap-hero-media" aria-hidden="true">
                             <video class="ap-hero-video" data-src="style/videos/mono/mono_hero.mp4" poster="style/videos/mono/mono_hero_poster.jpg" muted loop playsinline preload="none"></video>
                         </div>
-                        <h1 class="ap-display rv">Track spending.<br>Nothing more.</h1>
-                        <p class="ap-lead rv">A calm expense tracker. Type the amount, swipe, and get on with your day. Mono sorts the rest on its own.</p>
+                        <h1 class="ap-display ap-in" style="--d:0">Track spending.<br>Nothing more.</h1>
+                        <p class="ap-lead ap-in" style="--d:2">A calm expense tracker. Type the amount, swipe, and get on with your day. Mono sorts the rest on its own.</p>
                     </header>
 
+                    </div>
+
+                    <div class="ap-rest">
+                    <!-- Live story (desktop): the view stays pinned while you scroll; a 3D iPhone glides between sides and
+                         plays one continuous recording of the app in step with the text. js/story3d-engine.js drives it. -->
+                    <div class="ap-live" data-live data-video="style/videos/mono/live/story.mp4">
+                        <div class="ap-live-pin">
+                            <canvas class="ap-live-canvas" aria-hidden="true"></canvas>
+                            <div class="ap-live-text">
+                            <article class="ap-live-ch" data-side="left">
+                                <span class="ap-eyebrow"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5L13 3z"/></svg></span>Quick entry</span>
+                                <h2 class="ap-h2 ap-h2--live">Just three steps.</h2>
+                                <ol class="ap-live-steps">
+                                    <li data-from="2.74" data-to="8.6"><strong>Enter the amount.</strong><span>Type the number. No forms, no endless categories.</span></li>
+                                    <li class="is-optional" data-from="8.6" data-to="15.2"><strong>Add a name. <em class="ap-live-tag">Optional</em></strong><span>“Flat white”, “Taxi home”: whatever helps you remember it.</span></li>
+                                    <li data-from="16.9" data-to="19.15"><strong>Swipe right.</strong><span>One swipe, and it’s saved.</span></li>
+                                    <li data-from="19.15" data-to="20.55"><strong>Expense added.</strong><span>Mono sorts the rest on its own.</span></li>
+                                </ol>
+                            </article>
+                            <article class="ap-live-ch" data-side="right">
+                                <span class="ap-eyebrow"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg></span>Blocks</span>
+                                <h2 class="ap-h2 ap-h2--live">Smart category blocks.</h2>
+                                <ol class="ap-live-steps">
+                                    <li data-from="24.09" data-to="27.5"><strong>Every block at a glance.</strong><span>Today’s spending per block, and whether it’s more or less than yesterday.</span></li>
+                                    <li data-from="27.5" data-to="31.94"><strong>Tap to edit.</strong><span>Rename it, change its currency or set your own rate.</span></li>
+                                    <li data-from="31.94" data-to="34.94"><strong>Every expense, kept.</strong><span>The full history. Delete any entry with a swipe.</span></li>
+                                </ol>
+                            </article>
+                            <article class="ap-live-ch" data-side="left">
+                                <span class="ap-eyebrow"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20v-6M12 20V4M19 20v-10"/></svg></span>Trends</span>
+                                <h2 class="ap-h2 ap-h2--live">Beyond simple totals.</h2>
+                                <ol class="ap-live-steps">
+                                    <li data-from="44.07" data-to="48.05"><strong>Your month, per block.</strong><span>A total for every block, in its own currency.</span></li>
+                                    <li data-from="48.05" data-to="50.05"><strong>Tap for the details.</strong><span>A daily chart shows where the month went.</span></li>
+                                    <li data-from="50.05" data-to="53.45"><strong>Needs, wants, extra.</strong><span>Mono learns your daily baseline and sorts every expense.</span></li>
+                                </ol>
+                            </article>
+                            <article class="ap-live-ch" data-side="right">
+                                <span class="ap-eyebrow"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg></span>Settings</span>
+                                <h2 class="ap-h2 ap-h2--live">Make it yours.</h2>
+                                <ol class="ap-live-steps">
+                                    <li data-from="54.31" data-to="58.31"><strong>Set it up once.</strong><span>Language, appearance and iCloud Backup in one place.</span></li>
+                                    <li data-from="58.31" data-to="61.01"><strong>Your currencies.</strong><span>Three to five main currencies, with your own exchange rates.</span></li>
+                                    <li data-from="61.01" data-to="68.8"><strong>Widgets your way.</strong><span>Choose what each widget size shows.</span></li>
+                                </ol>
+                            </article>
+                            </div>
+                            <p class="ap-live-credit">3D iPhone model: <a href="https://sketchfab.com/3d-models/iphone-17-pro-max-87fc1df741384124a8ce0226d2b2058d" target="_blank" rel="noopener">“iPhone 17 Pro Max”</a> by <a href="https://sketchfab.com/MG990" target="_blank" rel="noopener">MajdyModels</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
+                        </div>
+                    </div>
+
+                    <!-- Regular sections: shown in narrow windows (and if WebGL is missing). -->
+                    <div class="ap-legacy">
                     <section class="ap-center ap-block">
                         <div class="ap-center-head">
                             <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5L13 3z"/></svg></span>Quick entry</span>
-                            <h2 class="ap-h2 rv">Just two<br>steps.</h2>
-                            <p class="ap-p rv">Track expenses at the speed of thought. Forget complex forms and endless categories. Just type the number and swipe.</p>
+                            <h2 class="ap-h2 rv">Just three<br>steps.</h2>
+                            <p class="ap-p rv">Track expenses at the speed of thought. Forget complex forms and endless categories. Just type the number, add a name if you like, and swipe.</p>
                             <ol class="ap-steps rv"><li><span>1</span>Enter amount</li><li><span>2</span>Swipe right</li><li><span>3</span>Expense added</li></ol>
                         </div>
                         <figure class="ap-shots rv"><img src="style/images/mono/image_mono_main_1.svg" width="418" height="850" alt="Mono expense entry screen" class="ap-phone"><img src="style/images/mono/image_mono_main_2.svg" width="418" height="850" alt="Swiping to add an expense in Mono" class="ap-phone"></figure>
@@ -139,31 +194,51 @@
                             <ul class="ap-features rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M10 20.5v-5h4v5"/></svg></span><div><strong>Needs</strong><span>Your essential daily routine expenses.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.9 5.6 5.6 1.9-5.6 1.9L12 18.5l-1.9-5.6L4.5 11l5.6-1.9z"/></svg></span><div><strong>Wants</strong><span>Upgrades for comfort, leisure and lifestyle.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span><div><strong>Extra</strong><span>One-off splurges and major outliers.</span></div></li></ul></div>
                     </section>
 
-                    <section class="ap-center ap-block">
-                        <div class="ap-center-head">
-                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M3.5 12h17M12 12v8.5"/></svg></span>Widgets</span>
-                            <h2 class="ap-h2 rv">Your month<br>at a glance.</h2>
-                            <p class="ap-p rv">See where your month is going without opening the app. One tap to add an expense.</p>
-                        </div>
-                        <figure class="ap-widgets rv">
-                            <img src="style/images/mono/image_mono_widget_small.svg" width="346" height="340" alt="Small Mono widget with one block’s total for the month" class="ap-widget ap-widget--small" loading="lazy" decoding="async">
-                            <img src="style/images/mono/image_mono_widget_middle.svg" width="740" height="340" alt="Medium Mono widget with the month total, a daily chart and needs, extra and wants" class="ap-widget ap-widget--medium" loading="lazy" decoding="async">
-                            <img src="style/images/mono/image_mono_widget_big.svg" width="740" height="776" alt="Large Mono widget showing two blocks, each with its own chart" class="ap-widget ap-widget--large" loading="lazy" decoding="async">
-                        </figure>
-                        <ul class="ap-sizes rv">
-                            <li><strong>Small</strong><span>This month’s total, for all your blocks or just one.</span></li>
-                            <li><strong>Medium</strong><span>Adds a daily chart and your needs, extra and wants.</span></li>
-                            <li><strong>Large</strong><span>Two or three blocks, each with its own chart.</span></li>
-                        </ul>
-                        <p class="ap-note rv">Choose what each size shows in Settings. Amounts and block names stay hidden while your iPhone is locked.</p>
-                    </section>
-
                     <section class="ap-lede ap-block">
                         <figure class="ap-shots rv"><img src="style/images/mono/image_mono_block_more.svg" width="418" height="850" alt="Mono block settings and history" class="ap-phone" loading="lazy" decoding="async"></figure>
-                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.5"/><circle cx="8" cy="17" r="2.5"/></svg></span>Settings</span>
+                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.5"/><circle cx="8" cy="17" r="2.5"/></svg></span>Block details</span>
                             <h2 class="ap-h2 rv">Tailor every<br>detail.</h2>
                             <p class="ap-p rv">Seamless transaction history and custom block management.</p>
                             <ul class="ap-ticks rv"><li><strong>Custom rates.</strong> Your own conversion coefficients, or Mono’s built-in rates.</li><li><strong>History.</strong> Review your entries and delete any of them with a swipe.</li><li><strong>Blocks.</strong> Rename categories and adjust currency on the fly.</li></ul></div>
+                    </section>
+
+                    <section class="ap-lede ap-block ap-lede--flip">
+                        <figure class="ap-shots rv"><img src="style/images/mono/image_mono_settings.svg" width="418" height="850" alt="Mono Settings with main currencies, language and appearance" class="ap-phone" loading="lazy" decoding="async"><img src="style/images/mono/image_mono_currencies.svg" width="418" height="850" alt="Choosing main currencies and exchange rates in Mono" class="ap-phone" loading="lazy" decoding="async"></figure>
+                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg></span>Settings</span>
+                            <h2 class="ap-h2 rv">Make it<br>yours.</h2>
+                            <p class="ap-p rv">Set Mono up once, the way you spend. Everything else stays out of the way.</p>
+                            <ul class="ap-features rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="5.5"/><path d="M14.6 9.6a5.5 5.5 0 1 1-5 5"/></svg></span><div><strong>Currencies</strong><span>Pick 3 to 5 main currencies out of 12, drag to choose your default and set your own exchange rates.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M3.5 12h17M12 12v8.5"/></svg></span><div><strong>Widgets</strong><span>Choose the blocks, currency and theme each widget size shows.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z"/></svg></span><div><strong>Language &amp; look</strong><span>Eight languages, switched right in the app, and a Lighter Glass option for dark mode.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 10a4.3 4.3 0 0 1-.5 8.5z"/><path d="M12 15.5v-5M9.8 12.7 12 10.5l2.2 2.2"/></svg></span><div><strong>iCloud Backup</strong><span>Back up to your own iCloud, daily or on demand, and restore whenever you need.</span></div></li></ul></div>
+                    </section>
+                    </div>
+
+                    <!-- Widgets: one window tall; a segmented control picks the size, the chosen widget animates in. -->
+                    <section class="ap-center ap-block ap-wpick" data-widget-picker>
+                        <div class="ap-center-head">
+                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M3.5 12h17M12 12v8.5"/></svg></span>Widgets</span>
+                            <h2 class="ap-h2 ap-h2--wpick rv">Your month at a glance.</h2>
+                            <p class="ap-p rv">See where your month is going without opening the app. One tap to add an expense.</p>
+                        </div>
+                        <div class="ap-seg rv" role="tablist" aria-label="Widget size">
+                            <span class="ap-seg-thumb" aria-hidden="true"></span>
+                            <button type="button" class="ap-seg-btn" role="tab" id="wpick-small" aria-controls="wpick-panel" aria-selected="false" data-size="small">Small</button>
+                            <button type="button" class="ap-seg-btn" role="tab" id="wpick-medium" aria-controls="wpick-panel" aria-selected="true" data-size="medium">Medium</button>
+                            <button type="button" class="ap-seg-btn" role="tab" id="wpick-large" aria-controls="wpick-panel" aria-selected="false" data-size="large">Large</button>
+                        </div>
+                        <div class="ap-wpick-stage rv" id="wpick-panel" role="tabpanel" aria-labelledby="wpick-medium">
+                            <figure class="ap-wpick-item" data-size="small">
+                                <img src="style/images/mono/image_mono_widget_small.svg" width="346" height="340" alt="Small Mono widget with one block’s total for the month" loading="lazy" decoding="async">
+                                <figcaption>This month’s total, for all your blocks or just one.</figcaption>
+                            </figure>
+                            <figure class="ap-wpick-item is-shown" data-size="medium">
+                                <img src="style/images/mono/image_mono_widget_middle.svg" width="740" height="340" alt="Medium Mono widget with the month total, a daily chart and needs, extra and wants" loading="lazy" decoding="async">
+                                <figcaption>Adds a daily chart and your needs, extra and wants.</figcaption>
+                            </figure>
+                            <figure class="ap-wpick-item" data-size="large">
+                                <img src="style/images/mono/image_mono_widget_big.svg" width="740" height="776" alt="Large Mono widget showing two blocks, each with its own chart" loading="lazy" decoding="async">
+                                <figcaption>Two or three blocks, each with its own chart.</figcaption>
+                            </figure>
+                        </div>
+                        <p class="ap-note rv">Choose what each size shows in Settings. Amounts and block names stay hidden while your iPhone is locked.</p>
                     </section>
 
                     <section class="ap-privacy ap-block" id="privacy">
@@ -177,7 +252,7 @@
                             <aside class="ap-policy-head rv">
                                 <h3 class="ap-h3">Privacy Policy</h3>
                                 <dl class="mn-meta">
-                                    <div><dt>Effective date</dt><dd>October 18, 2026</dd></div>
+                                    <div><dt>Effective date</dt><dd>November 8, 2026</dd></div>
                                     <div><dt>Developer</dt><dd>Michail Romaniuk, Poland</dd></div>
                                     <div><dt>App</dt><dd>Mono for iPhone</dd></div>
                                 </dl>
@@ -190,7 +265,8 @@
                                 </section>
                                 <section>
                                     <h3>2. Where Your Data Is Stored</h3>
-                                    <p>Everything you enter is stored only on your device, using Apple’s SwiftData and UserDefaults. Nothing is sent over the internet. Currency conversion uses fixed rates built into the app and makes no network requests.</p>
+                                    <p>Everything you enter is stored on your device, using Apple’s SwiftData and UserDefaults. Mono never sends your data to the developer or to anyone else. Currency conversion uses rates built into the app, or rates you enter yourself, and makes no network requests.</p>
+                                    <p><strong>iCloud Backup (optional).</strong> If you turn on iCloud Backup in Settings, Mono saves a copy of your blocks and expenses (their names, amounts, currencies and dates) in the private iCloud database of your own Apple Account, using Apple’s CloudKit. It is used only to restore your data, only you can access it, and the developer cannot see it. You can delete it at any time in the iOS Settings app → your name → iCloud → Manage Account Storage → Mono.</p>
                                     <p>Mono’s database is protected with iOS Data Protection, so it can’t be read while your iPhone is locked.</p>
                                     <p>Your Mono data may be included in your own iCloud or iTunes device backup. Those backups are controlled by Apple, not by the developer.</p>
                                 </section>
@@ -205,7 +281,8 @@
                                 </section>
                                 <section>
                                     <h3>5. Data Retention and Deletion</h3>
-                                    <p>Your data remains on your device until you remove it. You can delete individual blocks and transactions inside the app at any time, or delete everything at once with Settings → Erase All Data. Deleting the app permanently deletes all of its data, including the widget summary.</p>
+                                    <p>Your data remains on your device until you remove it. You can delete individual blocks and transactions inside the app at any time, or delete everything at once with Settings → Erase All Data. Deleting the app permanently deletes all of its data on your device, including the widget summary.</p>
+                                    <p>An iCloud Backup you made is kept in your iCloud until you delete it; Erase All Data and deleting the app do not remove it. Delete it in the iOS Settings app → your name → iCloud → Manage Account Storage → Mono.</p>
                                     <p>Before an app update changes how data is stored, Mono keeps a temporary safety copy on your device. It is deleted automatically once the update has opened successfully a few times, or right away with Erase All Data, and it is never included in device backups.</p>
                                 </section>
                                 <section>
@@ -227,6 +304,7 @@
                             </div>
                         </div>
                     </section>
+                    </div>
                     </div>
 
                     <div id="sp-intent" class="sp-content-section ap ap--intent" data-title="Plan the trip. Keep the journey.">
@@ -401,10 +479,13 @@
         </div>
     </main>
 
-    <script src="js/bg.js?v=28"></script>
-    <script src="js/site.js?v=28"></script>
-    <script src="js/app.js?v=28"></script>
-    <script src="js/space.js?v=28"></script>
+    <script src="js/bg.js?v=44"></script>
+    <script src="js/site.js?v=44"></script>
+    <script src="js/app.js?v=44"></script>
+    <script src="js/space.js?v=44"></script>
+    <!-- 3D phone on Mono's page 3: three.js comes from the CDN only when that page is first shown on a desktop window. -->
+    <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+    <script type="module" src="js/story3d.js?v=44"></script>
 </body>
 
 </html>

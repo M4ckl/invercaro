@@ -584,6 +584,112 @@ html.has-splash .splash {
 
 .dock.is-hover .dock-apps { gap: 34px; }
 
+/* ---- minimised windows: a separator, then window thumbnails (right end of the dock) ---- */
+.dock { gap: 0; }
+
+.dock-sep {
+    align-self: stretch;
+    width: 0;
+    margin: 4px 0;
+    background-color: var(--card-border);
+    opacity: 0;
+    transition: width 300ms var(--ease-out), margin 300ms var(--ease-out), opacity 300ms var(--ease-out);
+}
+
+.dock.has-windows .dock-sep {
+    width: 1px;
+    margin: 4px 18px;
+    background-color: color-mix(in srgb, var(--text-primary) 18%, transparent);
+    opacity: 1;
+}
+
+.dock-windows {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    height: 58px;
+}
+
+.dock-window {
+    position: relative;
+    width: 0;
+    height: 46px;
+    margin-bottom: 11px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: width 300ms var(--ease-out);
+}
+
+.dock-window.is-in { width: 74px; }
+
+.dock.is-measuring .dock-sep,
+.dock.is-measuring .dock-window {
+    transition: none;
+}
+
+.dock-window-card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: var(--bg-card);
+    box-shadow: 0 0 0 0.5px var(--card-border), 0 4px 10px rgba(0, 0, 0, 0.14);
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
+}
+
+.dock-window.is-filled .dock-window-card {
+    opacity: 1;
+    transform: none;
+}
+
+.dock-window-bar {
+    flex: none;
+    display: flex;
+    gap: 2.5px;
+    padding: 3.5px 4px;
+}
+
+.dock-window-bar i {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #FF5F57;
+}
+
+.dock-window-bar i:nth-child(2) { background-color: #FEBC2E; }
+.dock-window-bar i:nth-child(3) { background-color: #28C840; }
+
+.dock-window-shot {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    object-fit: cover;
+}
+
+.dock-window-badge {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    opacity: 0;
+    transition: opacity 220ms var(--ease-out) 80ms;
+}
+
+.dock-window.is-filled .dock-window-badge { opacity: 1; }
+
+.dock-window:hover .dock-window-card { transform: translateY(-3px); }
+
 .dock-apps {
     display: flex;
     align-items: flex-end;
@@ -628,7 +734,8 @@ html.has-splash .splash {
     transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
 }
 
-.dock-app.is-active .dock-dot {
+.dock-app.is-active .dock-dot,
+.dock-app.is-minimized .dock-dot {
     opacity: 0.9;
     transform: scale(1);
 }
@@ -726,6 +833,12 @@ html[data-theme="dark"] .space-frame {
     transition: opacity 480ms var(--ease-in-out), transform 500ms var(--ease-in-out);
     transform-origin: 50% 100%;
     transform: translateY(40%) scale(0.08, 0.04);
+}
+
+/* The genie is driven by the Web Animations API; CSS transitions must not fight it. */
+.space-host.is-genie .space-frame {
+    transition: none;
+    will-change: transform, clip-path;
 }
 
 .space-host.is-max {

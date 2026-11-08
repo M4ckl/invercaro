@@ -1,4 +1,5 @@
-/* Space page — Mono / Intent / Sileo window (hash routed), traffic-light controls (also when embedded in the home page), in-window overlay scrollbar, video heroes, blur-rise reveal, screen rails and privacy links. */
+/* Space page — Mono / Intent / Sileo window (hash routed), traffic-light controls (also when embedded in the home page), in-window overlay scrollbar, video heroes, blur-rise reveal, screen rails, privacy links,
+   and full-window stages (Mono: hero → page) that change with an animation instead of a scroll. */
 document.addEventListener('DOMContentLoaded', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const sections = Array.from(document.querySelectorAll('.sp-content-section'));
@@ -13,12 +14,163 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroes = Array.from(document.querySelectorAll('.ap-hero--video'));
     let hideTimer = 0;
     let visible = !embedded;
+    const tell = (msg) => window.parent.postMessage({ space: true, ...msg }, '*');
+
+    /* ---- full-window stages ---- */
+    const stages = (() => {
+        const body = scroller.parentElement;
+        const LOCK_MS = 1050;
+        const nav = document.createElement('nav');
+        nav.className = 'sp-stage-nav';
+        nav.setAttribute('aria-label', 'Sections');
+        body.appendChild(nav);
+        let section = null;
+        let list = [];
+        let rest = null;
+        let index = 0;
+        let locked = false;
+        let fresh = true;
+        let settling = false; // momentum of the swipe that changed the stage is still arriving
+        let lastWheel = 0;
+        let acc = 0;
+        let prevAbs = 0;
+        let touchY = null;
+
+        const staged = () => !!section && !narrowView.matches;
+
+
+        function apply() {
+            if (!section) return;
+            const on = staged();
+            section.classList.toggle('ap-staged', on);
+            body.classList.toggle('has-stages', on);
+            body.classList.toggle('is-stage-locked', on && index < list.length);
+            list.forEach((stage, i) => {
+                stage.dataset.state = !on || i === index ? 'current' : i < index ? 'past' : 'future';
+            });
+            rest.dataset.state = !on || index === list.length ? 'current' : 'future';
+            nav.dataset.tone = index < list.length ? 'light' : 'auto';
+            nav.querySelectorAll('.sp-stage-dot').forEach((dot, i) => {
+                dot.classList.toggle('is-current', i === index);
+                dot.setAttribute('aria-current', i === index ? 'true' : 'false');
+            });
+            if (typeof syncVideos === 'function') syncVideos();
+            announce();
+        }
+
+        /* Tells the 3D story (js/story3d.js) whether its page is on screen. */
+        function announce() {
+            const on = staged();
+            document.dispatchEvent(new CustomEvent('stagechange', {
+                detail: { staged: on, page: on && index === list.length, visible },
+            }));
+        }
+
+        function go(next) {
+            if (!staged()) return;
+            next = Math.max(0, Math.min(list.length, next));
+            if (next === index || locked) return;
+            if (index === list.length) scroller.scrollTop = 0;
+            index = next;
+            locked = true;
+            settling = true;
+            acc = 0;
+            apply();
+            setTimeout(() => { locked = false; fresh = false; }, reduceMotion ? 0 : LOCK_MS);
+        }
+
+        function reset(target) {
+            section = target && target.querySelector('[data-stages]') ? target : null;
+            index = 0;
+            locked = false;
+            body.classList.remove('has-stages', 'is-stage-locked');
+            nav.innerHTML = '';
+            if (!section) { announce(); return; }
+            list = Array.from(section.querySelectorAll('.ap-stage'));
+            rest = section.querySelector('.ap-rest');
+            const names = list.map((stage) => stage.getAttribute('aria-label') || 'Section').concat('Details');
+            names.forEach((name, i) => {
+                const dot = document.createElement('button');
+                dot.type = 'button';
+                dot.className = 'sp-stage-dot';
+                dot.setAttribute('aria-label', name);
+                dot.addEventListener('click', () => go(i));
+                nav.appendChild(dot);
+            });
+            apply();
+        }
+
+        /* Straight to a stage without the animation (e.g. a privacy link). */
+        function jump(i) {
+            if (!section) return;
+            index = Math.max(0, Math.min(list.length, i));
+            section.classList.add('ap-stage-instant');
+            apply();
+            requestAnimationFrame(() => section && section.classList.remove('ap-stage-instant'));
+        }
+
+        function sync() {
+            if (section) apply();
+        }
+
+        const atTop = () => scroller.scrollTop <= 1;
+
+        /* Wheel / trackpad: one gesture moves one stage; momentum after a move is ignored until the gesture ends. */
+        body.addEventListener('wheel', (e) => {
+            if (!staged() || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+            const now = performance.now();
+            const gap = now - lastWheel;
+            const abs = Math.abs(e.deltaY);
+            lastWheel = now;
+            if (gap > 180 || (abs > prevAbs * 1.5 && abs > 10)) { fresh = true; acc = 0; }
+            prevAbs = abs;
+            const onPage = index === list.length;
+            // Scrolling the page: reaching the top mid-flick must not jump back; that takes a new gesture.
+            if (onPage && !(atTop() && e.deltaY < 0)) {
+                // The rest of the swipe that brought the page in must not scroll it: wait for a new gesture.
+                if (locked || (settling && !fresh)) { e.preventDefault(); return; }
+                settling = false;
+                fresh = false;
+                return;
+            }
+            e.preventDefault();
+            if (locked || !fresh) return;
+            acc += e.deltaY;
+            if (acc > 40) go(index + 1);
+            else if (acc < -40) go(index - 1);
+        }, { passive: false });
+
+        document.addEventListener('keydown', (e) => {
+            if (!staged() || e.target.closest('input, textarea, video, [contenteditable]')) return;
+            const down = ['ArrowDown', 'PageDown', ' '].includes(e.key);
+            const up = ['ArrowUp', 'PageUp'].includes(e.key);
+            if (!down && !up) return;
+            if (index === list.length && !(up && atTop())) return;
+            e.preventDefault();
+            go(index + (down ? 1 : -1));
+        });
+
+        body.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+        body.addEventListener('touchend', (e) => {
+            if (!staged() || touchY === null) return;
+            const dy = touchY - e.changedTouches[0].clientY;
+            touchY = null;
+            if (Math.abs(dy) < 50) return;
+            if (index === list.length && !(dy < 0 && atTop())) return;
+            go(index + (dy > 0 ? 1 : -1));
+        }, { passive: true });
+
+        narrowView.addEventListener('change', sync);
+        return { reset, jump, sync, go, announce };
+    })();
 
     /* ---- sections ---- */
     function activate(id) {
         const target = document.getElementById(id);
         if (!target) return;
         sections.forEach((section) => section.classList.toggle('sp-active-section', section === target));
+        if (embedded) tell({ type: 'app', app: id.replace('sp-', '') });
+        stages.reset(target);
         scroller.scrollTop = 0;
         window.scrollTo(0, 0);
         layout();
@@ -33,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function goToPrivacy(hash, smooth) {
         activate(policies[hash]);
+        stages.jump(2);
         document.getElementById(hash.slice(1))
             .scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto', block: 'start' });
     }
@@ -45,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---- overlay scrollbar ---- */
     function layout() {
+        stages.sync();
         if (!narrowView.matches) scroller.style.setProperty('--sp-view-h', `${scroller.clientHeight}px`);
         else scroller.style.removeProperty('--sp-view-h');
         updateBar();
@@ -132,7 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
         heroes.forEach((hero) => {
             const video = hero.querySelector('video');
             if (!video) return;
-            const on = visible && hero.closest('.sp-content-section').classList.contains('sp-active-section');
+            const stage = hero.closest('.ap-staged .ap-stage');
+            const on = visible && hero.closest('.sp-content-section').classList.contains('sp-active-section')
+                && (!stage || stage.dataset.state === 'current');
             if (!on) { video.pause(); return; }
             if (!video.getAttribute('src')) video.src = video.dataset.src;
             if (!reduceMotion) video.play().catch(() => {});
@@ -226,8 +382,37 @@ document.addEventListener('DOMContentLoaded', () => {
         else window.prompt('Copy this link:', url);
     }));
 
+    /* ---- widget size picker: Small / Medium / Large; the chosen widget animates in ---- */
+    document.querySelectorAll('[data-widget-picker]').forEach((picker) => {
+        const seg = picker.querySelector('.ap-seg');
+        const tabs = Array.from(picker.querySelectorAll('.ap-seg-btn'));
+        const items = Array.from(picker.querySelectorAll('.ap-wpick-item'));
+        const panel = picker.querySelector('[role="tabpanel"]');
+        function pick(size, focus) {
+            tabs.forEach((tab, i) => {
+                const on = tab.dataset.size === size;
+                tab.setAttribute('aria-selected', on ? 'true' : 'false');
+                tab.tabIndex = on ? 0 : -1;
+                if (!on) return;
+                seg.style.setProperty('--seg-i', i);
+                panel.setAttribute('aria-labelledby', tab.id);
+                if (focus) tab.focus();
+            });
+            items.forEach((item) => item.classList.toggle('is-shown', item.dataset.size === size));
+        }
+        tabs.forEach((tab) => tab.addEventListener('click', () => pick(tab.dataset.size)));
+        seg.addEventListener('keydown', (e) => {
+            const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+            if (!step) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const i = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+            pick(tabs[(i + step + tabs.length) % tabs.length].dataset.size, true);
+        });
+        pick('medium');
+    });
+
     /* ---- window controls ---- */
-    const tell = (msg) => window.parent.postMessage({ space: true, ...msg }, '*');
 
     function setMax(on) {
         root.classList.toggle('sp-max', on);
@@ -260,6 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (msg.type === 'visible') {
             visible = msg.on;
+            stages.announce();
             if (!msg.on && root.classList.contains('sp-max')) setMax(false);
             syncVideos();
             if (msg.on) requestAnimationFrame(layout);

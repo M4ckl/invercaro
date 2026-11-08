@@ -495,8 +495,7 @@ html[data-theme="dark"] .ap {
 }
 
 .ap-ticks strong,
-.ap-features strong,
-.ap-sizes strong {
+.ap-features strong {
     font-weight: 600;
 }
 
@@ -564,42 +563,456 @@ html[data-theme="dark"] .ap {
     font-weight: 700;
 }
 
-/* ====== APP PAGE · WIDGETS ====== */
-.ap-widgets {
-    display: grid;
-    grid-template-columns: 0.47fr 1fr 1fr;
-    grid-template-areas: "small medium large";
-    align-items: end;
-    gap: clamp(12px, 2cqi, 24px);
-    margin-top: clamp(48px, 7cqi, 88px);
+/* ====== APP PAGE · STAGES (desktop window) ====== */
+/* Stage 1 (the hero) fills the window; the page that scrolls underneath comes next.
+   Moving between them is an animation, not a scroll: the leaving stage sinks back and blurs, the next one rises. */
+.ap-staged {
+    --stage-ease: cubic-bezier(0.7, 0, 0.2, 1);
+    --stage-ms: 1000ms;
 }
 
-.ap-widget {
+.ap-staged .ap-stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    height: var(--sp-view-h, 100%);
+    min-height: 0;
+    max-width: none;
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--bg-card);
+    transform-origin: 50% 40%;
+    transition:
+        transform var(--stage-ms) var(--stage-ease),
+        opacity 700ms var(--ease-out),
+        filter 700ms var(--ease-out),
+        visibility 0s linear var(--stage-ms);
+}
+
+.ap-staged .ap-stage[data-state="current"] {
+    visibility: visible;
+    transition:
+        transform var(--stage-ms) var(--stage-ease),
+        opacity 700ms var(--ease-out) 120ms,
+        filter 700ms var(--ease-out) 120ms,
+        visibility 0s;
+}
+
+.ap-staged .ap-stage[data-state="past"] {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(-3%) scale(0.92);
+}
+
+.ap-staged .ap-stage[data-state="future"] {
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(100%);
+}
+
+/* Text and video of the current stage arrive one after another. */
+.ap-staged .ap-in {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    filter: blur(8px);
+    transition:
+        opacity 900ms var(--ap-ease),
+        transform 900ms var(--ap-ease),
+        filter 900ms var(--ap-ease);
+}
+
+.ap-staged .ap-stage[data-state="current"] .ap-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition-delay: calc(380ms + var(--d, 0) * 120ms);
+}
+
+/* Hero as a stage */
+.ap-staged .ap-hero--video {
+    padding-top: clamp(28px, 3.4cqi, 52px);
+    padding-inline: var(--ap-pad);
+    padding-bottom: calc(var(--fade) * 0.75);
+}
+
+/* The Mono window shows its position with the side dots, not a scrollbar. */
+.sp-window-body.has-stages .sp-scrollbar {
+    display: none;
+}
+
+/* The scrolling page rises in once the hero has gone */
+.ap-staged .ap-rest {
+    transition: opacity 800ms var(--ease-out) 200ms, transform var(--stage-ms) var(--stage-ease);
+}
+
+.ap-staged .ap-rest[data-state="future"] {
+    opacity: 0;
+    transform: translate3d(0, 90px, 0);
+    pointer-events: none;
+    transition: opacity 400ms var(--ease-out), transform 600ms var(--stage-ease);
+}
+
+.ap-stage-instant .ap-stage,
+.ap-stage-instant .ap-rest,
+.ap-stage-instant .ap-in {
+    transition: none !important;
+}
+
+/* While a full-window stage shows, the window does not scroll. */
+.sp-window-body.is-stage-locked .sp-window-scroll {
+    overflow: hidden;
+}
+
+.sp-window-body.is-stage-locked .sp-scrollbar {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* Side dots: where you are, and a way to jump */
+.sp-stage-nav {
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    z-index: 6;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(-50%);
+}
+
+.sp-window-body.has-stages .sp-stage-nav {
+    display: flex;
+}
+
+.sp-stage-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--text-strong) 24%, transparent);
+    cursor: pointer;
+    transition: height 500ms var(--stage-ease, ease), background-color 400ms var(--ease-out);
+}
+
+.sp-stage-dot.is-current {
+    height: 24px;
+    background-color: var(--text-strong);
+}
+
+.sp-stage-nav {
+    transition: opacity 300ms var(--ease-out);
+}
+
+.sp-stage-nav[data-tone="light"] .sp-stage-dot {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.sp-stage-nav[data-tone="light"] .sp-stage-dot.is-current {
+    background-color: #fff;
+}
+
+/* ====== APP PAGE · LIVE STORY (desktop window) ====== */
+/* The view is pinned while the story's scroll track passes; a 3D iPhone glides between the sides and plays the app,
+   text fades and blurs in and out instead of scrolling. Narrow windows (and a missing WebGL) get .ap-legacy instead. */
+.ap-live {
+    display: none;
+}
+
+.ap-staged:not(.ap-live-off) .ap-live {
+    display: block;
+    position: relative;
+    margin: 0 calc(var(--ap-pad) * -1);
+    /* the scroll track; js sets the exact height from the number of steps */
+    height: calc(var(--sp-view-h, 100vh) * 10.6);
+}
+
+.ap-staged:not(.ap-live-off) .ap-legacy {
+    display: none;
+}
+
+.ap-live-pin {
+    position: sticky;
+    top: 0;
+    height: var(--sp-view-h, 100vh);
+    overflow: hidden;
+}
+
+.ap-live-canvas {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
 }
 
-.ap-widget--small { grid-area: small; }
-.ap-widget--medium { grid-area: medium; }
-.ap-widget--large { grid-area: large; }
+.ap-live.is-ready .ap-live-canvas {
+    opacity: 1;
+}
 
-.ap-sizes {
+.ap-live-text {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.ap-live-ch {
+    position: absolute;
+    top: 50%;
+    width: min(40%, 500px);
+    transform: translateY(-50%);
+}
+
+/* Text sits on the side away from the phone. */
+.ap-live-ch[data-side="left"] { left: 54%; }
+.ap-live-ch[data-side="right"] { right: 54%; }
+
+.ap-live-ch > .ap-eyebrow,
+.ap-live-ch > .ap-h2 {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate3d(0, 34px, 0);
+    transition: opacity 700ms var(--ap-ease), transform 900ms var(--ap-ease), filter 700ms var(--ap-ease);
+}
+
+.ap-live-ch > .ap-h2 { transition-delay: 70ms; }
+
+.ap-live-ch.is-current > .ap-eyebrow,
+.ap-live-ch.is-current > .ap-h2 {
+    opacity: 1;
+    filter: none;
+    transform: none;
+}
+
+.ap-live-ch.is-past > .ap-eyebrow,
+.ap-live-ch.is-past > .ap-h2 {
+    transform: translate3d(0, -34px, 0);
+    transition-duration: 450ms;
+    transition-delay: 0ms;
+}
+
+.ap-h2--live {
+    font-size: clamp(36px, 4.4cqi, 64px);
+}
+
+.ap-live-steps {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(16px, 3cqi, 40px);
-    margin-top: clamp(32px, 4cqi, 48px);
+    gap: 22px;
+    margin-top: clamp(28px, 4vh, 44px);
 }
 
-.ap-sizes li {
+.ap-live-steps li {
+    display: grid;
+    gap: 4px;
+    padding-left: 18px;
+    border-left: 2px solid color-mix(in srgb, var(--text-strong) 14%, transparent);
+    opacity: 0;
+    filter: blur(8px);
+    transform: translate3d(0, 22px, 0);
+    transition:
+        opacity 600ms var(--ap-ease),
+        transform 800ms var(--ap-ease),
+        filter 600ms var(--ap-ease),
+        border-color 500ms var(--ease-out);
+}
+
+.ap-live-steps strong {
+    font-size: clamp(19px, 1.7cqi, 24px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--text-strong);
+}
+
+/* "Optional" tag on the name step */
+.ap-live-tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    vertical-align: 0.25em;
+    color: var(--ac-ink);
+    background-color: var(--ac-soft);
+}
+
+.ap-live-steps span {
+    font-size: clamp(15px, 1.2cqi, 17px);
+    line-height: 1.45;
+}
+
+.ap-live-steps li.is-on {
+    opacity: 0.38;
+    filter: none;
+    transform: none;
+}
+
+.ap-live-steps li.is-active {
+    opacity: 1;
+    border-left-color: var(--ac-ink);
+}
+
+.ap-live-ch:not(.is-current) .ap-live-steps li {
+    opacity: 0;
+    filter: blur(8px);
+    transition-duration: 400ms;
+}
+
+.ap-live-credit {
+    position: absolute;
+    right: 20px;
+    bottom: 14px;
+    margin: 0;
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-strong);
+    opacity: 0.78;
+}
+
+.ap-live-credit a {
+    color: inherit;
+}
+
+/* ====== APP PAGE · WIDGETS ====== */
+/* One window tall: pick a size, the widget of that size animates in at its real proportions
+   (small and medium are 340/776 of the large widget's height). */
+.ap-wpick {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding-top: 18px;
-    border-top: 2px solid var(--ac-ink);
-    font-size: clamp(15px, 1.25cqi, 17px);
+    align-items: center;
+}
+
+.ap-staged .ap-wpick {
+    min-height: var(--sp-view-h, 100vh);
+    justify-content: center;
+    padding-block: 12px;
+}
+
+.ap-h2--wpick {
+    font-size: clamp(34px, 4.4cqi, 60px);
+}
+
+.ap-seg {
+    --seg-i: 1;
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: clamp(18px, 2.6vh, 30px);
+    padding: 4px;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--text-strong) 7%, transparent);
+}
+
+.ap-seg-thumb {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc((100% - 8px) / 3);
+    border-radius: 999px;
+    background-color: var(--bg-card);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 6px 14px rgba(0, 0, 0, 0.06);
+    transform: translateX(calc(var(--seg-i) * 100%));
+    transition: transform 480ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+html[data-theme="dark"] .ap-seg-thumb {
+    background-color: color-mix(in srgb, var(--text-strong) 18%, var(--bg-card));
+}
+
+.ap-seg-btn {
+    position: relative;
+    z-index: 1;
+    min-width: clamp(84px, 8cqi, 112px);
+    padding: 9px 20px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-strong);
+    opacity: 0.55;
+    cursor: pointer;
+    transition: opacity 250ms var(--ease-out);
+}
+
+.ap-seg-btn:hover,
+.ap-seg-btn[aria-selected="true"] {
+    opacity: 1;
+}
+
+.ap-seg-btn:focus-visible {
+    outline: 2px solid var(--ac-ink);
+    outline-offset: 2px;
+}
+
+.ap-wpick-stage {
+    --wh: clamp(200px, 78cqi, 380px);
+    position: relative;
+    width: 100%;
+    height: calc(var(--wh) + 52px);
+    margin-top: clamp(16px, 2.6vh, 32px);
+}
+
+.ap-staged .ap-wpick-stage {
+    --wh: clamp(220px, calc(var(--sp-view-h, 100vh) - 410px), 480px);
+}
+
+.ap-wpick-item {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: var(--wh) auto;
+    justify-items: center;
+    align-items: center;
+    row-gap: 12px;
+    margin: 0;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate3d(0, 14px, 0) scale(0.9);
+    pointer-events: none;
+    transition: opacity 320ms var(--ease-out), transform 560ms cubic-bezier(0.32, 0.72, 0, 1), filter 320ms var(--ease-out);
+}
+
+.ap-wpick-item.is-shown {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    pointer-events: auto;
+    transition-delay: 90ms;
+}
+
+.ap-wpick-item img {
+    display: block;
+    width: auto;
+    height: calc(var(--wh) * 0.438);
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.ap-wpick-item[data-size="large"] img {
+    height: var(--wh);
+}
+
+.ap-wpick-item figcaption {
+    align-self: start;
+    max-width: 30em;
+    font-size: clamp(15px, 1.3cqi, 17px);
     line-height: 1.45;
+    text-align: center;
 }
 
 .ap-note {
@@ -907,15 +1320,6 @@ html[data-theme="dark"] .ap {
         max-width: none;
     }
 
-    .ap-sizes {
-        grid-template-columns: 1fr;
-    }
-
-    .ap-widgets {
-        grid-template-columns: 0.47fr 1fr;
-        grid-template-areas: "small medium" "large large";
-        align-items: start;
-    }
 
     .ap-slide {
         width: calc(100cqi - var(--ap-pad) * 2 - 24px);
