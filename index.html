@@ -7,8 +7,9 @@
   <title>Invercaro</title>
   <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
   <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
-  <link rel="stylesheet" href="style/main.css?v=44">
-  <link rel="stylesheet" href="style/mobile.css?v=44">
+  <link rel="stylesheet" href="style/main.css?v=45">
+  <link rel="stylesheet" href="style/mobile.css?v=45">
+  <link rel="stylesheet" href="style/desk.css?v=45">
   <script>
     (function () {
       try {
@@ -18,14 +19,28 @@
       document.documentElement.classList.add('is-loading');
       try {
         var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!calm && !sessionStorage.getItem('invercaro-splash')) document.documentElement.classList.add('has-splash');
+        var q = new URLSearchParams(location.search).get('desk');
+        var internal = false;
+        if (document.referrer) {
+          var r = new URL(document.referrer);
+          internal = r.origin === location.origin && !/(\/|index\.html)$/.test(r.pathname);
+        }
+        var desk = q === '1' || (q !== '0' && !calm && !internal && window.innerWidth > 900 && !!window.WebGLRenderingContext);
+        if (desk) {
+          document.documentElement.classList.add('desk-on');
+          setTimeout(function () { if (!window.__deskReady) document.documentElement.classList.remove('desk-on'); }, 9000);
+        } else if (!calm && !sessionStorage.getItem('invercaro-splash')) {
+          document.documentElement.classList.add('has-splash');
+        }
       } catch (e) {}
     })();
   </script>
+  <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
   <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 </head>
 
 <body class="home">
+  <div class="desk-page" id="desk-page">
   <canvas class="dots-canvas" id="dots-canvas" aria-hidden="true"></canvas>
 
   <div class="splash" id="splash" aria-hidden="true">
@@ -164,12 +179,23 @@
   <div class="space-host" id="space-host" hidden>
     <iframe class="space-frame" id="space-frame" title="Space" tabindex="-1"></iframe>
   </div>
+  </div>
 
-  <script src="js/bg.js?v=44"></script>
-  <script src="js/site.js?v=44"></script>
-  <script src="js/dock.js?v=44"></script>
-  <script src="js/app.js?v=44"></script>
-  <script src="js/space-window.js?v=44"></script>
+  <canvas class="desk-canvas" id="desk-canvas" aria-label="A table with a laptop. Click the laptop or press Enter to open the site."></canvas>
+  <div class="desk-veil" id="desk-veil" aria-hidden="true"></div>
+  <p class="desk-hint" id="desk-hint"><strong>Invercaro</strong> · Click the screen to enter</p>
+  <span class="desk-label" id="desk-label" aria-hidden="true"></span>
+
+  <script src="js/bg.js?v=45"></script>
+  <script src="js/site.js?v=45"></script>
+  <script src="js/dock.js?v=45"></script>
+  <script src="js/app.js?v=45"></script>
+  <script src="js/space-window.js?v=45"></script>
+  <script type="module">
+    if (document.documentElement.classList.contains('desk-on')) {
+      import('./js/desk.js?v=45').catch(function () { document.documentElement.classList.remove('desk-on'); });
+    }
+  </script>
 </body>
 
 </html>
