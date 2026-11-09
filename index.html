@@ -7,9 +7,9 @@
   <title>Invercaro</title>
   <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
   <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
-  <link rel="stylesheet" href="style/main.css?v=68">
-  <link rel="stylesheet" href="style/mobile.css?v=68">
-  <link rel="stylesheet" href="style/desk.css?v=68">
+  <link rel="stylesheet" href="style/main.css?v=70">
+  <link rel="stylesheet" href="style/mobile.css?v=70">
+  <link rel="stylesheet" href="style/desk.css?v=70">
   <script>
     (function () {
       try {
@@ -151,14 +151,14 @@
   <p class="desk-hint" id="desk-hint"><strong>Invercaro</strong> · Click the screen to enter</p>
   <span class="desk-label" id="desk-label" aria-hidden="true"></span>
 
-  <script src="js/bg.js?v=68"></script>
-  <script src="js/site.js?v=68"></script>
-  <script src="js/dock.js?v=68"></script>
-  <script src="js/app.js?v=68"></script>
-  <script src="js/space-window.js?v=68"></script>
+  <script src="js/bg.js?v=70"></script>
+  <script src="js/site.js?v=70"></script>
+  <script src="js/dock.js?v=70"></script>
+  <script src="js/app.js?v=70"></script>
+  <script src="js/space-window.js?v=70"></script>
   <script type="module">
     const root = document.documentElement;
-    const loadDesk = () => import('./js/desk.js?v=68');
+    const loadDesk = () => import('./js/desk.js?v=70');
     if (root.classList.contains('desk-on')) loadDesk().catch(() => root.classList.remove('desk-on'));
 
     /* The logo flies back out of the screen to the desk instead of reloading the page. */

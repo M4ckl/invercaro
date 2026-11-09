@@ -1,4 +1,5 @@
-/* Intent page — each frame's parts sit side by side in a horizontal rail (scroll-snap). Pills (with an autoplay progress bar),
+/* Intent page — each frame's parts sit side by side in a horizontal rail (scroll-snap); a part with a recording (data-video)
+   stays up as long as its clip (data-ms). Pills (with an autoplay progress bar),
    arrows, trackpad swipes and the arrow keys move it. The current part drives the 3D phone (js/intent3d.js listens for
    `intentpart`) or, without 3D, the flat screenshot. Autoplay runs only while its frame is on screen and stops for a while
    after the reader takes over. */
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 flat.src = parts[i].dataset.screen;
                 flat.alt = `Intent: ${parts[i].dataset.label}`;
             }
-            frame.dispatchEvent(new CustomEvent('intentpart', { detail: { index: i, dir, screen: parts[i].dataset.screen } }));
+            frame.dispatchEvent(new CustomEvent('intentpart', { detail: { index: i, dir, screen: parts[i].dataset.screen, video: parts[i].dataset.video || null } }));
         }
 
         rail.addEventListener('scroll', () => {
@@ -100,9 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setInterval(() => {
             if (reduceMotion || performance.now() < heldUntil || !onScreen()) return;
+            const length = Number(parts[current].dataset.ms) || AUTOPLAY_MS;
             elapsed += TICK_MS;
-            pills[current].style.setProperty('--p', String(Math.min(1, elapsed / AUTOPLAY_MS)));
-            if (elapsed >= AUTOPLAY_MS) go(current + 1, false);
+            pills[current].style.setProperty('--p', String(Math.min(1, elapsed / length)));
+            if (elapsed >= length) go(current + 1, false);
         }, TICK_MS);
 
         set(0);

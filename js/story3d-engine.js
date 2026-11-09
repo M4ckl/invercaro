@@ -11,7 +11,7 @@
    Model: our own silver iPhone (js/phone3d.js). The Dynamic Island is painted into the screen texture. */
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { buildPhone, DISPLAY, ISLAND } from './phone3d.js?v=68';
+import { buildPhone, DISPLAY, ISLAND } from './phone3d.js?v=70';
 const UNIT = 0.6; // window heights of scrolling per step
 /* Settled pose per chapter: x overrides the side from data-side, z is the distance (+ closer), angles in degrees,
    drift/push = how much it turns and comes closer while the chapter is read.

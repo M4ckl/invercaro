@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { buildPhone, DISPLAY, ISLAND } from './phone3d.js?v=68';
+import { buildPhone, DISPLAY, ISLAND } from './phone3d.js?v=70';
 
 const deg = (d) => (d * Math.PI) / 180;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));

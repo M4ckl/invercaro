@@ -1,10 +1,11 @@
-/* Intent page — one 3D scene per frame (Plan, Details, Map): our iPhone (js/phone3d.js) in front shows the current part
-   of the rail, a second one stands behind with a related screen. On a new part the front phone swings towards the direction
-   of travel and settles back on springs while the new screen slides up into place; each time a frame arrives the phones rise
+/* Intent page — one 3D scene per frame (Plan, Details, Map, Memories): our iPhone (js/phone3d.js) in front shows the current
+   part of the rail (its screen recording of the app when it has one, else the screenshot), a second one stands behind with
+   a related screen. On a new part the front phone swings towards the direction of travel and settles back on springs while
+   the new screen slides up into place; each time a frame arrives the phones rise
    and turn in. Between changes they breathe slowly and lean towards the cursor. Only the frame on screen renders. */
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { buildPhone, DISPLAY, ISLAND } from './phone3d.js?v=68';
+import { buildPhone, DISPLAY, ISLAND } from './phone3d.js?v=70';
 
 const deg = (d) => (d * Math.PI) / 180;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -43,6 +44,25 @@ function loadImage(src) {
   }
   return images.get(src);
 }
+
+/* A recorded clip of the app, ready to draw: muted, inline, looping; resolves once its first frame can be drawn. */
+const videos = new Map();
+function loadVideo(src) {
+  if (!videos.has(src)) {
+    videos.set(src, new Promise((resolve) => {
+      const v = document.createElement('video');
+      v.muted = true;
+      v.loop = true;
+      v.playsInline = true;
+      v.preload = 'auto';
+      v.addEventListener('loadeddata', () => resolve(v), { once: true });
+      v.addEventListener('error', () => resolve(null), { once: true });
+      v.src = src;
+    }));
+  }
+  return videos.get(src);
+}
+const isVideo = (el) => el instanceof HTMLVideoElement;
 
 function makeScene(frame, reduceMotion) {
   const canvas = frame.querySelector('.ip-canvas');
@@ -125,19 +145,31 @@ function makeScene(frame, reduceMotion) {
     front.island();
   }
 
+  let active = false;
+  let raf = 0;
+
   /* ---- motion ---- */
   const swing = spring(0.9, 0.55);
   const pull = spring(0.8, 0.8);
   let swingKick = 0;
   let partIndex = 0;
 
+  /* A part's recording plays on the screen from its start; without one (or if it fails) the screenshot shows. */
+  let request = 0;
   function onPart(e) {
-    const { index, dir, screen: src } = e.detail;
+    const { index, dir, screen: src, video } = e.detail;
     partIndex = index;
-    loadImage(src).then((img) => {
-      if (!img) return;
+    const ticket = ++request;
+    const media = video ? loadVideo(video).then((v) => v || loadImage(src)) : loadImage(src);
+    media.then((el) => {
+      if (!el || ticket !== request) return;
       if (incoming) shown = incoming;
-      incoming = img;
+      [shown].forEach((old) => { if (isVideo(old) && old !== el) setTimeout(() => old.pause(), 600); });
+      incoming = el;
+      if (isVideo(el)) {
+        el.currentTime = 0;
+        if (active) el.play().catch(() => {});
+      }
       swapT = reduceMotion ? 1 : 0;
       drawFront();
     });
@@ -147,8 +179,7 @@ function makeScene(frame, reduceMotion) {
     }
   }
   frame.addEventListener('intentpart', onPart);
-  const first = parts[0] && parts[0].dataset.screen;
-  if (first) onPart({ detail: { index: 0, dir: 0, screen: first } });
+  if (parts[0]) onPart({ detail: { index: 0, dir: 0, screen: parts[0].dataset.screen, video: parts[0].dataset.video || null } });
 
   const POSE = {
     front: { x: 0.12 * side, y: -0.01, z: 0.1, yaw: -16 * side, pitch: -3, roll: -1.5 * side },
@@ -172,8 +203,6 @@ function makeScene(frame, reduceMotion) {
     pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
   }, { passive: true });
 
-  let active = false;
-  let raf = 0;
   let last = 0;
   let enterT = 0;
   let time = 0;
@@ -208,6 +237,8 @@ function makeScene(frame, reduceMotion) {
       swapT = Math.min(1, swapT + dt / 0.55);
       drawFront();
       if (swapT >= 1 && incoming) { shown = incoming; incoming = null; drawFront(); }
+    } else if (isVideo(shown) && !shown.paused) {
+      drawFront();
     }
 
     renderer.render(scene, camera);
@@ -221,9 +252,11 @@ function makeScene(frame, reduceMotion) {
       last = 0;
       layout();
       sceneEl.classList.add('is-ready');
+      [shown, incoming].forEach((m) => { if (isVideo(m)) m.play().catch(() => {}); });
       raf = requestAnimationFrame(frameLoop);
     } else {
       cancelAnimationFrame(raf);
+      [shown, incoming].forEach((m) => { if (isVideo(m)) m.pause(); });
     }
   }
 
