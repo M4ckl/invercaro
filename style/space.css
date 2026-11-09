@@ -1098,8 +1098,7 @@ html[data-theme="dark"] .ap-seg-thumb {
     margin-top: clamp(32px, 4cqi, 48px);
 }
 
-.ap-promises li,
-.ap-pills li {
+.ap-promises li {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -1213,24 +1212,211 @@ html[data-theme="dark"] .ap-seg-thumb {
 }
 
 /* ====== APP PAGE · SILEO ====== */
-.ap-sileo {
-    margin-top: clamp(56px, 8cqi, 96px);
+/* Two full-window stages: the hero, then one design frame that fits the window exactly (no scrolling).
+   Copy on the left rises in line by line; on the right the 3D phones (js/sileo3d.js) stand in a slow breathing ring. */
+.ap--sileo.ap-staged {
+    padding-bottom: 0;
 }
 
-.ap-sileo-shot img {
-    display: block;
-    width: min(100%, 620px);
-    height: auto;
+.ap-sileo-frame {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(300px, 0.85fr) 1.15fr;
+    align-items: center;
+    gap: clamp(24px, 4cqi, 64px);
+    max-width: var(--ap-wrap);
     margin: 0 auto;
+    padding: clamp(40px, 6cqi, 80px) 0;
 }
 
-.ap-pills {
+.ap-staged .ap-sileo-frame {
+    height: var(--sp-view-h, 100vh);
+    padding: 0;
+    overflow: hidden;
+}
+
+.ap-sileo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 14px 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ac-ink);
+    background: var(--ac-soft);
+}
+
+.ap-sileo-badge i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ac);
+    animation: sileo-pulse 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes sileo-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ac) 45%, transparent); }
+    50%      { box-shadow: 0 0 0 6px transparent; }
+}
+
+.ap-sileo-copy .ap-h2 {
+    margin-top: 22px;
+}
+
+.ap-sileo-lead {
+    max-width: 26em;
+    margin-top: 22px;
+    font-size: clamp(16px, 1.45cqi, 19px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+}
+
+.ap-sileo-list {
     list-style: none;
+    display: grid;
+    gap: 16px;
+    margin-top: clamp(28px, 3.4cqi, 44px);
+}
+
+.ap-sileo-list li {
     display: flex;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+}
+
+.ap-sileo-list strong {
+    display: block;
+    font-weight: 600;
+    color: var(--text-strong);
+}
+
+/* Right side: the 3D canvas over a breathing ring; the flat screenshots are the fallback (narrow window, no WebGL). */
+.ap-sileo-stage {
+    position: relative;
+    align-self: stretch;
+    min-height: 420px;
+}
+
+.ap-sileo-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+}
+
+.ap-staged:not(.ap-live-off) .ap-sileo-canvas { display: block; }
+.ap-sileo-stage.is-ready .ap-sileo-canvas { opacity: 1; }
+
+.ap-sileo-breath {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(78%, 62vh);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--ac) 24%, transparent) 0%, color-mix(in srgb, var(--ac) 11%, transparent) 52%, transparent 70%);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ac) 22%, transparent);
+    transform: translate(-50%, -50%) scale(0.86);
+    animation: sileo-breath 10s var(--ease-in-out) infinite;
+    pointer-events: none;
+}
+
+.ap-sileo-breath-label {
+    position: absolute;
+    left: 50%;
+    top: 7%;
+    z-index: 1;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.ap-sileo-breath-label span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ac-ink);
+    animation: sileo-breath-in 10s var(--ease-in-out) infinite;
+}
+
+.ap-sileo-breath-label span + span {
+    animation-name: sileo-breath-out;
+}
+
+@keyframes sileo-breath {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.86); }
+    50%      { transform: translate(-50%, -50%) scale(1.04); }
+}
+
+@keyframes sileo-breath-in {
+    0%, 42%  { opacity: 1; }
+    50%, 92% { opacity: 0; }
+    100%     { opacity: 1; }
+}
+
+@keyframes sileo-breath-out {
+    0%, 42%  { opacity: 0; }
+    50%, 92% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+
+.ap-sileo-shots {
+    position: relative;
+    display: flex;
     justify-content: center;
-    gap: 12px;
-    margin-top: clamp(40px, 5cqi, 64px);
+    align-items: center;
+    gap: 4%;
+    height: 100%;
+}
+
+.ap-sileo-shots img {
+    width: min(38%, 240px);
+    height: auto;
+    border-radius: 13% / 6%;
+    box-shadow: 0 0 0 5px #111, 0 0 0 6.5px #c9cbcf;
+}
+
+.ap-sileo-shots img + img { transform: translateY(6%); }
+
+.ap-staged:not(.ap-live-off) .ap-sileo-shots { display: none; }
+
+/* Entrance: the copy rises out of blur line by line each time the frame arrives. */
+.ap-staged .ap-sileo-in {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+    filter: blur(8px);
+    transition: opacity 900ms var(--ap-ease), transform 900ms var(--ap-ease), filter 900ms var(--ap-ease);
+}
+
+.ap-staged .ap-rest[data-state="current"] .ap-sileo-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition-delay: calc(420ms + var(--d, 0) * 110ms);
+}
+
+.ap-staged .ap-sileo-breath,
+.ap-staged .ap-sileo-breath-label { opacity: 0; transition: opacity 1200ms var(--ease-out); }
+.ap-staged .ap-rest[data-state="current"] .ap-sileo-breath,
+.ap-staged .ap-rest[data-state="current"] .ap-sileo-breath-label { opacity: 1; transition-delay: 600ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .ap-sileo-breath,
+    .ap-sileo-breath-label span,
+    .ap-sileo-badge i { animation: none; }
 }
 
 /* ====== APP PAGE · REVEAL ====== */
@@ -1254,7 +1440,8 @@ html[data-theme="dark"] .ap-seg-thumb {
 @container (max-width: 760px) {
     .ap-lede,
     .ap-slide,
-    .ap-policy {
+    .ap-policy,
+    .ap-sileo-frame {
         grid-template-columns: 1fr;
     }
 

@@ -12,9 +12,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap">
-    <link rel="stylesheet" href="style/main.css?v=63">
-    <link rel="stylesheet" href="style/space.css?v=63">
-    <link rel="stylesheet" href="style/mobile.css?v=63">
+    <link rel="stylesheet" href="style/main.css?v=66">
+    <link rel="stylesheet" href="style/space.css?v=66">
+    <link rel="stylesheet" href="style/mobile.css?v=66">
     <script>
         (function () {
             try {
@@ -441,17 +441,40 @@
                     </div>
 
                     <div id="sp-sileo" class="sp-content-section ap ap--sileo" data-title="Take a moment.">
-                    <header class="ap-hero ap-hero--video ap-block">
+                    <!-- Two full-window stages: the hero, then one design frame (no scrolling — Sileo is still being designed). -->
+                    <div class="ap-deck" data-stages>
+                    <header class="ap-hero ap-hero--video ap-block ap-stage" data-stage="0" aria-label="Sileo">
                         <div class="ap-hero-media" aria-hidden="true">
                             <video class="ap-hero-video" data-src="style/videos/sileo/sileo_hero.mp4" poster="style/videos/sileo/sileo_hero_poster.jpg" muted loop playsinline preload="none"></video>
                         </div>
-                        <h1 class="ap-display rv">Take<br>a moment.</h1>
-                        <p class="ap-lead rv">A quiet place to pause, breathe and notice the small wins. Sileo is still on the drawing board.</p>
+                        <h1 class="ap-display ap-in" style="--d:0">Take<br>a moment.</h1>
+                        <p class="ap-lead ap-in" style="--d:2">A quiet place to pause, breathe and notice the small wins. Sileo is still on the drawing board.</p>
                     </header>
-                    <section class="ap-center ap-block ap-sileo">
-                        <figure class="ap-sileo-shot rv"><img src="style/images/sileo/image_sileo_main.svg" width="1045" height="1070" alt="Early Sileo designs" loading="lazy" decoding="async"></figure>
-                        <ul class="ap-pills rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Moments that matter</li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span>More ways to pause</li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></svg></span>Small wins</li></ul>
+                    </div>
+
+                    <div class="ap-rest">
+                    <section class="ap-sileo-frame" aria-label="Design">
+                        <div class="ap-sileo-copy">
+                            <span class="ap-sileo-badge ap-sileo-in" style="--d:0"><i aria-hidden="true"></i>In design</span>
+                            <h2 class="ap-h2 ap-sileo-in" style="--d:1">A pause,<br>by design.</h2>
+                            <p class="ap-sileo-lead ap-sileo-in" style="--d:2">Set a few quiet minutes, start the timer and do nothing at all. Sileo keeps count of your pauses, so the small wins add up.</p>
+                            <ul class="ap-sileo-list">
+                                <li class="ap-sileo-in" style="--d:3"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><strong>Moments that matter</strong>A timer for a pause of your own length.</span></li>
+                                <li class="ap-sileo-in" style="--d:4"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span><span><strong>More ways to pause</strong>Breathe, sit still, or simply do nothing.</span></li>
+                                <li class="ap-sileo-in" style="--d:5"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></svg></span><span><strong>Small wins</strong>Every pause today, counted quietly.</span></li>
+                            </ul>
+                        </div>
+                        <div class="ap-sileo-stage" data-sileo3d data-light="style/images/sileo/sileo_screen_light.jpg" data-dark="style/images/sileo/sileo_screen_dark.jpg">
+                            <div class="ap-sileo-breath" aria-hidden="true"></div>
+                            <p class="ap-sileo-breath-label" aria-hidden="true"><span>Breathe in</span><span>Breathe out</span></p>
+                            <canvas class="ap-sileo-canvas" aria-hidden="true"></canvas>
+                            <figure class="ap-sileo-shots">
+                                <img src="style/images/sileo/sileo_screen_light.jpg" width="831" height="1800" alt="Sileo timer, ready to start" loading="lazy" decoding="async">
+                                <img src="style/images/sileo/sileo_screen_dark.jpg" width="831" height="1800" alt="Sileo during a pause: do nothing" loading="lazy" decoding="async">
+                            </figure>
+                        </div>
                     </section>
+                    </div>
                     </div>
                 </div>
 
@@ -462,13 +485,13 @@
         </div>
     </main>
 
-    <script src="js/bg.js?v=63"></script>
-    <script src="js/site.js?v=63"></script>
-    <script src="js/app.js?v=63"></script>
-    <script src="js/space.js?v=63"></script>
-    <!-- 3D phone on Mono's page 3: three.js comes from the CDN only when that page is first shown on a desktop window. -->
+    <script src="js/bg.js?v=66"></script>
+    <script src="js/site.js?v=66"></script>
+    <script src="js/app.js?v=66"></script>
+    <script src="js/space.js?v=66"></script>
+    <!-- 3D pages (Mono's story, Sileo's design frame): three.js comes from the CDN only when such a page is first shown on a desktop window. -->
     <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
-    <script type="module" src="js/story3d.js?v=63"></script>
+    <script type="module" src="js/story3d.js?v=66"></script>
 </body>
 
 </html>

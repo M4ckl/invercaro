@@ -58,11 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
             announce();
         }
 
-        /* Tells the 3D story (js/story3d.js) whether its page is on screen. */
+        /* Tells the 3D pages (js/story3d.js: Mono's story, Sileo's design frame) whether their page is on screen. */
         function announce() {
             const on = staged();
             document.dispatchEvent(new CustomEvent('stagechange', {
-                detail: { staged: on, page: on && index === list.length, visible },
+                detail: { staged: on, page: on && index === list.length, visible, section: section ? section.id : null },
             }));
         }
 
