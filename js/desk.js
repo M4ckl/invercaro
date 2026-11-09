@@ -1,8 +1,10 @@
-/* Desk intro: an iMac on a marble desk with the app keychains hanging beside it. The live home page is mapped onto the iMac display and a click flies the camera into it. */
+/* Desk intro: an iMac on a marble desk with one keyring holding the app charms. The live home page is mapped onto the iMac display and a click flies the camera into it. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 
 const root = document.documentElement;
 const page = document.getElementById('desk-page');
@@ -88,6 +90,28 @@ function marbleTexture(base, vein, fine) {
   return tex;
 }
 
+function plasterTexture() {
+  const S = 512;
+  const c = document.createElement('canvas');
+  c.width = c.height = S;
+  const g = c.getContext('2d');
+  const img = g.createImageData(S, S);
+  const n = noise2(3);
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      const v = n(x / 9, y / 9) * 0.5 + n(x / 3.1, y / 3.1) * 0.3 + n(x / 40, y / 40) * 0.2;
+      const i = (y * S + x) * 4;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = v * 255;
+      img.data[i + 3] = 255;
+    }
+  }
+  g.putImageData(img, 0, 0);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(10, 5);
+  return tex;
+}
+
 function softShadowTexture() {
   const c = document.createElement('canvas');
   c.width = c.height = 128;
@@ -105,14 +129,14 @@ function softShadowTexture() {
 const THEME = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 const PAL = {
   light: {
-    bg: '#F7F7F7', wall: 0xe2e0dc, alu: 0xdcdee1, bezel: 0xe9e8e4,
-    marble: ['#efeeea', '#9b9892', '#c9c6c0'], leg: 0x1b1b1d, metal: 0xd4d7db,
-    key: 10, hemi: 0.5, env: 0.75, contact: 0.32, exposure: 1.0,
+    bg: '#F7F7F7', wall: 0xd3cec7, alu: 0xdcdee1, bezel: 0xe9e8e4,
+    marble: ['#f4f3ef', '#a19e98', '#cfccc6'], leg: 0x1b1b1d, metal: 0xd4d7db,
+    key: 6, window: 3.2, hemi: 0.45, env: 0.85, contact: 0.32, exposure: 1.0,
   },
   dark: {
     bg: '#08080A', wall: 0x18181b, alu: 0x4b4d52, bezel: 0x0a0a0b,
     marble: ['#252527', '#8c8881', '#4a4845'], leg: 0x0c0c0d, metal: 0xa4a7ad,
-    key: 5, hemi: 0.16, env: 0.4, contact: 0.6, exposure: 1.0,
+    key: 3, window: 1.4, hemi: 0.14, env: 0.45, contact: 0.6, exposure: 1.0,
   },
 }[THEME];
 
@@ -123,13 +147,16 @@ renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = PAL.exposure;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(PAL.bg);
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+/* Studio HDRI "Studio Small 09" by Poly Haven (CC0) for real-world reflections on the aluminium, glass and marble. */
+new RGBELoader().load('style/hdr/studio_small_09_1k.hdr', (hdr) => {
+  scene.environment = pmrem.fromEquirectangular(hdr).texture;
+  hdr.dispose();
+});
 
 const camera = new THREE.PerspectiveCamera(32, window.innerWidth / window.innerHeight, 0.01, 30);
 
@@ -137,14 +164,13 @@ scene.add(new THREE.HemisphereLight(0xffffff, 0x7d756c, PAL.hemi));
 const keyLight = new THREE.SpotLight(0xfff4e8, PAL.key, 0, 0.5, 1, 0);
 keyLight.position.set(-1.1, 2.1, 1.3);
 keyLight.target.position.set(0.05, 0.1, -0.15);
-keyLight.castShadow = true;
-keyLight.shadow.mapSize.set(2048, 2048);
-keyLight.shadow.camera.near = 1;
-keyLight.shadow.camera.far = 5;
-keyLight.shadow.bias = -0.0002;
-keyLight.shadow.normalBias = 0.002;
-keyLight.shadow.radius = 6;
 scene.add(keyLight, keyLight.target);
+/* A soft "window" to the left: a wide area light that grades the wall and lays a long highlight on the marble. */
+RectAreaLightUniformsLib.init();
+const windowLight = new THREE.RectAreaLight(0xfff8f0, PAL.window, 1.2, 1.6);
+windowLight.position.set(-1.25, 0.75, 0.15);
+windowLight.lookAt(0.2, 0.15, -0.2);
+scene.add(windowLight);
 const rim = new THREE.DirectionalLight(0xe8eeff, PAL.key * 0.12);
 rim.position.set(1.4, 1.2, -0.6);
 scene.add(rim);
@@ -164,7 +190,7 @@ function mesh(geo, material, { cast = true, receive = true } = {}) {
 
 /* ---- room ---- */
 const TABLE = { w: 1.7, d: 0.82, t: 0.03, h: 0.74 };
-const wall = mesh(new THREE.PlaneGeometry(10, 5), mat(PAL.wall, { roughness: 0.95 }), { cast: false });
+const wall = mesh(new THREE.PlaneGeometry(10, 5), mat(PAL.wall, { roughness: 0.92, bumpMap: plasterTexture(), bumpScale: 0.6 }), { cast: false });
 wall.position.set(0, 1.5, -TABLE.d / 2 - 0.12);
 scene.add(wall);
 const floor = mesh(new THREE.PlaneGeometry(10, 10), mat(PAL.wall, { roughness: 0.9 }), { cast: false });
@@ -191,13 +217,13 @@ rail.position.set(0, -TABLE.t - 0.015, -(TABLE.d / 2 - 0.05));
 scene.add(rail);
 
 const shadowTex = softShadowTexture();
-function contact(w, d, x, z, opacity = PAL.contact) {
+function contact(w, d, x, z, opacity = PAL.contact, parent = scene) {
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({
     map: shadowTex, color: 0x000000, transparent: true, opacity, depthWrite: false,
   }));
   m.rotation.x = -Math.PI / 2;
   m.position.set(x, 0.0006, z);
-  scene.add(m);
+  parent.add(m);
   return m;
 }
 
@@ -259,81 +285,74 @@ upright.rotation.x = 0.24;
 upright.receiveShadow = false;
 upright.position.set(0, 0.11, -0.05);
 computer.add(upright);
-contact(0.3, 0.26, 0, IMAC.z - 0.035);
+contact(0.24, 0.22, 0, IMAC.z - 0.035, PAL.contact * 0.55);
 
-/* ---- keychains: hang from above on fine chains and sway beside the iMac ---- */
-const KEYCHAINS = [
-  { app: 'sileo', name: 'Sileo', x: -0.37, z: -0.08, drop: 0.38, phase: 0.0 },
-  { app: 'mono', name: 'Mono', x: 0.33, z: -0.1, drop: 0.47, phase: 1.9 },
-  { app: 'intent', name: 'Intent', x: 0.39, z: -0.06, drop: 0.29, phase: 3.7 },
+/* ---- one keyring with all three app charms, lying on the desk ---- */
+const CHARMS = [
+  { app: 'sileo', name: 'Sileo', angle: deg(-72) },
+  { app: 'mono', name: 'Mono', angle: deg(2) },
+  { app: 'intent', name: 'Intent', angle: deg(72) },
 ];
-const HANG_Y = 0.82;
-const CHARM = 0.052;
-const CHARM_REACH = (CHARM / 2) * Math.SQRT2 - 0.004;
-const RING_R = 0.0105;
-const metal = mat(PAL.metal, { metalness: 1, roughness: 0.2 });
-const linkGeo = new THREE.TorusGeometry(0.0034, 0.0008, 6, 16);
+const CHARM = 0.056;
+const CHARM_T = (0.024 * CHARM) / 0.1445;
+const CHARM_REACH = (CHARM / 2) * Math.SQRT2 - 0.0035;
+const RING_R = 0.018;
+const metal = mat(PAL.metal, { metalness: 1, roughness: 0.18 });
 const chains = [];
 
 function splitRing(r) {
   const pts = [];
-  const turns = 1.85;
-  for (let i = 0; i <= 120; i++) {
-    const a = (i / 120) * turns * Math.PI * 2;
-    pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, (i / 120) * 0.0022));
+  const turns = 1.9;
+  for (let i = 0; i <= 140; i++) {
+    const a = (i / 140) * turns * Math.PI * 2;
+    pts.push(new THREE.Vector3(Math.cos(a) * r, 0.0011 + (i / 140) * 0.0022, Math.sin(a) * r));
   }
-  return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 160, 0.001, 8, false);
+  return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 200, 0.0011, 10, false);
 }
 
+const keyring = new THREE.Group();
+keyring.position.set(0.29, 0, -0.03);
+keyring.rotation.y = -0.6;
+scene.add(keyring);
+keyring.add(mesh(splitRing(RING_R), metal));
+contact(0.05, 0.05, 0, 0, PAL.contact * 0.5, keyring);
+
 const loader = new GLTFLoader();
-KEYCHAINS.forEach((k) => {
-  const g = new THREE.Group();
-  g.position.set(k.x, HANG_Y, k.z);
-  g.userData = { pick: k.app, name: k.name, phase: k.phase, rz: 0, vz: 0, rx: 0, vx: 0, hovered: false };
-  scene.add(g);
-  chains.push(g);
+CHARMS.forEach((k, i) => {
+  const pivot = new THREE.Group();
+  pivot.rotation.y = k.angle;
+  pivot.userData = { pick: k.app, name: k.name, lift: 0 };
+  keyring.add(pivot);
+  chains.push(pivot);
 
-  const chainLen = HANG_Y - k.drop - RING_R * 2;
-  const step = 0.0052;
-  const n = Math.floor(chainLen / step);
-  const links = new THREE.InstancedMesh(linkGeo, metal, n);
-  links.castShadow = true;
-  const m4 = new THREE.Matrix4();
-  const q = new THREE.Quaternion();
-  const e = new THREE.Euler();
-  for (let i = 0; i < n; i++) {
-    e.set(0, i % 2 ? Math.PI / 2 : 0, Math.PI / 2);
-    q.setFromEuler(e);
-    m4.compose(new THREE.Vector3(0, -i * step - step / 2, 0), q, new THREE.Vector3(1, 1, 1));
-    links.setMatrixAt(i, m4);
-  }
-  g.add(links);
-
-  const ringY = -n * step - RING_R + 0.001;
-  const ring = mesh(splitRing(RING_R), metal);
-  ring.position.y = ringY;
-  g.add(ring);
+  const jump = mesh(new THREE.TorusGeometry(0.0034, 0.0008, 8, 24), metal);
+  jump.position.set(RING_R + 0.0025, 0.0028, 0);
+  jump.rotation.set(0, Math.PI / 2, 0.35);
+  pivot.add(jump);
 
   const holder = new THREE.Group();
-  holder.position.y = ringY - RING_R - CHARM_REACH + 0.002;
-  g.add(holder);
-  g.userData.holder = holder;
+  holder.position.set(RING_R + 0.005 + CHARM_REACH, CHARM_T / 2 + 0.0004 + i * 0.0012, 0);
+  holder.rotation.set(0, 0, (i - 1) * 0.02);
+  pivot.add(holder);
+  pivot.userData.holder = holder;
+  pivot.userData.baseY = holder.position.y;
 
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.11, 0.04), new THREE.MeshBasicMaterial({ visible: false }));
-  hit.position.y = 0.012;
+  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.066, 0.02, 0.066), new THREE.MeshBasicMaterial({ visible: false }));
+  hit.rotation.y = Math.PI / 4;
   holder.add(hit);
+  pivot.userData.shade = contact(CHARM * 1.7, CHARM * 1.7, RING_R + 0.005 + CHARM_REACH, 0, PAL.contact * 0.75, pivot);
 
   loader.load(`style/3d%20models/${k.app}/icon_${k.app}_3d_${THEME}.glb`, (gltf) => {
     const charm = gltf.scene;
     charm.scale.setScalar(CHARM / 0.1445);
-    charm.rotation.z = Math.PI / 4;
+    charm.rotation.x = -Math.PI / 2;
+    const turn = new THREE.Group();
+    turn.rotation.y = Math.PI / 4;
+    turn.add(charm);
     charm.traverse((o) => {
-      if (!o.isMesh) return;
-      o.castShadow = true;
-      o.receiveShadow = true;
-      if (o.material && 'envMapIntensity' in o.material) o.material.envMapIntensity = PAL.env;
+      if (o.isMesh && o.material && 'envMapIntensity' in o.material) o.material.envMapIntensity = PAL.env;
     });
-    holder.add(charm);
+    holder.add(turn);
   });
 });
 
@@ -382,7 +401,7 @@ function syncPage() {
 }
 
 /* ---- camera ---- */
-const IDLE = { target: new THREE.Vector3(0, 0.275, -0.12), dist: 1.12, el: deg(4) };
+const IDLE = { target: new THREE.Vector3(0, 0.25, -0.1), dist: 1.16, el: deg(9) };
 const pointer = { x: 0, y: 0, sx: 0, sy: 0, ndc: new THREE.Vector2(), inside: false };
 const camTarget = new THREE.Vector3();
 let push = 0;
@@ -503,7 +522,6 @@ window.addEventListener('resize', onResize);
 /* ---- loop ---- */
 const clock = new THREE.Clock();
 let first = true;
-let time = 0;
 function frame() {
   raf = requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 1 / 20);
@@ -532,22 +550,12 @@ function frame() {
     zoomPose(easeInOut(zoom.t));
   }
 
-  time += dt;
-  chains.forEach((g) => {
-    const u = g.userData;
-    const on = hover === g && mode !== 'zoom';
-    if (on && !u.hovered && time - (u.kick ?? -9) > 1.6) {
-      u.kick = time;
-      u.vz -= 0.32 * Math.sign(g.position.x);
-    }
-    u.hovered = on;
-    const sway = Math.sin(time * 0.8 + u.phase) * deg(1.6);
-    u.vz += (-(u.rz - sway) * 14 - u.vz * 1.6) * dt;
-    u.rz += u.vz * dt;
-    u.vx += (-(u.rx - Math.sin(time * 0.6 + u.phase * 1.3) * deg(1.2)) * 14 - u.vx * 1.6) * dt;
-    u.rx += u.vx * dt;
-    g.rotation.set(u.rx, 0, u.rz);
-    u.holder.rotation.y = Math.sin(time * 0.5 + u.phase) * 0.35 + u.rz * 2;
+  chains.forEach((p) => {
+    const u = p.userData;
+    u.lift = damp(u.lift, hover === p && mode !== 'zoom' ? 1 : 0, 10, dt);
+    u.holder.position.y = u.baseY + u.lift * 0.012;
+    u.holder.rotation.x = u.lift * deg(-10);
+    u.shade.material.opacity = PAL.contact * 0.75 * (1 - u.lift * 0.45);
   });
 
   scene.updateMatrixWorld();
