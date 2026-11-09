@@ -1,7 +1,7 @@
 /* Home — app windows. Each app has its own Space window (space.html#app) and Support window (support.html#app), each an iframe in a
    `.space-host`. Several can be open (the front one is on top) or minimised at once: minimise is a macOS-style genie into that
    window's own thumbnail at the right end of the dock, and the thumbnail (or the app's dock icon) brings it back the same way.
-   While a window is in front the menu bar switches to that app: its name, then Overview and Support. */
+   While a window is in front the menu bar switches to that app: its name, then Support (or Overview, from its Support window). */
 (function () {
   const hosts = document.getElementById('space-hosts');
   if (!hosts) return;
@@ -75,6 +75,9 @@
     const support = document.getElementById('menubar-app-support');
     overview.href = `space.html#${w.app}`;
     support.href = `support.html#${w.app}`;
+    // Only the other window of this app is offered: Support from its page, Overview from its Support.
+    overview.hidden = w.kind === 'space';
+    support.hidden = w.kind === 'support';
   }
 
   function setAppMenus(w) {

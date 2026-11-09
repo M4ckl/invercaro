@@ -1,4 +1,4 @@
-/* Shared site behaviour: theme toggle (circular reveal) + smooth page transitions. */
+/* Shared site behaviour: theme by time of day (light 10:00–18:00, dark otherwise; switches with a circular reveal) + smooth page transitions. */
 (function () {
   const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -16,17 +16,22 @@
     });
   }
 
+  const LIGHT_FROM = 10;
+  const DARK_FROM = 18;
+  function themeForNow() {
+    const h = new Date().getHours();
+    return h >= LIGHT_FROM && h < DARK_FROM ? 'light' : 'dark';
+  }
+
   function applyTheme(next) {
     root.setAttribute('data-theme', next);
-    try { localStorage.setItem('invercaro-theme', next); } catch (e) {}
     updateAppIcons();
     document.dispatchEvent(new CustomEvent('themechange', { detail: next }));
   }
 
   updateAppIcons();
 
-  function toggleTheme(x, y) {
-    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+  function revealTheme(next, x, y) {
     if (reduceMotion) { applyTheme(next); return; }
 
     const cx = x == null ? window.innerWidth / 2 : x;
@@ -56,12 +61,12 @@
     setTimeout(finish, 780);
   }
 
-  const toggle = document.getElementById('theme-toggle');
-  if (toggle) {
-    toggle.addEventListener('click', () => {
-      const r = toggle.getBoundingClientRect();
-      toggleTheme(r.left + r.width / 2, r.top + r.height / 2);
-    });
+  /* Embedded windows follow the home page (it sends the theme); a standalone page checks the clock every minute. */
+  if (window.self === window.top) {
+    setInterval(() => {
+      const next = themeForNow();
+      if (next !== currentTheme()) revealTheme(next);
+    }, 60000);
   }
 
   /* ---------------- Smooth page transitions ---------------- */

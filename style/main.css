@@ -179,36 +179,9 @@ html[data-theme="dark"] .logo-icon {
 }
 
 .menubar-item:focus-visible,
-.menubar-logo:focus-visible,
-.menubar .header-icon-btn:focus-visible,
-.menubar .theme-toggle-btn:focus-visible {
+.menubar-logo:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
-}
-
-.menubar .header-icon-btn,
-.menubar .theme-toggle-btn {
-    width: 26px;
-    height: 24px;
-    border-radius: 12px;
-    color: var(--text-strong);
-    opacity: 1;
-}
-
-.menubar .header-icon-btn:hover,
-.menubar .theme-toggle-btn:hover {
-    color: var(--text-strong);
-    background-color: color-mix(in srgb, var(--text-strong) 9%, transparent);
-}
-
-.menubar .header-icon-btn svg,
-.menubar .theme-toggle-btn svg {
-    width: 16px;
-    height: 16px;
-}
-
-.menubar .header-icon-btn.nav-current {
-    background-color: color-mix(in srgb, var(--text-strong) 9%, transparent);
 }
 
 /* ====== MENU BAR APP MODE ====== */
@@ -666,47 +639,6 @@ html.has-splash .splash {
 .dock-app.is-running .dock-dot {
     opacity: 0.9;
     transform: scale(1);
-}
-
-html[data-theme="light"] .theme-glyph-sun { display: none; }
-html[data-theme="dark"] .theme-glyph-moon { display: none; }
-
-.theme-toggle-btn,
-.header-icon-btn {
-    background: none;
-    border: 0;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-primary);
-    opacity: 0.8;
-    cursor: pointer;
-    transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out), color var(--dur-hover) var(--ease-out);
-}
-
-.theme-toggle-btn:hover,
-.header-icon-btn:hover {
-    opacity: 1;
-    color: var(--accent);
-}
-
-.theme-toggle-btn:active,
-.header-icon-btn:active {
-    transform: scale(0.9);
-}
-
-.header-icon-btn.nav-current {
-    opacity: 1;
-    color: var(--text-strong);
-}
-
-.theme-toggle-btn svg,
-.header-icon-btn svg {
-    width: 22px;
-    height: 22px;
 }
 
 /* ====== WINDOW TRAFFIC LIGHTS (space + support windows) ====== */
