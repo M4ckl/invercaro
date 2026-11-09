@@ -235,10 +235,6 @@ html[data-theme="dark"] .ap {
     font-size: clamp(38px, 6cqi, 84px);
 }
 
-.ap-h2--slide {
-    font-size: clamp(30px, 3.6cqi, 52px);
-}
-
 .ap-h3 {
     font-size: 24px;
     font-weight: 600;
@@ -967,127 +963,6 @@ html[data-theme="dark"] .ap-seg-thumb {
     text-align: center;
 }
 
-/* ====== APP PAGE · RAIL ====== */
-.ap-rail-block {
-    max-width: none;
-}
-
-.ap-rail {
-    --rail-pad: max(0px, calc((100% - var(--ap-wrap)) / 2));
-    margin: clamp(40px, 6cqi, 72px) calc(var(--ap-pad) * -1) 0;
-    padding-inline: calc(var(--ap-pad) + var(--rail-pad));
-    scroll-padding-inline: calc(var(--ap-pad) + var(--rail-pad));
-    overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    outline: none;
-}
-
-.ap-rail::-webkit-scrollbar {
-    display: none;
-}
-
-.ap-rail-track {
-    display: flex;
-    gap: 20px;
-    width: max-content;
-}
-
-.ap-slide {
-    flex: none;
-    width: min(calc(100cqi - var(--ap-pad) * 2 - 48px), var(--ap-wrap));
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(24px, 4cqi, 64px);
-    align-items: center;
-    padding: clamp(32px, 5cqi, 72px) clamp(28px, 5cqi, 72px) 0;
-    border: 1px solid var(--color-gray-line);
-    border-radius: 36px;
-    overflow: hidden;
-    scroll-snap-align: start;
-}
-
-.ap-slide-text {
-    padding-bottom: clamp(32px, 5cqi, 72px);
-}
-
-.ap-shots--slide {
-    align-self: end;
-    align-items: flex-end;
-}
-
-.ap-shots--slide .ap-phone {
-    width: min(48%, 300px);
-}
-
-.ap-shots--slide .ap-phone:only-child {
-    width: min(64%, 330px);
-}
-
-.ap-shots--slide .ap-phone + .ap-phone {
-    margin-top: 0;
-    margin-bottom: -12%;
-}
-
-.ap-rail-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    margin-top: 28px;
-}
-
-.ap-rail-dots {
-    display: flex;
-    gap: 9px;
-}
-
-.ap-rail-dot {
-    width: 8px;
-    height: 8px;
-    padding: 0;
-    border: 0;
-    border-radius: 999px;
-    background: var(--ac-ink);
-    opacity: 0.22;
-    cursor: pointer;
-    transition: width 400ms var(--ap-ease), opacity 400ms var(--ap-ease);
-}
-
-.ap-rail-dot.is-active {
-    width: 26px;
-    opacity: 1;
-}
-
-.ap-rail-btn {
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border: 0;
-    border-radius: 50%;
-    color: var(--ac-ink);
-    background: var(--ac-soft);
-    cursor: pointer;
-    transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
-}
-
-.ap-rail-btn svg {
-    width: 18px;
-    height: 18px;
-}
-
-.ap-rail-btn:active {
-    transform: scale(0.94);
-}
-
-.ap-rail-btn:disabled {
-    opacity: 0.35;
-    cursor: default;
-}
-
 /* ====== APP PAGE · PRIVACY ====== */
 .ap-promises {
     list-style: none;
@@ -1419,6 +1294,230 @@ html[data-theme="dark"] .ap-seg-thumb {
     .ap-sileo-badge i { animation: none; }
 }
 
+/* ====== APP PAGE · INTENT FRAMES ====== */
+/* Plan and Details are full-window stages, Map opens the page under them. Each frame: copy with a horizontal rail of
+   parts (pills + arrows + swipe, js/intent.js) beside a 3D scene (js/intent3d.js); the flat screenshot is the fallback. */
+.ip-frame {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.9fr) 1.1fr;
+    align-items: center;
+    gap: clamp(24px, 4cqi, 64px);
+    max-width: var(--ap-wrap);
+    margin: var(--ap-gap) auto 0;
+}
+
+.ip-frame--flip .ip-copy { order: 1; }
+
+.ap-staged .ip-frame.ap-stage {
+    max-width: none;
+    padding-inline: max(var(--ap-pad), calc((100% - var(--ap-wrap)) / 2));
+}
+
+.ap-staged .ip-frame {
+    height: var(--sp-view-h, 100vh);
+    margin-top: 0;
+    overflow: hidden;
+}
+
+.ip-copy {
+    min-width: 0;
+}
+
+.ip-copy .ap-h2 {
+    margin-bottom: clamp(24px, 3cqi, 40px);
+}
+
+/* The rail: one part per width, snapped; the others fade back. */
+.ip-rail {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    outline: none;
+    mask-image: linear-gradient(90deg, #000 88%, transparent);
+}
+
+.ip-rail::-webkit-scrollbar { display: none; }
+
+.ip-part {
+    flex: 0 0 100%;
+    min-height: 128px;
+    padding-right: 12%;
+    scroll-snap-align: start;
+    opacity: 0.12;
+    filter: blur(3px);
+    transition: opacity 600ms var(--ap-ease), filter 600ms var(--ap-ease);
+}
+
+.ip-part.is-current {
+    opacity: 1;
+    filter: none;
+}
+
+.ip-part h3 {
+    font-size: clamp(22px, 2.2cqi, 30px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--text-strong);
+}
+
+.ip-part p {
+    max-width: 30em;
+    margin-top: 10px;
+    font-size: clamp(15px, 1.35cqi, 18px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    color: var(--text-secondary);
+}
+
+/* Pills: the current one fills with its autoplay progress. */
+.ip-nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: clamp(20px, 2.6cqi, 32px);
+}
+
+.ip-pills {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
+}
+
+.ip-pills::-webkit-scrollbar { display: none; }
+
+.ip-pill { flex: none; white-space: nowrap; }
+
+.ip-pill {
+    position: relative;
+    overflow: hidden;
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-strong);
+    background: color-mix(in srgb, var(--text-strong) 7%, transparent);
+    cursor: pointer;
+    transition: color 300ms var(--ease-out), background-color 300ms var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+
+.ip-pill span {
+    position: relative;
+    z-index: 1;
+}
+
+.ip-pill:hover { background: color-mix(in srgb, var(--text-strong) 12%, transparent); }
+.ip-pill:active { transform: scale(0.95); }
+
+.ip-pill.is-current {
+    color: var(--text-inverse);
+    background: color-mix(in srgb, var(--text-strong) 72%, transparent);
+}
+
+.ip-pill-bar {
+    position: absolute;
+    inset: 0;
+    background: var(--text-strong);
+    transform: scaleX(var(--p, 0));
+    transform-origin: 0 50%;
+    opacity: 0;
+    transition: transform 100ms linear;
+}
+
+.ip-pill.is-current .ip-pill-bar { opacity: 1; }
+
+.ip-arrows {
+    flex: none;
+    display: flex;
+    gap: 6px;
+}
+
+.ip-arrow {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    color: var(--text-strong);
+    background: color-mix(in srgb, var(--text-strong) 7%, transparent);
+    cursor: pointer;
+    transition: background-color 200ms var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+
+.ip-arrow svg { width: 16px; height: 16px; }
+.ip-arrow:hover { background: color-mix(in srgb, var(--text-strong) 12%, transparent); }
+.ip-arrow:active { transform: scale(0.92); }
+
+/* The scene: a soft accent glow, the 3D canvas, or the flat screenshot. */
+.ip-scene {
+    position: relative;
+    align-self: stretch;
+    min-height: 460px;
+    display: grid;
+    place-items: center;
+}
+
+.ip-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(80%, 64vh);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--ac) 20%, transparent) 0%, color-mix(in srgb, var(--ac) 7%, transparent) 50%, transparent 70%);
+    transform: translate(-50%, -50%);
+    animation: ip-glow 9s var(--ease-in-out) infinite;
+    pointer-events: none;
+}
+
+@keyframes ip-glow {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.8; }
+    50%      { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+}
+
+.ip-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+}
+
+.ap-staged:not(.ap-live-off) .ip-canvas { display: block; }
+.ip-scene.is-ready .ip-canvas { opacity: 1; }
+
+.ip-flat {
+    position: relative;
+    width: min(56%, 300px);
+    height: auto;
+    border-radius: 13% / 6%;
+    box-shadow: 0 0 0 6px #111, 0 0 0 7.5px #c9cbcf, 0 30px 60px rgba(0, 0, 0, 0.15);
+}
+
+.ap-staged:not(.ap-live-off) .ip-flat { display: none; }
+
+/* The page under the stages: its frame's copy arrives like a stage's. */
+.ap-staged .ap-rest[data-state="current"] .ap-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition-delay: calc(380ms + var(--d, 0) * 120ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ip-glow { animation: none; }
+}
+
 /* ====== APP PAGE · REVEAL ====== */
 .ap-reveal .rv {
     opacity: 0;
@@ -1439,9 +1538,9 @@ html[data-theme="dark"] .ap-seg-thumb {
 /* ====== APP PAGE · NARROW WINDOW ====== */
 @container (max-width: 760px) {
     .ap-lede,
-    .ap-slide,
     .ap-policy,
-    .ap-sileo-frame {
+    .ap-sileo-frame,
+    .ip-frame {
         grid-template-columns: 1fr;
     }
 
@@ -1451,17 +1550,6 @@ html[data-theme="dark"] .ap-seg-thumb {
 
     .ap-text {
         max-width: none;
-    }
-
-
-    .ap-slide {
-        width: calc(100cqi - var(--ap-pad) * 2 - 24px);
-        padding: 28px 22px 0;
-        border-radius: 28px;
-    }
-
-    .ap-slide-text {
-        padding-bottom: 0;
     }
 
     .ap-policy-head {

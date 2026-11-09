@@ -149,8 +149,4 @@
     .ap {
         --ap-pad: 20px;
     }
-
-    .ap-rail-btn {
-        display: none;
-    }
 }

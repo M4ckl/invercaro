@@ -314,9 +314,12 @@ CHARMS.forEach((k) => {
 });
 
 /* ---- page mapping ---- */
+/* The page fits inside the display and sits against its top edge (menu bar under the bezel); any spare height is at the bottom. */
 function quadSize() {
   const a = window.innerWidth / window.innerHeight;
-  return a > IMAC.dw / IMAC.dh ? { qw: IMAC.dw, qh: IMAC.dw / a } : { qw: IMAC.dh * a, qh: IMAC.dh };
+  const q = a > IMAC.dw / IMAC.dh ? { qw: IMAC.dw, qh: IMAC.dw / a } : { qw: IMAC.dh * a, qh: IMAC.dh };
+  q.oy = (IMAC.dh - q.qh) / 2;
+  return q;
 }
 
 /* Projective map of the page rect (0,0)-(W,H) onto four screen points (TL, TR, BR, BL), as a CSS matrix3d. */
@@ -343,7 +346,7 @@ const _c = new THREE.Vector3();
 function syncPage() {
   const W = window.innerWidth;
   const H = window.innerHeight;
-  const { qw, qh } = quadSize();
+  const { qw, qh, oy } = quadSize();
   anchor.getWorldPosition(_c);
   _n.set(0, 0, 1).transformDirection(anchor.matrixWorld);
   const facing = _n.dot(_v.copy(camera.position).sub(_c)) > 0.002;
@@ -351,7 +354,7 @@ function syncPage() {
   if (!facing) return;
   const pts = [];
   [[-1, 1], [1, 1], [1, -1], [-1, -1]].forEach(([sx, sy]) => {
-    _v.set((sx * qw) / 2, (sy * qh) / 2, 0).applyMatrix4(anchor.matrixWorld).project(camera);
+    _v.set((sx * qw) / 2, (sy * qh) / 2 + oy, 0).applyMatrix4(anchor.matrixWorld).project(camera);
     pts.push(((_v.x + 1) / 2) * W, ((1 - _v.y) / 2) * H);
   });
   page.style.transform = homography(W, H, pts);
@@ -380,10 +383,11 @@ const _up = new THREE.Vector3();
 const _p1 = new THREE.Vector3();
 const _f = new THREE.Vector3();
 function zoomPose(e) {
-  anchor.getWorldPosition(_c);
+  const q = quadSize();
+  _c.set(0, q.oy, 0).applyMatrix4(anchor.matrixWorld);
   _n.set(0, 0, 1).transformDirection(anchor.matrixWorld);
   _up.set(0, 1, 0).transformDirection(anchor.matrixWorld);
-  const d1 = quadSize().qh / 2 / Math.tan(deg(camera.fov / 2));
+  const d1 = q.qh / 2 / Math.tan(deg(camera.fov / 2));
   _p1.copy(_c).addScaledVector(_n, d1);
   _q1.setFromRotationMatrix(_m.lookAt(_p1, _c, _up));
   camTarget.lerpVectors(zoom.from.target, _c, e);
