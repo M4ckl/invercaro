@@ -1,4 +1,4 @@
-/* Desk intro: an iMac on a marble desk with one keyring holding the app charms. The live home page is mapped onto the iMac display and a click flies the camera into it. */
+/* Desk intro: an iMac on a wooden desk, with one keyring of app charms hanging on the wall. The live home page is mapped onto the iMac display and a click flies the camera into it. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -37,7 +37,7 @@ function rectShape(w, h, r, rBottom = r) {
 }
 const plate = (w, h, r, rBottom) => new THREE.ShapeGeometry(rectShape(w, h, r, rBottom), 8);
 
-/* Value-noise fbm, used for the marble veins. */
+/* Value noise, used for the plaster wall. */
 function noise2(seed) {
   const N = 256;
   const g = new Float32Array(N * N);
@@ -51,43 +51,6 @@ function noise2(seed) {
     const a = at(xi, yi), b = at(xi + 1, yi), c = at(xi, yi + 1), d = at(xi + 1, yi + 1);
     return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
   };
-}
-
-function marbleTexture(base, vein, fine) {
-  const W = 1024, H = 512;
-  const c = document.createElement('canvas');
-  c.width = W;
-  c.height = H;
-  const g = c.getContext('2d');
-  const img = g.createImageData(W, H);
-  const n = noise2(7);
-  const fbm = (x, y) => {
-    let v = 0, a = 0.5, f = 1;
-    for (let o = 0; o < 5; o++) { v += a * n(x * f, y * f); a *= 0.5; f *= 2.03; }
-    return v;
-  };
-  const B = new THREE.Color(base), V = new THREE.Color(vein), F = new THREE.Color(fine);
-  for (let y = 0; y < H; y++) {
-    for (let x = 0; x < W; x++) {
-      const t = fbm(x / 140, y / 140);
-      const main = Math.pow(1 - Math.abs(Math.sin((x * 0.0035 + y * 0.006) + t * 7)), 34);
-      const thin = Math.pow(1 - Math.abs(Math.sin((x * 0.019 - y * 0.007) + fbm(x / 60 + 9, y / 60) * 12)), 70) * 0.35;
-      const cloud = (fbm(x / 300 + 3, y / 300) - 0.5) * 0.12;
-      const k = clamp(main * 0.55, 0, 1);
-      const i = (y * W + x) * 4;
-      const r = B.r + (V.r - B.r) * k + (F.r - B.r) * thin + cloud;
-      const gg = B.g + (V.g - B.g) * k + (F.g - B.g) * thin + cloud;
-      const b = B.b + (V.b - B.b) * k + (F.b - B.b) * thin + cloud;
-      img.data[i] = clamp(r, 0, 1) * 255;
-      img.data[i + 1] = clamp(gg, 0, 1) * 255;
-      img.data[i + 2] = clamp(b, 0, 1) * 255;
-      img.data[i + 3] = 255;
-    }
-  }
-  g.putImageData(img, 0, 0);
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
 }
 
 function plasterTexture() {
@@ -130,12 +93,12 @@ const THEME = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 const PAL = {
   light: {
     bg: '#F7F7F7', wall: 0xd3cec7, alu: 0xdcdee1, bezel: 0xe9e8e4,
-    marble: ['#f4f3ef', '#a19e98', '#cfccc6'], leg: 0x1b1b1d, metal: 0xd4d7db,
+    wood: 'oak_veneer_01', woodTint: 0xf0ebe4, leg: 0x1b1b1d, metal: 0xd4d7db, hook: 0xb8b2a6,
     key: 6, window: 3.2, hemi: 0.45, env: 0.85, contact: 0.32, exposure: 1.0,
   },
   dark: {
     bg: '#08080A', wall: 0x18181b, alu: 0x4b4d52, bezel: 0x0a0a0b,
-    marble: ['#252527', '#8c8881', '#4a4845'], leg: 0x0c0c0d, metal: 0xa4a7ad,
+    wood: 'wood_table_001', woodTint: 0xd8d0c8, leg: 0x0c0c0d, metal: 0xa4a7ad, hook: 0x8a857c,
     key: 3, window: 1.4, hemi: 0.14, env: 0.45, contact: 0.6, exposure: 1.0,
   },
 }[THEME];
@@ -152,7 +115,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(PAL.bg);
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-/* Studio HDRI "Studio Small 09" by Poly Haven (CC0) for real-world reflections on the aluminium, glass and marble. */
+/* Studio HDRI "Studio Small 09" by Poly Haven (CC0) for real-world reflections on the aluminium, glass and wood. */
 new RGBELoader().load('style/hdr/studio_small_09_1k.hdr', (hdr) => {
   scene.environment = pmrem.fromEquirectangular(hdr).texture;
   hdr.dispose();
@@ -165,7 +128,7 @@ const keyLight = new THREE.SpotLight(0xfff4e8, PAL.key, 0, 0.5, 1, 0);
 keyLight.position.set(-1.1, 2.1, 1.3);
 keyLight.target.position.set(0.05, 0.1, -0.15);
 scene.add(keyLight, keyLight.target);
-/* A soft "window" to the left: a wide area light that grades the wall and lays a long highlight on the marble. */
+/* A soft "window" to the left: a wide area light that grades the wall and lays a long highlight on the desk. */
 RectAreaLightUniformsLib.init();
 const windowLight = new THREE.RectAreaLight(0xfff8f0, PAL.window, 1.2, 1.6);
 windowLight.position.set(-1.25, 0.75, 0.15);
@@ -198,11 +161,24 @@ floor.rotation.x = -Math.PI / 2;
 floor.position.y = -TABLE.h;
 scene.add(floor);
 
-/* ---- table: marble top on black steel legs ---- */
-const marble = phys(0xffffff, {
-  map: marbleTexture(...PAL.marble), roughness: 0.3, clearcoat: 0.6, clearcoatRoughness: 0.12,
+/* ---- table: solid wood top on black steel legs ---- */
+/* Wood scans by Poly Haven (CC0): "Oak Veneer 01" for the light theme, "Wood Table 001" (walnut) for the dark one. */
+const texLoader = new THREE.TextureLoader();
+function woodMap(kind, srgb) {
+  const t = texLoader.load(`style/textures/${PAL.wood}_${kind}_1k.jpg`);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.center.set(0.5, 0.5);
+  t.rotation = Math.PI / 2;
+  t.repeat.set(0.9, 1.9);
+  t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+const woodTop = phys(PAL.woodTint, {
+  map: woodMap('diff', true), normalMap: woodMap('nor_gl'), roughnessMap: woodMap('rough'),
+  roughness: 1, normalScale: new THREE.Vector2(0.6, 0.6), clearcoat: 0.25, clearcoatRoughness: 0.35,
 });
-const top = mesh(new RoundedBoxGeometry(TABLE.w, TABLE.t, TABLE.d, 3, 0.004), marble);
+const top = mesh(new RoundedBoxGeometry(TABLE.w, TABLE.t, TABLE.d, 3, 0.004), woodTop);
 top.position.y = -TABLE.t / 2;
 scene.add(top);
 const steel = mat(PAL.leg, { metalness: 0.7, roughness: 0.45 });
@@ -287,72 +263,93 @@ upright.position.set(0, 0.11, -0.05);
 computer.add(upright);
 contact(0.24, 0.22, 0, IMAC.z - 0.035, PAL.contact * 0.55);
 
-/* ---- one keyring with all three app charms, lying on the desk ---- */
+/* ---- one keyring with all three app charms, hanging on a wall hook top-right ---- */
 const CHARMS = [
-  { app: 'sileo', name: 'Sileo', angle: deg(-72) },
-  { app: 'mono', name: 'Mono', angle: deg(2) },
-  { app: 'intent', name: 'Intent', angle: deg(72) },
+  { app: 'sileo', name: 'Sileo', at: deg(-42), tilt: deg(-30), dz: 0.006, drop: 0, phase: 0.0 },
+  { app: 'mono', name: 'Mono', at: deg(0), tilt: deg(2), dz: 0.024, drop: 0.016, phase: 2.1 },
+  { app: 'intent', name: 'Intent', at: deg(40), tilt: deg(31), dz: 0.014, drop: 0, phase: 4.0 },
 ];
-const CHARM = 0.056;
-const CHARM_T = (0.024 * CHARM) / 0.1445;
-const CHARM_REACH = (CHARM / 2) * Math.SQRT2 - 0.0035;
-const RING_R = 0.018;
+const WALL_Z = wall.position.z;
+const HOOK = new THREE.Vector3(0.5, 0.53, WALL_Z);
+const CHARM = 0.064;
+const CHARM_REACH = (CHARM / 2) * Math.SQRT2 - 0.004;
+const RING_R = 0.019;
 const metal = mat(PAL.metal, { metalness: 1, roughness: 0.18 });
+const brass = mat(PAL.hook, { metalness: 1, roughness: 0.3 });
 const chains = [];
+
+const hook = new THREE.Group();
+hook.position.copy(HOOK);
+scene.add(hook);
+const rose = mesh(new THREE.CylinderGeometry(0.009, 0.01, 0.004, 32), brass);
+rose.rotation.x = Math.PI / 2;
+rose.position.z = 0.002;
+hook.add(rose);
+const pegCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0, 0, 0.003), new THREE.Vector3(0, -0.001, 0.02), new THREE.Vector3(0, 0.002, 0.031), new THREE.Vector3(0, 0.009, 0.034),
+]);
+hook.add(mesh(new THREE.TubeGeometry(pegCurve, 32, 0.0024, 12, false), brass));
+const pegTip = mesh(new THREE.SphereGeometry(0.0026, 16, 12), brass);
+pegTip.position.set(0, 0.009, 0.034);
+hook.add(pegTip);
+contact(0.05, 0.05, 0, 0, PAL.contact * 0.25, hook).rotation.x = 0;
 
 function splitRing(r) {
   const pts = [];
   const turns = 1.9;
   for (let i = 0; i <= 140; i++) {
     const a = (i / 140) * turns * Math.PI * 2;
-    pts.push(new THREE.Vector3(Math.cos(a) * r, 0.0011 + (i / 140) * 0.0022, Math.sin(a) * r));
+    pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, (i / 140) * 0.0022));
   }
   return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 200, 0.0011, 10, false);
 }
 
+/* The ring rests on the peg and swings as a whole; the charms hang from its lowest point and sway on their own. */
 const keyring = new THREE.Group();
-keyring.position.set(0.29, 0, -0.03);
-keyring.rotation.y = -0.6;
-scene.add(keyring);
-keyring.add(mesh(splitRing(RING_R), metal));
-contact(0.05, 0.05, 0, 0, PAL.contact * 0.5, keyring);
+keyring.position.set(0, -0.0012, 0.026);
+keyring.userData = { rz: 0, vz: 0 };
+hook.add(keyring);
+const ring = mesh(splitRing(RING_R), metal);
+ring.position.y = -RING_R;
+ring.rotation.y = 0.9;
+keyring.add(ring);
 
 const loader = new GLTFLoader();
-CHARMS.forEach((k, i) => {
+CHARMS.forEach((k) => {
   const pivot = new THREE.Group();
-  pivot.rotation.y = k.angle;
-  pivot.userData = { pick: k.app, name: k.name, lift: 0 };
+  pivot.position.set(Math.sin(k.at) * RING_R, -RING_R - Math.cos(k.at) * RING_R + 0.001, k.dz - 0.012);
+  pivot.userData = { pick: k.app, name: k.name, tilt: k.tilt, phase: k.phase, rz: k.tilt, vz: 0, rx: 0, vx: 0, hovered: false };
   keyring.add(pivot);
   chains.push(pivot);
 
-  const jump = mesh(new THREE.TorusGeometry(0.0034, 0.0008, 8, 24), metal);
-  jump.position.set(RING_R + 0.0025, 0.0028, 0);
-  jump.rotation.set(0, Math.PI / 2, 0.35);
+  const jump = mesh(new THREE.TorusGeometry(0.0038, 0.0008, 8, 24), metal);
+  jump.position.y = -0.0032;
+  if (k.drop) {
+    const extra = mesh(new THREE.TorusGeometry(0.005, 0.0008, 8, 24), metal);
+    extra.position.y = -0.0062 - k.drop / 2;
+    extra.scale.y = (k.drop + 0.004) / 0.01;
+    pivot.add(extra);
+  }
+  jump.rotation.y = Math.PI / 2;
   pivot.add(jump);
 
   const holder = new THREE.Group();
-  holder.position.set(RING_R + 0.005 + CHARM_REACH, CHARM_T / 2 + 0.0004 + i * 0.0012, 0);
-  holder.rotation.set(0, 0, (i - 1) * 0.02);
+  holder.position.y = -0.0062 - CHARM_REACH - k.drop;
   pivot.add(holder);
   pivot.userData.holder = holder;
-  pivot.userData.baseY = holder.position.y;
 
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.066, 0.02, 0.066), new THREE.MeshBasicMaterial({ visible: false }));
-  hit.rotation.y = Math.PI / 4;
+  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 0.02), new THREE.MeshBasicMaterial({ visible: false }));
+  hit.rotation.z = Math.PI / 4;
   holder.add(hit);
-  pivot.userData.shade = contact(CHARM * 1.7, CHARM * 1.7, RING_R + 0.005 + CHARM_REACH, 0, PAL.contact * 0.75, pivot);
 
   loader.load(`style/3d%20models/${k.app}/icon_${k.app}_3d_${THEME}.glb`, (gltf) => {
     const charm = gltf.scene;
     charm.scale.setScalar(CHARM / 0.1445);
-    charm.rotation.x = -Math.PI / 2;
-    const turn = new THREE.Group();
-    turn.rotation.y = Math.PI / 4;
-    turn.add(charm);
+    charm.rotation.z = Math.PI / 4;
     charm.traverse((o) => {
       if (o.isMesh && o.material && 'envMapIntensity' in o.material) o.material.envMapIntensity = PAL.env;
     });
-    holder.add(turn);
+    holder.add(charm);
   });
 });
 
@@ -522,6 +519,7 @@ window.addEventListener('resize', onResize);
 /* ---- loop ---- */
 const clock = new THREE.Clock();
 let first = true;
+let time = 0;
 function frame() {
   raf = requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 1 / 20);
@@ -550,12 +548,26 @@ function frame() {
     zoomPose(easeInOut(zoom.t));
   }
 
+  time += dt;
+  const kr = keyring.userData;
+  kr.vz += (-(kr.rz - Math.sin(time * 0.7) * deg(1.2)) * 9 - kr.vz * 1.4) * dt;
+  kr.rz += kr.vz * dt;
+  keyring.rotation.z = kr.rz;
   chains.forEach((p) => {
     const u = p.userData;
-    u.lift = damp(u.lift, hover === p && mode !== 'zoom' ? 1 : 0, 10, dt);
-    u.holder.position.y = u.baseY + u.lift * 0.012;
-    u.holder.rotation.x = u.lift * deg(-10);
-    u.shade.material.opacity = PAL.contact * 0.75 * (1 - u.lift * 0.45);
+    const on = hover === p && mode !== 'zoom';
+    if (on && !u.hovered && time - (u.kick ?? -9) > 1.6) {
+      u.kick = time;
+      u.vz += 0.5;
+      kr.vz += 0.12;
+    }
+    u.hovered = on;
+    const rest = u.tilt + Math.sin(time * 0.9 + u.phase) * deg(1.4);
+    u.vz += (-(u.rz - rest) * 16 - u.vz * 1.8) * dt;
+    u.rz += u.vz * dt;
+    u.vx += (-(u.rx - Math.sin(time * 0.6 + u.phase) * deg(3)) * 10 - u.vx * 1.5) * dt;
+    u.rx += u.vx * dt;
+    p.rotation.set(u.rx * 0.3, Math.sin(time * 0.45 + u.phase) * 0.25, u.rz);
   });
 
   scene.updateMatrixWorld();
