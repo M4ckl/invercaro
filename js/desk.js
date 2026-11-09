@@ -1,4 +1,4 @@
-/* Desk intro: a 3D table with a laptop and the app keychains. The live home page is mapped onto the laptop display and a click flies the camera into it. */
+/* Desk intro: a marble desk with an iMac, keyboard, mouse and the app keychains. The live home page is mapped onto the iMac display and a click flies the camera into it. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -14,67 +14,105 @@ const label = document.getElementById('desk-label');
 /* ---- helpers ---- */
 const deg = (d) => (d * Math.PI) / 180;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const lerp = (a, b, t) => a + (b - a) * t;
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const easeOut = (t) => 1 - Math.pow(1 - t, 4);
 const damp = (x, target, rate, dt) => x + (target - x) * (1 - Math.exp(-rate * dt));
 
-function roundedRect(w, h, r) {
+function rectShape(w, h, r, rBottom = r) {
   const s = new THREE.Shape();
   const x = -w / 2;
   const y = -h / 2;
-  s.moveTo(x + r, y);
-  s.lineTo(x + w - r, y);
-  s.quadraticCurveTo(x + w, y, x + w, y + r);
+  s.moveTo(x + rBottom, y);
+  s.lineTo(x + w - rBottom, y);
+  if (rBottom) s.quadraticCurveTo(x + w, y, x + w, y + rBottom);
   s.lineTo(x + w, y + h - r);
   s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
   s.lineTo(x + r, y + h);
   s.quadraticCurveTo(x, y + h, x, y + h - r);
-  s.lineTo(x, y + r);
-  s.quadraticCurveTo(x, y, x + r, y);
-  return new THREE.ShapeGeometry(s, 6);
+  s.lineTo(x, y + rBottom);
+  if (rBottom) s.quadraticCurveTo(x, y, x + rBottom, y);
+  return s;
+}
+const plate = (w, h, r, rBottom) => new THREE.ShapeGeometry(rectShape(w, h, r, rBottom), 8);
+
+/* Value-noise fbm, used for the marble veins. */
+function noise2(seed) {
+  const N = 256;
+  const g = new Float32Array(N * N);
+  let s = seed;
+  for (let i = 0; i < g.length; i++) { s = (s * 16807) % 2147483647; g[i] = s / 2147483647; }
+  const at = (x, y) => g[(y & (N - 1)) * N + (x & (N - 1))];
+  return (x, y) => {
+    const xi = Math.floor(x), yi = Math.floor(y);
+    const xf = x - xi, yf = y - yi;
+    const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    const a = at(xi, yi), b = at(xi + 1, yi), c = at(xi, yi + 1), d = at(xi + 1, yi + 1);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  };
 }
 
-function woodTexture(colors) {
+function marbleTexture(base, vein, fine) {
+  const W = 1024, H = 512;
   const c = document.createElement('canvas');
-  c.width = 2048;
-  c.height = 1024;
+  c.width = W;
+  c.height = H;
   const g = c.getContext('2d');
-  g.fillStyle = colors[0];
-  g.fillRect(0, 0, c.width, c.height);
-  for (let i = 0; i < 340; i++) {
-    const y = Math.random() * c.height;
-    const amp = 3 + Math.random() * 12;
-    const f = 0.0015 + Math.random() * 0.003;
-    const ph = Math.random() * 10;
-    g.strokeStyle = colors[1 + (i % 2)];
-    g.globalAlpha = 0.06 + Math.random() * 0.22;
-    g.lineWidth = 0.6 + Math.random() * 2.6;
-    g.beginPath();
-    for (let x = 0; x <= c.width; x += 12) {
-      const yy = y + Math.sin(x * f + ph) * amp + Math.sin(x * f * 3.7 + ph * 2) * amp * 0.25;
-      if (x === 0) g.moveTo(x, yy); else g.lineTo(x, yy);
+  const img = g.createImageData(W, H);
+  const n = noise2(7);
+  const fbm = (x, y) => {
+    let v = 0, a = 0.5, f = 1;
+    for (let o = 0; o < 5; o++) { v += a * n(x * f, y * f); a *= 0.5; f *= 2.03; }
+    return v;
+  };
+  const B = new THREE.Color(base), V = new THREE.Color(vein), F = new THREE.Color(fine);
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const t = fbm(x / 140, y / 140);
+      const main = Math.pow(1 - Math.abs(Math.sin((x * 0.0035 + y * 0.006) + t * 7)), 34);
+      const thin = Math.pow(1 - Math.abs(Math.sin((x * 0.019 - y * 0.007) + fbm(x / 60 + 9, y / 60) * 12)), 70) * 0.35;
+      const cloud = (fbm(x / 300 + 3, y / 300) - 0.5) * 0.12;
+      const k = clamp(main * 0.55, 0, 1);
+      const i = (y * W + x) * 4;
+      const r = B.r + (V.r - B.r) * k + (F.r - B.r) * thin + cloud;
+      const gg = B.g + (V.g - B.g) * k + (F.g - B.g) * thin + cloud;
+      const b = B.b + (V.b - B.b) * k + (F.b - B.b) * thin + cloud;
+      img.data[i] = clamp(r, 0, 1) * 255;
+      img.data[i + 1] = clamp(gg, 0, 1) * 255;
+      img.data[i + 2] = clamp(b, 0, 1) * 255;
+      img.data[i + 3] = 255;
     }
-    g.stroke();
   }
-  g.globalAlpha = 1;
+  g.putImageData(img, 0, 0);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
+}
+
+function softShadowTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d');
+  const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grd.addColorStop(0, 'rgba(0,0,0,1)');
+  grd.addColorStop(0.5, 'rgba(0,0,0,0.45)');
+  grd.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
 }
 
 /* ---- palette ---- */
 const THEME = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 const PAL = {
   light: {
-    bg: '#F7F7F7', alu: 0xd6d8db, pad: 0xcdcfd2, keys: 0x1d1d1f, well: 0xbfc1c4, bezel: 0x0a0a0b, hinge: 0x8e9095,
-    wood: ['#cfb08c', '#b8936c', '#a98159'], leg: 0xb08a63, metal: 0xd4d7db,
-    sun: 2.8, hemi: 0.7, env: 0.9, floorShadow: 0.07, exposure: 1.0,
+    bg: '#F7F7F7', wall: 0xe2e0dc, alu: 0xdcdee1, bezel: 0xe9e8e4, keysBody: 0xe3e5e8, keys: 0xfafafa, mouse: 0xf6f6f6,
+    marble: ['#efeeea', '#9b9892', '#c9c6c0'], leg: 0x1b1b1d, metal: 0xd4d7db,
+    key: 10, hemi: 0.5, env: 0.75, contact: 0.32, exposure: 1.0,
   },
   dark: {
-    bg: '#08080A', alu: 0x46484c, pad: 0x3e4044, keys: 0x0c0c0e, well: 0x2c2d30, bezel: 0x050506, hinge: 0x26272a,
-    wood: ['#58402f', '#45311f', '#3a2918'], leg: 0x3f2d1f, metal: 0xa4a7ad,
-    sun: 1.7, hemi: 0.22, env: 0.5, floorShadow: 0.35, exposure: 1.0,
+    bg: '#08080A', wall: 0x18181b, alu: 0x4b4d52, bezel: 0x0a0a0b, keysBody: 0x3a3c40, keys: 0x151517, mouse: 0x1c1c1e,
+    marble: ['#252527', '#8c8881', '#4a4845'], leg: 0x0c0c0d, metal: 0xa4a7ad,
+    key: 5, hemi: 0.16, env: 0.4, contact: 0.6, exposure: 1.0,
   },
 }[THEME];
 
@@ -93,20 +131,29 @@ scene.background = new THREE.Color(PAL.bg);
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 
-const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 30);
+const camera = new THREE.PerspectiveCamera(32, window.innerWidth / window.innerHeight, 0.01, 30);
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8075, PAL.hemi));
-const sun = new THREE.DirectionalLight(0xfff6ec, PAL.sun);
-sun.position.set(-0.9, 2.2, 1.2);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -1, right: 1, top: 1, bottom: -1, near: 0.5, far: 5 });
-sun.shadow.bias = -0.0003;
-sun.shadow.normalBias = 0.0015;
-scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x7d756c, PAL.hemi));
+const keyLight = new THREE.SpotLight(0xfff4e8, PAL.key, 0, 0.5, 1, 0);
+keyLight.position.set(-1.1, 2.1, 1.3);
+keyLight.target.position.set(0.05, 0.1, -0.15);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(2048, 2048);
+keyLight.shadow.camera.near = 1;
+keyLight.shadow.camera.far = 5;
+keyLight.shadow.bias = -0.0002;
+keyLight.shadow.normalBias = 0.002;
+keyLight.shadow.radius = 6;
+scene.add(keyLight, keyLight.target);
+const rim = new THREE.DirectionalLight(0xe8eeff, PAL.key * 0.12);
+rim.position.set(1.4, 1.2, -0.6);
+scene.add(rim);
 
 function mat(color, opts = {}) {
   return new THREE.MeshStandardMaterial({ color, envMapIntensity: PAL.env, ...opts });
+}
+function phys(color, opts = {}) {
+  return new THREE.MeshPhysicalMaterial({ color, envMapIntensity: PAL.env, ...opts });
 }
 function mesh(geo, material, { cast = true, receive = true } = {}) {
   const m = new THREE.Mesh(geo, material);
@@ -115,45 +162,115 @@ function mesh(geo, material, { cast = true, receive = true } = {}) {
   return m;
 }
 
-/* ---- table ---- */
-const TABLE = { w: 1.25, d: 0.72, t: 0.036, h: 0.74 };
-const woodMat = mat(0xffffff, { map: woodTexture(PAL.wood), roughness: 0.62, metalness: 0 });
-const top = mesh(new RoundedBoxGeometry(TABLE.w, TABLE.t, TABLE.d, 4, 0.012), woodMat);
-top.position.y = -TABLE.t / 2;
-scene.add(top);
-const legMat = mat(PAL.leg, { roughness: 0.6 });
-const legGeo = new RoundedBoxGeometry(0.042, TABLE.h - TABLE.t, 0.042, 2, 0.008);
-[[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => {
-  const leg = mesh(legGeo, legMat);
-  leg.position.set(sx * (TABLE.w / 2 - 0.07), -TABLE.t - (TABLE.h - TABLE.t) / 2, sz * (TABLE.d / 2 - 0.06));
-  scene.add(leg);
-});
-const floor = mesh(new THREE.PlaneGeometry(8, 8), new THREE.ShadowMaterial({ opacity: PAL.floorShadow }), { cast: false });
+/* ---- room ---- */
+const TABLE = { w: 1.7, d: 0.82, t: 0.03, h: 0.74 };
+const wall = mesh(new THREE.PlaneGeometry(10, 5), mat(PAL.wall, { roughness: 0.95 }), { cast: false });
+wall.position.set(0, 1.5, -TABLE.d / 2 - 0.12);
+scene.add(wall);
+const floor = mesh(new THREE.PlaneGeometry(10, 10), mat(PAL.wall, { roughness: 0.9 }), { cast: false });
 floor.rotation.x = -Math.PI / 2;
 floor.position.y = -TABLE.h;
 scene.add(floor);
 
-/* ---- laptop ---- */
-const LAP = { w: 0.312, d: 0.218, h: 0.0105, lidT: 0.005, lidL: 0.214, dw: 0.296, dh: 0.185, topBezel: 0.006, open: deg(-18) };
-const laptop = new THREE.Group();
-laptop.userData.pick = 'laptop';
-scene.add(laptop);
+/* ---- table: marble top on black steel legs ---- */
+const marble = phys(0xffffff, {
+  map: marbleTexture(...PAL.marble), roughness: 0.3, clearcoat: 0.6, clearcoatRoughness: 0.12,
+});
+const top = mesh(new RoundedBoxGeometry(TABLE.w, TABLE.t, TABLE.d, 3, 0.004), marble);
+top.position.y = -TABLE.t / 2;
+scene.add(top);
+const steel = mat(PAL.leg, { metalness: 0.7, roughness: 0.45 });
+const legGeo = new THREE.BoxGeometry(0.028, TABLE.h - TABLE.t, 0.028);
+[[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => {
+  const leg = mesh(legGeo, steel);
+  leg.position.set(sx * (TABLE.w / 2 - 0.05), -TABLE.t - (TABLE.h - TABLE.t) / 2, sz * (TABLE.d / 2 - 0.05));
+  scene.add(leg);
+});
+const rail = mesh(new THREE.BoxGeometry(TABLE.w - 0.1, 0.03, 0.02), steel);
+rail.position.set(0, -TABLE.t - 0.015, -(TABLE.d / 2 - 0.05));
+scene.add(rail);
 
-const alu = mat(PAL.alu, { metalness: 0.9, roughness: 0.34 });
-const base = mesh(new RoundedBoxGeometry(LAP.w, LAP.h, LAP.d, 4, 0.004), alu);
-base.position.y = LAP.h / 2;
-laptop.add(base);
-
-const flat = (geo, material, x, z, y = LAP.h + 0.0002) => {
-  const m = mesh(geo, material, { cast: false });
+const shadowTex = softShadowTexture();
+function contact(w, d, x, z, opacity = PAL.contact) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({
+    map: shadowTex, color: 0x000000, transparent: true, opacity, depthWrite: false,
+  }));
   m.rotation.x = -Math.PI / 2;
-  m.position.set(x, y, z);
-  laptop.add(m);
+  m.position.set(x, 0.0006, z);
+  scene.add(m);
   return m;
-};
-flat(roundedRect(0.282, 0.116, 0.004), mat(PAL.well, { metalness: 0.6, roughness: 0.5 }), 0, -0.036);
-flat(roundedRect(0.12, 0.074, 0.006), mat(PAL.pad, { metalness: 0.85, roughness: 0.26 }), 0, 0.062);
+}
 
+/* ---- iMac ---- */
+const IMAC = { w: 0.547, h: 0.42, t: 0.0115, dw: 0.515, dh: 0.322, topBezel: 0.014, lift: 0.08, tilt: deg(-5), z: -0.16 };
+const computer = new THREE.Group();
+computer.userData.pick = 'computer';
+computer.position.z = IMAC.z;
+scene.add(computer);
+
+const alu = mat(PAL.alu, { metalness: 0.85, roughness: 0.32 });
+
+const panel = new THREE.Group();
+panel.position.y = IMAC.lift;
+panel.rotation.x = IMAC.tilt;
+computer.add(panel);
+
+const bevel = 0.0016;
+const shellGeo = new THREE.ExtrudeGeometry(rectShape(IMAC.w - bevel * 2, IMAC.h - bevel * 2, 0.012), {
+  depth: IMAC.t - bevel * 2, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 3, curveSegments: 10,
+});
+shellGeo.translate(0, IMAC.h / 2, -IMAC.t / 2 + bevel);
+panel.add(mesh(shellGeo, alu));
+
+const chin = IMAC.h - IMAC.topBezel * 2 - IMAC.dh;
+const glassH = IMAC.h - chin;
+const glass = mesh(plate(IMAC.w - 0.002, glassH - 0.001, 0.0115, 0), phys(PAL.bezel, {
+  roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.05,
+}), { cast: false });
+glass.position.set(0, chin + glassH / 2, IMAC.t / 2 + 0.0002);
+panel.add(glass);
+
+const anchor = new THREE.Object3D();
+anchor.position.set(0, IMAC.h - IMAC.topBezel - IMAC.dh / 2, IMAC.t / 2 + 0.0005);
+panel.add(anchor);
+
+/* The hole: writes alpha 0, so the real page (under the canvas) shows through exactly where the display is visible. */
+const hole = new THREE.Mesh(
+  plate(IMAC.dw, IMAC.dh, 0.002),
+  new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0, blending: THREE.NoBlending, toneMapped: false })
+);
+hole.position.copy(anchor.position);
+hole.renderOrder = 1;
+panel.add(hole);
+/* Display "wakes": a black film over the hole that fades out during the intro. */
+const film = new THREE.Mesh(plate(IMAC.dw, IMAC.dh, 0.002), new THREE.MeshBasicMaterial({
+  color: 0x000000, transparent: true, opacity: 1, depthWrite: false, toneMapped: false,
+}));
+film.position.copy(anchor.position).add(new THREE.Vector3(0, 0, 0.0003));
+film.renderOrder = 2;
+panel.add(film);
+
+const STAND = { w: 0.15, t: 0.006 };
+const foot = mesh(new RoundedBoxGeometry(STAND.w, STAND.t, 0.15, 3, 0.0025), alu);
+foot.position.set(0, STAND.t / 2, -0.035);
+computer.add(foot);
+const upright = mesh(new RoundedBoxGeometry(STAND.w, 0.23, STAND.t, 3, 0.0025), alu);
+upright.rotation.x = 0.24;
+upright.receiveShadow = false;
+upright.position.set(0, 0.11, -0.05);
+computer.add(upright);
+contact(0.3, 0.26, 0, IMAC.z - 0.035);
+
+/* Keyboard + mouse */
+const kb = new THREE.Group();
+kb.position.set(-0.02, 0, 0.12);
+kb.userData.pick = 'computer';
+scene.add(kb);
+const KB = { w: 0.279, d: 0.115, h: 0.006 };
+const kbBody = mesh(new RoundedBoxGeometry(KB.w, KB.h, KB.d, 3, 0.0025), mat(PAL.keysBody, { metalness: 0.75, roughness: 0.35 }));
+kbBody.position.y = KB.h / 2;
+kbBody.rotation.x = deg(1.6);
+kb.add(kbBody);
 (function keyboard() {
   const rows = [
     { h: 0.6, keys: Array(14).fill(14.5 / 14) },
@@ -163,66 +280,48 @@ flat(roundedRect(0.12, 0.074, 0.006), mat(PAL.pad, { metalness: 0.85, roughness:
     { h: 1, keys: [2.25, ...Array(10).fill(1), 2.25] },
     { h: 1, keys: [1, 1, 1, 1.25, 5, 1.25, 1, 1, 1, 1] },
   ];
-  const u = 0.272 / 14.5;
-  const gap = 0.0024;
+  const u = 0.262 / 14.5;
+  const gap = 0.0026;
   const count = rows.reduce((n, r) => n + r.keys.length, 0);
-  const keys = new THREE.InstancedMesh(new RoundedBoxGeometry(1, 1, 1, 2, 0.18), mat(PAL.keys, { roughness: 0.55 }), count);
+  const keys = new THREE.InstancedMesh(new RoundedBoxGeometry(1, 1, 1, 2, 0.2), mat(PAL.keys, { roughness: 0.5 }), count);
+  keys.castShadow = true;
   keys.receiveShadow = true;
   const m4 = new THREE.Matrix4();
   let i = 0;
-  let z = -0.036 - 0.054;
+  let z = -0.049;
   rows.forEach((row) => {
     const depth = row.h * u;
-    let x = -0.136;
+    let x = -0.131;
     row.keys.forEach((w) => {
-      m4.makeScale(w * u - gap, 0.0012, depth - gap);
-      m4.setPosition(x + (w * u) / 2, LAP.h + 0.0008, z + depth / 2);
+      m4.makeScale(w * u - gap, 0.0016, depth - gap);
+      m4.setPosition(x + (w * u) / 2, KB.h + 0.0006 - z * 0.028, z + depth / 2);
       keys.setMatrixAt(i++, m4);
       x += w * u;
     });
     z += depth;
   });
-  laptop.add(keys);
+  kb.add(keys);
 })();
+contact(0.33, 0.16, -0.02, 0.12, PAL.contact * 0.6);
 
-const hinge = mesh(new THREE.CylinderGeometry(0.0045, 0.0045, LAP.w - 0.07, 20), mat(PAL.hinge, { metalness: 0.8, roughness: 0.4 }));
-hinge.rotation.z = Math.PI / 2;
-hinge.position.set(0, LAP.h, -LAP.d / 2 + 0.006);
-laptop.add(hinge);
-
-const lid = new THREE.Group();
-lid.position.set(0, LAP.h, -LAP.d / 2 + 0.004);
-lid.rotation.x = deg(89);
-laptop.add(lid);
-
-const shell = mesh(new RoundedBoxGeometry(LAP.w, LAP.lidL, LAP.lidT, 4, 0.0022), alu);
-shell.position.set(0, LAP.lidL / 2, -LAP.lidT / 2);
-lid.add(shell);
-const bezel = mesh(roundedRect(LAP.w - 0.004, LAP.lidL - 0.004, 0.009), mat(PAL.bezel, { roughness: 0.25, metalness: 0.2 }), { cast: false });
-bezel.position.set(0, LAP.lidL / 2, 0.0001);
-lid.add(bezel);
-
-const displayY = LAP.lidL - LAP.topBezel - LAP.dh / 2;
-const anchor = new THREE.Object3D();
-anchor.position.set(0, displayY, 0.0003);
-lid.add(anchor);
-
-/* The hole: writes alpha 0, so the real page (under the canvas) shows through exactly where the display is visible. */
-const hole = new THREE.Mesh(
-  roundedRect(LAP.dw, LAP.dh, 0.004),
-  new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0, blending: THREE.NoBlending, toneMapped: false })
-);
-hole.position.copy(anchor.position);
-lid.add(hole);
+const mouse = mesh(new THREE.SphereGeometry(1, 40, 24, 0, Math.PI * 2, 0, Math.PI / 2), phys(PAL.mouse, {
+  roughness: 0.25, clearcoat: 0.8, clearcoatRoughness: 0.1,
+}));
+mouse.scale.set(0.029, 0.012, 0.056);
+mouse.position.set(0.255, 0, 0.125);
+mouse.rotation.y = -0.12;
+mouse.userData.pick = 'computer';
+scene.add(mouse);
+contact(0.08, 0.13, 0.255, 0.125, PAL.contact * 0.7);
 
 /* ---- keychains ---- */
 const KEYCHAINS = [
-  { app: 'mono', name: 'Mono', x: 0.3, z: 0.17, rot: -0.45 },
-  { app: 'intent', name: 'Intent', x: 0.4, z: 0.02, rot: 0.5 },
-  { app: 'sileo', name: 'Sileo', x: -0.33, z: 0.14, rot: 0.75 },
+  { app: 'sileo', name: 'Sileo', x: -0.36, z: 0.16, rot: 0.7 },
+  { app: 'mono', name: 'Mono', x: 0.4, z: 0.2, rot: -0.4 },
+  { app: 'intent', name: 'Intent', x: 0.43, z: 0.03, rot: 0.45 },
 ];
-const CHARM = 0.06;
-const metal = mat(PAL.metal, { metalness: 1, roughness: 0.22 });
+const CHARM = 0.05;
+const metal = mat(PAL.metal, { metalness: 1, roughness: 0.2 });
 const chains = [];
 
 function splitRing(r) {
@@ -230,9 +329,9 @@ function splitRing(r) {
   const turns = 1.85;
   for (let i = 0; i <= 120; i++) {
     const a = (i / 120) * turns * Math.PI * 2;
-    pts.push(new THREE.Vector3(Math.cos(a) * r, (i / 120) * 0.0026, Math.sin(a) * r));
+    pts.push(new THREE.Vector3(Math.cos(a) * r, (i / 120) * 0.0024, Math.sin(a) * r));
   }
-  return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 160, 0.0011, 8, false);
+  return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 160, 0.001, 8, false);
 }
 
 const loader = new GLTFLoader();
@@ -246,25 +345,32 @@ KEYCHAINS.forEach((k) => {
   scene.add(g);
   chains.push(g);
 
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.04, 0.1), new THREE.MeshBasicMaterial({ visible: false }));
-  hit.position.set(-0.012, 0.02, -0.008);
+  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.04, 0.085), new THREE.MeshBasicMaterial({ visible: false }));
+  hit.position.set(-0.01, 0.02, -0.007);
   g.add(hit);
 
-  const corner = new THREE.Vector3(-CHARM / 2 + 0.004, 0, -CHARM / 2 + 0.004);
+  const corner = new THREE.Vector3(-CHARM / 2 + 0.0035, 0, -CHARM / 2 + 0.0035);
   const dir = new THREE.Vector3(-1, 0, -1).normalize();
-  const link = mesh(new THREE.TorusGeometry(0.0042, 0.0009, 8, 24), metal);
-  link.position.copy(corner).addScaledVector(dir, 0.002).setY(0.006);
+  const link = mesh(new THREE.TorusGeometry(0.0036, 0.0008, 8, 24), metal);
+  link.position.copy(corner).addScaledVector(dir, 0.0018).setY(0.005);
   link.rotation.set(Math.PI / 2 - 0.5, 0, Math.PI / 4);
   g.add(link);
-  const ring = mesh(splitRing(0.013), metal);
-  ring.position.copy(corner).addScaledVector(dir, 0.0175).setY(0.0011);
+  const ring = mesh(splitRing(0.011), metal);
+  ring.position.copy(corner).addScaledVector(dir, 0.015).setY(0.001);
   g.add(ring);
+  const shade = new THREE.Mesh(new THREE.PlaneGeometry(CHARM * 1.5, CHARM * 1.5), new THREE.MeshBasicMaterial({
+    map: shadowTex, color: 0x000000, transparent: true, opacity: PAL.contact * 0.8, depthWrite: false,
+  }));
+  shade.rotation.x = -Math.PI / 2;
+  shade.position.y = 0.0006;
+  g.add(shade);
+  g.userData.shade = shade;
 
   loader.load(`style/3d%20models/${k.app}/icon_${k.app}_3d_${THEME}.glb`, (gltf) => {
     const charm = gltf.scene;
     charm.rotation.x = -Math.PI / 2;
     charm.scale.setScalar(CHARM / 0.1445);
-    charm.position.y = 0.0048 + 0.0003;
+    charm.position.y = (0.024 * CHARM) / 0.1445 / 2 + 0.0002;
     charm.traverse((o) => {
       if (!o.isMesh) return;
       o.castShadow = true;
@@ -272,13 +378,14 @@ KEYCHAINS.forEach((k) => {
       if (o.material && 'envMapIntensity' in o.material) o.material.envMapIntensity = PAL.env;
     });
     g.add(charm);
+    g.userData.charm = charm;
   });
 });
 
 /* ---- page mapping ---- */
 function quadSize() {
   const a = window.innerWidth / window.innerHeight;
-  return a > LAP.dw / LAP.dh ? { qw: LAP.dw, qh: LAP.dw / a } : { qw: LAP.dh * a, qh: LAP.dh };
+  return a > IMAC.dw / IMAC.dh ? { qw: IMAC.dw, qh: IMAC.dw / a } : { qw: IMAC.dh * a, qh: IMAC.dh };
 }
 
 /* Projective map of the page rect (0,0)-(W,H) onto four screen points (TL, TR, BR, BL), as a CSS matrix3d. */
@@ -320,15 +427,15 @@ function syncPage() {
 }
 
 /* ---- camera ---- */
-const IDLE = { target: new THREE.Vector3(0, -0.05, 0.05), dist: 1.62, el: deg(24) };
+const IDLE = { target: new THREE.Vector3(0, 0.215, -0.08), dist: 1.48, el: deg(10) };
 const pointer = { x: 0, y: 0, sx: 0, sy: 0, ndc: new THREE.Vector2(), inside: false };
 const camTarget = new THREE.Vector3();
 let push = 0;
 
 function idlePose(k) {
-  const dist = IDLE.dist * (1 + 0.32 * (1 - k)) * (1 - push * 0.035);
-  const el = IDLE.el + deg(10) * (1 - k) + pointer.sy * deg(2.4);
-  const az = deg(-16) * (1 - k) + pointer.sx * deg(4.5);
+  const dist = IDLE.dist * (1 + 0.3 * (1 - k)) * (1 - push * 0.04);
+  const el = IDLE.el + deg(7) * (1 - k) + pointer.sy * deg(1.8);
+  const az = deg(-12) * (1 - k) + pointer.sx * deg(3.5);
   camTarget.copy(IDLE.target);
   camera.position.set(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(dist).add(camTarget);
   camera.up.set(0, 1, 0);
@@ -369,7 +476,7 @@ function enter(app) {
   zoom.t = 0;
   zoom.app = app || null;
   zoom.from = { target: camTarget.clone(), q: camera.quaternion.clone(), dist: camera.position.distanceTo(camTarget) };
-  lid.rotation.x = LAP.open;
+  film.material.opacity = 0;
   hint.classList.remove('is-shown');
   label.classList.remove('is-shown');
   canvas.classList.remove('is-hover');
@@ -395,12 +502,14 @@ function finish() {
 
 /* ---- input ---- */
 const raycaster = new THREE.Raycaster();
+const pickables = [computer, kb, mouse, ...chains];
 function pick() {
   raycaster.setFromCamera(pointer.ndc, camera);
-  const hit = raycaster.intersectObjects([laptop, ...chains], true)[0];
+  const hit = raycaster.intersectObjects(pickables, true)[0];
   if (!hit) return null;
   let o = hit.object;
   while (o && !o.userData.pick) o = o.parent;
+  if (o && o.userData.pick === 'computer') return computer;
   return o || null;
 }
 
@@ -418,7 +527,7 @@ canvas.addEventListener('click', (e) => {
   const o = pick();
   if (!o) return;
   if (mode === 'intro') { introT = INTRO; idlePose(1); }
-  enter(o.userData.pick === 'laptop' ? null : o.userData.pick);
+  enter(o === computer ? null : o.userData.pick);
 });
 function onKey(e) {
   if ((e.key === 'Enter' || e.key === ' ') && (mode === 'idle' || mode === 'intro')) {
@@ -449,7 +558,7 @@ function frame() {
   if (mode === 'intro' || mode === 'idle') {
     if (mode === 'intro') {
       introT += dt;
-      lid.rotation.x = lerp(deg(89), LAP.open, easeOut(clamp((introT - 0.5) / 1.7, 0, 1)));
+      film.material.opacity = 1 - easeOut(clamp((introT - 0.7) / 1.3, 0, 1));
       if (introT > 1.4) hint.classList.add('is-shown');
       if (introT >= INTRO) mode = 'idle';
     }
@@ -460,7 +569,7 @@ function frame() {
       if (hover && hover.userData.name) label.textContent = hover.userData.name;
       label.classList.toggle('is-shown', !!(hover && hover.userData.name));
     }
-    push = damp(push, hover === laptop ? 1 : 0, 4, dt);
+    push = damp(push, hover === computer ? 1 : 0, 4, dt);
     idlePose(easeOut(clamp(introT / INTRO, 0, 1)));
   } else if (mode === 'zoom') {
     zoom.t = Math.min(1, zoom.t + dt / ZOOM);
@@ -470,8 +579,10 @@ function frame() {
   chains.forEach((g) => {
     g.userData.lift = damp(g.userData.lift, hover === g && mode !== 'zoom' ? 1 : 0, 9, dt);
     const l = g.userData.lift;
-    g.position.y = l * 0.016;
-    g.rotation.x = l * deg(-8);
+    if (g.userData.charm) g.userData.charm.position.y = (0.024 * CHARM) / 0.1445 / 2 + 0.0002 + l * 0.014;
+    if (g.userData.charm) g.userData.charm.rotation.z = l * deg(6);
+    g.userData.shade.material.opacity = PAL.contact * 0.8 * (1 - l * 0.5);
+    g.userData.shade.scale.setScalar(1 + l * 0.25);
   });
 
   scene.updateMatrixWorld();
