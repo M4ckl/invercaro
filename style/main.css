@@ -211,82 +211,6 @@ html[data-theme="dark"] .logo-icon {
     background-color: color-mix(in srgb, var(--text-strong) 9%, transparent);
 }
 
-/* ====== MENU BAR APP MODE ====== */
-.menubar-swap {
-    display: grid;
-    align-items: center;
-    height: 100%;
-}
-
-.menubar-group {
-    grid-area: 1 / 1;
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    height: 100%;
-}
-
-.menubar-group > * {
-    transition: opacity 260ms var(--ease-out), transform 460ms var(--ease-pop), filter 300ms var(--ease-out);
-    transition-delay: calc(var(--k, 0) * 55ms);
-}
-
-.menubar-group > :nth-child(2) { --k: 1; }
-.menubar-group > :nth-child(3) { --k: 2; }
-
-.menubar-group--app > *,
-.menubar.is-app .menubar-group--site > * {
-    opacity: 0;
-    filter: blur(5px);
-    pointer-events: none;
-    transition-duration: 180ms, 240ms, 180ms;
-    transition-delay: calc(var(--k, 0) * 30ms);
-}
-
-.menubar-group--app > * {
-    transform: translate3d(0, 9px, 0);
-}
-
-.menubar.is-app .menubar-group--site > * {
-    transform: translate3d(0, -9px, 0);
-}
-
-.menubar.is-app .menubar-group--app > * {
-    opacity: 1;
-    filter: none;
-    transform: none;
-    pointer-events: auto;
-    transition-duration: 300ms, 520ms, 340ms;
-    transition-delay: calc(120ms + var(--k, 0) * 60ms);
-}
-
-.menubar.is-app .menubar-group--app.is-refreshing > * {
-    opacity: 0;
-    filter: blur(4px);
-    transform: translate3d(-6px, 0, 0);
-    transition-duration: 160ms;
-    transition-delay: 0ms;
-}
-
-.menu-row--head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    font-weight: 600;
-}
-
-.menu-status {
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    background-color: var(--color-gray-line);
-}
-
 /* ====== MENU POPOVERS ====== */
 .menu {
     position: relative;
@@ -473,90 +397,6 @@ html.has-splash .splash {
     z-index: 1;
 }
 
-/* ====== 3D MODEL ====== */
-.stage-center {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.model-stage {
-    position: relative;
-    width: 500px;
-    height: 500px;
-    max-width: 46vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.model-stage::before {
-    content: "";
-    position: absolute;
-    width: 60%;
-    height: 60%;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(var(--dot-glow), 0.22), transparent 70%);
-    opacity: 0;
-    transition: opacity var(--dur-slow) var(--ease-out);
-}
-
-.model-stage.has-model::before { opacity: 1; }
-
-.model-float {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    animation: model-float 3s var(--ease-in-out) infinite;
-}
-
-.app-model {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    --poster-color: transparent;
-    --progress-bar-color: transparent;
-    --progress-bar-height: 0px;
-    --progress-mask: transparent;
-    background-color: transparent;
-    pointer-events: none;
-    transition: opacity 700ms var(--ease-out), filter 800ms var(--ease-out), transform 900ms var(--ease-spring);
-}
-
-.app-model.is-entering {
-    opacity: 0;
-    filter: blur(16px);
-    transform: scale(0.88) rotate(6deg);
-}
-
-.app-model.is-leaving {
-    opacity: 0;
-    filter: blur(16px);
-    transform: scale(1.1) rotate(-6deg);
-}
-
-.app-model::part(default-progress-bar) {
-    display: none;
-    opacity: 0;
-}
-
-@keyframes model-float {
-    0%, 100% { transform: translateY(-11px); }
-    50%      { transform: translateY(11px); }
-}
-
-.model-stage.pop { animation: model-pop 600ms var(--ease-spring) both; }
-
-@keyframes model-pop {
-    0%   { opacity: 0; transform: scale(0.72); }
-    100% { opacity: 1; transform: scale(1); }
-}
-
 /* ====== DOCK ====== */
 .dock {
     position: absolute;
@@ -734,7 +574,6 @@ html.has-splash .splash {
     transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
 }
 
-.dock-app.is-active .dock-dot,
 .dock-app.is-minimized .dock-dot {
     opacity: 0.9;
     transform: scale(1);
@@ -852,8 +691,7 @@ html[data-theme="dark"] .space-frame {
     border-radius: 0;
 }
 
-html.space-open .dock,
-html.space-open .stage-center {
+html.space-open .dock {
     visibility: hidden;
     transition: visibility 0s 400ms;
 }
@@ -881,7 +719,6 @@ html:not(.is-loaded) main {
 
 html.is-loaded .menubar { animation: nav-in 600ms var(--ease-out) 80ms both; }
 
-html.is-loaded .stage-center { animation: fade 900ms var(--ease-out) 300ms both; }
 html.is-loaded .dock { animation: rise 700ms var(--ease-spring) 260ms both; }
 
 /* ====== PAGE TRANSITIONS ====== */

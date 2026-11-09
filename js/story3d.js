@@ -15,7 +15,7 @@ function update() {
   const on = state.staged && state.page && state.visible;
   if (engine) { engine.setActive(on); return; }
   if (!on || loading) return;
-  loading = import('./story3d-engine.js?v=59')
+  loading = import('./story3d-engine.js?v=60')
     .then((m) => m.createLiveStory(live))
     .then((e) => { engine = e; update(); })
     .catch(fallback);

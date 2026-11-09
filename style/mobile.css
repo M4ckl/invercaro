@@ -86,22 +86,6 @@
         gap: 24px;
     }
 
-    .stage-center { order: 1; }
-    .dock         { order: 2; }
-
-    .stage-center {
-        position: static !important;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .model-stage {
-        width: min(80vw, 340px);
-        height: min(80vw, 340px);
-        max-width: none;
-    }
-
     .dock {
         position: static !important;
         right: auto;

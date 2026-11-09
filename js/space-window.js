@@ -225,6 +225,12 @@
     show('#' + minimizedApp, { restore: true });
   }, true);
 
+  /* ---- an app's dock icon opens its window ---- */
+  document.addEventListener('click', (e) => {
+    const app = e.target.closest('.dock-app');
+    if (app) show('#' + app.dataset.app);
+  });
+
   /* ---- links to Space open the window ---- */
   document.addEventListener('click', (e) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
