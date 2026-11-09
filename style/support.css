@@ -385,3 +385,79 @@ html.is-loaded .su-layout { animation: rise 800ms var(--ease-out) 240ms both; }
         font-size: 15px;
     }
 }
+
+/* ====== WINDOW (embedded in the home page: one app per window) ====== */
+.su-window-bar {
+    display: none;
+}
+
+html.is-embed,
+html.is-embed body {
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+}
+
+html.is-embed .menubar,
+html.is-embed .dots-canvas,
+html.is-embed .su-apps {
+    display: none;
+}
+
+html.is-embed .su-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    max-width: none;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    background-color: var(--bg-main);
+    transition: background-color var(--dur-slow) var(--ease-out), border-radius 420ms var(--ease-spring);
+}
+
+html.su-max .su-container {
+    border-radius: 0;
+    border: none;
+}
+
+html.is-embed .su-window-bar {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--color-gray-line);
+    background-color: color-mix(in srgb, var(--bg-main) 45%, var(--bg-card));
+}
+
+.su-window-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-strong);
+    white-space: nowrap;
+}
+
+html.is-embed .su-window-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 clamp(24px, 6vw, 96px) 72px;
+}
+
+html.is-embed .su-hero {
+    padding: 44px 0 32px;
+}
+
+html.is-embed .su-layout {
+    display: block;
+    max-width: 820px;
+    margin: 0 auto;
+}

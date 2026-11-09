@@ -7,25 +7,39 @@
   <title>Invercaro</title>
   <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
   <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
-  <link rel="stylesheet" href="style/main.css?v=44">
-  <link rel="stylesheet" href="style/mobile.css?v=44">
+  <link rel="stylesheet" href="style/main.css?v=70">
+  <link rel="stylesheet" href="style/mobile.css?v=70">
+  <link rel="stylesheet" href="style/desk.css?v=70">
   <script>
     (function () {
       try {
-        var t = localStorage.getItem('invercaro-theme');
-        if (t) document.documentElement.setAttribute('data-theme', t);
+        var h = new Date().getHours();
+        document.documentElement.setAttribute('data-theme', h >= 10 && h < 18 ? 'light' : 'dark');
       } catch (e) {}
       document.documentElement.classList.add('is-loading');
       try {
         var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!calm && !sessionStorage.getItem('invercaro-splash')) document.documentElement.classList.add('has-splash');
+        var q = new URLSearchParams(location.search).get('desk');
+        var internal = false;
+        if (document.referrer) {
+          var r = new URL(document.referrer);
+          internal = r.origin === location.origin && !/(\/|index\.html)$/.test(r.pathname);
+        }
+        var desk = q === '1' || (q !== '0' && !calm && !internal && window.innerWidth > 900 && !!window.WebGLRenderingContext);
+        if (desk) {
+          document.documentElement.classList.add('desk-on');
+          setTimeout(function () { if (!window.__deskReady) document.documentElement.classList.remove('desk-on'); }, 9000);
+        } else if (!calm && !sessionStorage.getItem('invercaro-splash')) {
+          document.documentElement.classList.add('has-splash');
+        }
       } catch (e) {}
     })();
   </script>
-  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+  <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
 </head>
 
 <body class="home">
+  <div class="desk-page" id="desk-page">
   <canvas class="dots-canvas" id="dots-canvas" aria-hidden="true"></canvas>
 
   <div class="splash" id="splash" aria-hidden="true">
@@ -42,17 +56,17 @@
       <a href="index.html" class="menubar-logo" aria-label="Invercaro home">
         <img src="style/icons/icon_invercaro.svg" alt="" class="logo-icon">
       </a>
-      <div class="menu">
-        <button class="menubar-item menu-trigger" id="link-invercaro" type="button" aria-expanded="false" aria-controls="menu-invercaro">Invercaro</button>
-        <div class="menu-pop menu-pop--list" id="menu-invercaro" role="dialog" aria-label="Invercaro">
-          <p class="menu-row">We create products that leave space.</p>
-          <p class="menu-row">An independent app studio crafting quiet, minimalist tools for&nbsp;iOS.</p>
-          <p class="menu-row">Software that respects your attention, removes clutter, and leaves space for what truly&nbsp;matters.</p>
-        </div>
-      </div>
-
       <div class="menubar-swap">
         <div class="menubar-group menubar-group--site" id="menubar-site">
+          <div class="menu">
+            <button class="menubar-item menu-trigger" id="link-invercaro" type="button" aria-expanded="false" aria-controls="menu-invercaro">Invercaro</button>
+            <div class="menu-pop menu-pop--list" id="menu-invercaro" role="dialog" aria-label="Invercaro">
+              <p class="menu-row">We create products that leave space.</p>
+              <p class="menu-row">An independent app studio crafting quiet, minimalist tools for&nbsp;iOS.</p>
+              <p class="menu-row">Software that respects your attention, removes clutter, and leaves space for what truly&nbsp;matters.</p>
+            </div>
+          </div>
+
           <div class="menu">
             <button class="menubar-item menu-trigger" id="link-space" type="button" aria-expanded="false" aria-controls="menu-space">Space</button>
             <div class="menu-pop menu-pop--apps" id="menu-space" role="menu" aria-label="Space">
@@ -81,36 +95,20 @@
         </div>
 
         <div class="menubar-group menubar-group--app" id="menubar-app" inert>
-          <a class="menubar-item" id="menubar-app-explore" href="space.html#mono">Explore</a>
-
           <div class="menu">
-            <button class="menubar-item menu-trigger" id="menubar-app-about" type="button" aria-expanded="false" aria-controls="menu-app">About Mono</button>
+            <button class="menubar-item menu-trigger nav-current" id="menubar-app-name" type="button" aria-expanded="false" aria-controls="menu-app">Mono</button>
             <div class="menu-pop menu-pop--list" id="menu-app" role="dialog" aria-label="About the app">
-              <p class="menu-row menu-row--head"><span id="menu-app-name">Mono</span><span class="menu-status" id="menu-app-status">Testing</span></p>
+              <p class="menu-row menu-row--head"><span id="menu-app-title">Mono</span><span class="menu-status" id="menu-app-status">Testing</span></p>
               <p class="menu-row" id="menu-app-desc"></p>
             </div>
           </div>
+          <a class="menubar-item" id="menubar-app-overview" href="space.html#mono">Overview</a>
+          <a class="menubar-item" id="menubar-app-support" href="support.html#mono">Support</a>
         </div>
       </div>
     </nav>
 
     <div class="menubar-right">
-      <a href="support.html" class="header-icon-btn" id="link-support" aria-label="Support">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9.5" />
-          <path d="M9.4 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.6 2.4-2.6 4" />
-          <circle cx="12" cy="17.4" r="0.6" fill="currentColor" stroke="none" />
-        </svg>
-      </a>
-      <button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Toggle dark theme">
-        <svg class="theme-glyph-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
-        </svg>
-        <svg class="theme-glyph-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-        </svg>
-      </button>
       <time class="menubar-clock" id="menubar-clock"></time>
     </div>
   </header>
@@ -119,34 +117,18 @@
     <section class="projects-canvas">
       <div class="stage">
 
-        <!-- Center: 3D model of the selected app -->
-        <div class="stage-center">
-          <div class="model-stage" id="model-stage">
-            <div class="model-float" id="model-float">
-              <model-viewer id="app-model" class="app-model" hidden camera-orbit="0deg 90deg 95%"
-                camera-target="0m 0m 0m" interaction-prompt="none" disable-zoom disable-pan disable-tap
-                shadow-intensity="0" exposure="1" environment-image="neutral" interpolation-decay="140"
-                loading="eager"></model-viewer>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dock: app switcher -->
+        <!-- Dock: each app opens its window -->
         <div class="dock" id="dock">
           <div class="dock-apps" id="dock-apps">
-            <button class="dock-app" type="button" data-app="sileo" data-name="Sileo" data-status="design"
-              data-desc="Space to pause, breathe and notice the small wins." data-href="space.html#sileo"
-              data-model="1" aria-label="Sileo">
+            <button class="dock-app" type="button" data-app="sileo" data-name="Sileo" aria-label="Sileo">
               <img class="dock-icon" data-app-icon="sileo" src="style/icons/icon_sileo.svg" alt="Sileo">
               <span class="dock-dot"></span>
             </button>
-            <button class="dock-app" type="button" data-app="mono" data-name="Mono" data-status="testing"
-              data-desc="Track spending. Nothing more." data-href="space.html#mono" data-model="1" aria-label="Mono">
+            <button class="dock-app" type="button" data-app="mono" data-name="Mono" aria-label="Mono">
               <img class="dock-icon" data-app-icon="mono" src="style/icons/icon_mono.svg" alt="Mono">
               <span class="dock-dot"></span>
             </button>
-            <button class="dock-app" type="button" data-app="intent" data-name="Intent" data-status="testing"
-              data-desc="Plan the trip. Keep the journey." data-href="space.html#intent" data-model="1"
+            <button class="dock-app" type="button" data-app="intent" data-name="Intent"
               aria-label="Intent">
               <img class="dock-icon" data-app-icon="intent" src="style/icons/icon_intent.svg" alt="Intent">
               <span class="dock-dot"></span>
@@ -161,15 +143,35 @@
     </section>
   </main>
 
-  <div class="space-host" id="space-host" hidden>
-    <iframe class="space-frame" id="space-frame" title="Space" tabindex="-1"></iframe>
+  <div class="space-hosts" id="space-hosts"></div>
   </div>
 
-  <script src="js/bg.js?v=44"></script>
-  <script src="js/site.js?v=44"></script>
-  <script src="js/dock.js?v=44"></script>
-  <script src="js/app.js?v=44"></script>
-  <script src="js/space-window.js?v=44"></script>
+  <canvas class="desk-canvas" id="desk-canvas" aria-label="A table with a laptop. Click the laptop or press Enter to open the site."></canvas>
+  <div class="desk-veil" id="desk-veil" aria-hidden="true"></div>
+  <p class="desk-hint" id="desk-hint"><strong>Invercaro</strong> · Click the screen to enter</p>
+  <span class="desk-label" id="desk-label" aria-hidden="true"></span>
+
+  <script src="js/bg.js?v=70"></script>
+  <script src="js/site.js?v=70"></script>
+  <script src="js/dock.js?v=70"></script>
+  <script src="js/app.js?v=70"></script>
+  <script src="js/space-window.js?v=70"></script>
+  <script type="module">
+    const root = document.documentElement;
+    const loadDesk = () => import('./js/desk.js?v=70');
+    if (root.classList.contains('desk-on')) loadDesk().catch(() => root.classList.remove('desk-on'));
+
+    /* The logo flies back out of the screen to the desk instead of reloading the page. */
+    const logo = document.querySelector('.menubar-logo');
+    const canDesk = () => window.innerWidth > 900 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (logo) logo.addEventListener('click', (e) => {
+      if (!canDesk() || root.classList.contains('desk-on')) return;
+      e.preventDefault();
+      if (window.invercaroDesk) { window.invercaroDesk.back(); return; }
+      window.__deskBack = true;
+      loadDesk().catch(() => { window.location.href = 'index.html'; });
+    }, true);
+  </script>
 </body>
 
 </html>

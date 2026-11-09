@@ -8,24 +8,10 @@
    pose (side, distance, angle); crossing to the other side the phone pulls back, rises a little and leans into the
    direction of travel, then comes forward again. While a chapter is read it drifts slowly closer.
 
-   Model: "iPhone 17 Pro Max" by MajdyModels (CC BY 4.0), credited on the page.
-   Screen mapping follows app-preview-craft: planar UVs over the display mesh and an unlit, emissive screen. */
+   Model: our own silver iPhone (js/phone3d.js). The Dynamic Island is painted into the screen texture. */
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-
-const MODEL = 'style/3d%20models/iphone_17_pro_max.glb';
-const SCREEN_MATERIAL = 'screen.001';
-const FIX = [0, Math.PI / 2, 0]; // turns the raw model so its screen faces +Z
-const DISPLAY = [1320, 2868];
-const ISLAND = { w: 125 / 402, h: 37.3 / 874, top: 11 / 874 };
-/* Silver finish for the body parts (the model ships in orange). */
-const FINISH = {
-  'basecolor.001': { color: 0xe4e6ea, metalness: 0.7, roughness: 0.3 },
-  'metalframe.002': { color: 0xdfe1e5, metalness: 0.8, roughness: 0.22 },
-  'backpanel.001': { color: 0xeceef1, metalness: 0.2, roughness: 0.45 },
-};
+import { buildPhone, DISPLAY, ISLAND } from './phone3d.js?v=70';
 const UNIT = 0.6; // window heights of scrolling per step
 /* Settled pose per chapter: x overrides the side from data-side, z is the distance (+ closer), angles in degrees,
    drift/push = how much it turns and comes closer while the chapter is read.
@@ -145,81 +131,21 @@ export async function createLiveStory(live) {
   video.addEventListener('seeked', paintFrame);
   video.addEventListener('loadeddata', paintFrame);
 
-  /* ---- model (loads in the background; the text already works meanwhile) ---- */
-  let modelReady = false;
-  (async () => {
-    const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(MODEL);
-    const model = gltf.scene;
-    const fix = new THREE.Group();
-    fix.rotation.set(...FIX);
-    fix.add(model);
-    fix.updateMatrixWorld(true);
-    const box = new THREE.Box3().setFromObject(fix);
-    const size = box.getSize(new THREE.Vector3());
-    fix.position.copy(box.getCenter(new THREE.Vector3())).negate();
-    const norm = new THREE.Group();
-    norm.add(fix);
-    norm.scale.setScalar(1 / size.y);
-    pivot.add(norm);
-    pivot.updateMatrixWorld(true);
-
-    const screens = [];
-    model.traverse((o) => {
-      if (!o.isMesh || !o.material) return;
-      const name = o.material.name;
-      if (name === SCREEN_MATERIAL) { screens.push(o); return; }
-      const finish = FINISH[name];
-      if (finish) {
-        o.material = o.material.clone();
-        o.material.map = null;
-        o.material.color.setHex(finish.color);
-        o.material.metalness = finish.metalness;
-        o.material.roughness = finish.roughness;
-        o.material.needsUpdate = true;
-      }
-    });
-    if (!screens.length) throw new Error('screen mesh not found');
-    const inv = new THREE.Matrix4().copy(pivot.matrixWorld).invert();
-    const v = new THREE.Vector3();
-    const b = new THREE.Box2(new THREE.Vector2(Infinity, Infinity), new THREE.Vector2(-Infinity, -Infinity));
-    const pts = screens.map((mesh) => {
-      const pos = mesh.geometry.attributes.position;
-      const m = new THREE.Matrix4().multiplyMatrices(inv, mesh.matrixWorld);
-      const list = [];
-      for (let i = 0; i < pos.count; i++) {
-        v.fromBufferAttribute(pos, i).applyMatrix4(m);
-        list.push([v.x, v.y]);
-        b.expandByPoint(new THREE.Vector2(v.x, v.y));
-      }
-      return list;
-    });
-    const screenMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x000000,
-      emissive: 0xffffff,
-      emissiveMap: texture,
-      roughness: 0.06,
-      metalness: 0,
-      clearcoat: 1,
-      clearcoatRoughness: 0.04,
-      envMapIntensity: 0.3,
-      toneMapped: false,
-      side: THREE.DoubleSide,
-    });
-    screens.forEach((mesh, n) => {
-      const geo = mesh.geometry.clone();
-      const uv = new Float32Array(pts[n].length * 2);
-      pts[n].forEach(([x, y], i) => {
-        uv[i * 2] = (x - b.min.x) / (b.max.x - b.min.x);
-        uv[i * 2 + 1] = (y - b.min.y) / (b.max.y - b.min.y);
-      });
-      geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-      mesh.geometry = geo;
-      mesh.material = screenMaterial;
-      mesh.renderOrder = 1;
-    });
-    modelReady = true;
-    live.classList.add('is-ready');
-  })().catch(() => section && section.classList.add('ap-live-off'));
+  /* ---- model: our own iPhone, built here (height 1, screen facing +Z) ---- */
+  const screenMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0x000000,
+    emissive: 0xffffff,
+    emissiveMap: texture,
+    roughness: 0.06,
+    metalness: 0,
+    clearcoat: 1,
+    clearcoatRoughness: 0.04,
+    envMapIntensity: 0.3,
+    toneMapped: false,
+  });
+  pivot.add(buildPhone(screenMaterial));
+  const modelReady = true;
+  live.classList.add('is-ready');
 
   /* ---- layout: scroll track height and camera ---- */
   let viewH = 1;

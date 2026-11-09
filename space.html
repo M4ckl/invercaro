@@ -12,14 +12,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap">
-    <link rel="stylesheet" href="style/main.css?v=44">
-    <link rel="stylesheet" href="style/space.css?v=44">
-    <link rel="stylesheet" href="style/mobile.css?v=44">
+    <link rel="stylesheet" href="style/main.css?v=70">
+    <link rel="stylesheet" href="style/space.css?v=70">
+    <link rel="stylesheet" href="style/mobile.css?v=70">
     <script>
         (function () {
             try {
-                var t = localStorage.getItem('invercaro-theme');
-                if (t) document.documentElement.setAttribute('data-theme', t);
+                var h = new Date().getHours();
+                document.documentElement.setAttribute('data-theme', h >= 10 && h < 18 ? 'light' : 'dark');
             } catch (e) {}
             if (window.self !== window.top) document.documentElement.classList.add('is-embed');
             document.documentElement.classList.add('is-loading');
@@ -71,22 +71,6 @@
       </nav>
 
       <div class="menubar-right">
-        <a href="support.html" class="header-icon-btn" id="link-support" aria-label="Support">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9.5" />
-            <path d="M9.4 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.6 2.4-2.6 4" />
-            <circle cx="12" cy="17.4" r="0.6" fill="currentColor" stroke="none" />
-          </svg>
-        </a>
-        <button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Toggle dark theme">
-          <svg class="theme-glyph-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
-          </svg>
-          <svg class="theme-glyph-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-          </svg>
-        </button>
         <time class="menubar-clock" id="menubar-clock"></time>
       </div>
     </header>
@@ -162,7 +146,6 @@
                                 </ol>
                             </article>
                             </div>
-                            <p class="ap-live-credit">3D iPhone model: <a href="https://sketchfab.com/3d-models/iphone-17-pro-max-87fc1df741384124a8ce0226d2b2058d" target="_blank" rel="noopener">“iPhone 17 Pro Max”</a> by <a href="https://sketchfab.com/MG990" target="_blank" rel="noopener">MajdyModels</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
                         </div>
                     </div>
 
@@ -308,82 +291,116 @@
                     </div>
 
                     <div id="sp-intent" class="sp-content-section ap ap--intent" data-title="Plan the trip. Keep the journey.">
-                    <header class="ap-hero ap-hero--video ap-block">
+                    <!-- Full-window stages: hero, Plan, Details, Map; then the Memories frame and the privacy policy scroll. Each frame is a
+                         horizontal rail of parts with a 3D iPhone (js/intent.js + js/intent3d.js). -->
+                    <div class="ap-deck" data-stages>
+                    <header class="ap-hero ap-hero--video ap-block ap-stage" data-stage="0" aria-label="Intent">
                         <div class="ap-hero-media" aria-hidden="true">
                             <video class="ap-hero-video" data-src="style/videos/intent/intent_hero.mp4" poster="style/videos/intent/intent_hero_poster.jpg" muted loop playsinline preload="none"></video>
                         </div>
-                        <h1 class="ap-display rv">Plan the trip.<br>Keep the journey.</h1>
-                        <p class="ap-lead rv">Every trip becomes a travel note: cities, days, tickets and photos in one place. And when you’re back, your map fills in.</p>
+                        <h1 class="ap-display ap-in" style="--d:0">Plan the trip.<br>Keep the journey.</h1>
+                        <p class="ap-lead ap-in" style="--d:2">Every trip becomes a travel note: cities, days, tickets and photos in one place. And when you’re back, your map fills in.</p>
                     </header>
 
-                    <section class="ap-center ap-block">
-                        <div class="ap-center-head">
-                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>Trips</span>
-                            <h2 class="ap-h2 rv">Every trip,<br>a travel note.</h2>
-                            <p class="ap-p rv">Pick a country and dates. The note is ready. Each trip gets a photo of its country, its stops and its length at a glance.</p>
-                            <ul class="ap-ticks rv"><li>Your next trip is always on top</li><li>Upcoming trips grouped by season</li><li>Finished ones move to the archive by themselves</li></ul>
-                        </div>
-                        <figure class="ap-shots rv"><img src="style/images/intent/image_intent_main.svg" width="418" height="850" alt="Intent’s My Trips list with a trip to Spain" class="ap-phone"><img src="style/images/intent/image_intent_travel_note.svg" width="418" height="850" alt="A trip to Spain opened as a travel note" class="ap-phone"></figure>
-                    </section>
-
-                    <section class="ap-lede ap-block">
-                        <figure class="ap-shots rv"><img src="style/images/intent/image_intent_step.svg" width="418" height="850" alt="Barcelona with its plan by day" class="ap-phone" loading="lazy" decoding="async"><img src="style/images/intent/image_intent_calendar.svg" width="418" height="850" alt="The trip calendar, one card for every day" class="ap-phone" loading="lazy" decoding="async"></figure>
-                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>Planning</span>
-                            <h2 class="ap-h2 rv">Plan city<br>by city.</h2>
-                            <p class="ap-p rv">Add the cities you’ll visit, then fill in each day. One place for everything you want to see.</p>
-                            <ul class="ap-features rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></span><div><strong>Places &amp; notes</strong><span>Give each one a day and a time, or keep it for any time that day.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><div><strong>Calendar</strong><span>Every day of the trip, built from your cities, with how you get between them.</span></div></li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.9 5.6 5.6 1.9-5.6 1.9L12 18.5l-1.9-5.6L4.5 11l5.6-1.9z"/></svg></span><div><strong>Not planned yet</strong><span>Ideas wait here until you find them a day.</span></div></li></ul></div>
-                    </section>
-
-                    <section class="ap-lede ap-block ap-lede--flip">
-                        <figure class="ap-shots rv"><img src="style/images/intent/image_intent_documents.svg" width="418" height="850" alt="The trip’s documents, filtered into tickets, bookings and personal" class="ap-phone" loading="lazy" decoding="async"></figure>
-                        <div class="ap-text"><span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5h17v3a2 2 0 0 0 0 3v3h-17v-3a2 2 0 0 0 0-3z"/><path d="M14.5 7.5v9" stroke-dasharray="1.5 2"/></svg></span>Documents</span>
-                            <h2 class="ap-h2 rv">Every ticket<br>in its place.</h2>
-                            <p class="ap-p rv">Add files and photos to the trip, a city, a place or the journey between cities. They open right in the app, even offline.</p>
-                            <ul class="ap-ticks rv"><li><strong>Tickets.</strong> Flights show as boarding-pass cards with the route and flight number.</li><li><strong>Bookings.</strong> Hotels and tours, kept with the city they’re for.</li><li><strong>Personal.</strong> Insurance and other papers for the whole trip.</li></ul></div>
-                    </section>
-
-                    <section class="ap-rail-block ap-block">
-                        <div class="ap-center-head">
-                            <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg></span>After the trip</span>
-                            <h2 class="ap-h2 rv">See how far<br>you’ve come.</h2>
-                        </div>
-                        <div class="ap-rail" data-rail tabindex="0" role="group" aria-label="Intent map, cards and friends">
-                            <div class="ap-rail-track">
-                        <article class="ap-slide">
-                            <div class="ap-slide-text">
-                                <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg></span>Map</span>
-                                <h3 class="ap-h2 ap-h2--slide rv">Fill in your<br>world map.</h3>
-                                <p class="ap-p rv">Finished trips color in their countries. Mark the ones you visited before and watch countries, continents and cities add up. The Country Wall puts a photo of every place on one page.</p>
-
+                    <section class="ap-stage ip-frame" data-stage="1" aria-label="Plan" data-ip>
+                        <div class="ip-copy">
+                            <span class="ap-eyebrow ap-in" style="--d:0"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>Plan</span>
+                            <h2 class="ap-h2 ap-in" style="--d:1">Every trip,<br>a travel note.</h2>
+                            <div class="ip-rail ap-in" style="--d:2" tabindex="0" role="group" aria-label="Plan">
+                                <article class="ip-part" data-label="New trip" data-video="style/videos/intent/features/newtrip.mp4" data-ms="20800" data-screen="style/images/intent/screens/newtrip.jpg"><h3>Pick a country and the dates.</h3><p>The note is ready in a second, with a photo of the country and the trip’s length at a glance.</p></article>
+                                <article class="ip-part" data-label="Steps" data-video="style/videos/intent/features/steps.mp4" data-ms="10700" data-screen="style/images/intent/screens/trip_it.jpg"><h3>City by city.</h3><p>Rome, then Florence, then Venice. Each city is a step, in order, with the days you’ll spend there.</p></article>
+                                <article class="ip-part" data-label="Getting there" data-screen="style/images/intent/screens/addstep.jpg"><h3>The journey in between.</h3><p>Choose the next city and how you’ll get there: a flight, a train, a bus or the car.</p></article>
+                                <article class="ip-part" data-label="Day by day" data-video="style/videos/intent/features/daybyday.mp4" data-ms="15600" data-screen="style/images/intent/screens/step1.jpg"><h3>Every day, planned.</h3><p>Inside each city, give your places a day and a time. Or keep them for whenever.</p></article>
                             </div>
-                            <figure class="ap-shots ap-shots--slide rv"><img src="style/images/intent/image_intent_map.svg" width="418" height="850" alt="The world map with visited countries filled in" class="ap-phone" loading="lazy" decoding="async"><img src="style/images/intent/image_intent_country_wall.svg" width="418" height="850" alt="The Country Wall with a photo for every visited country" class="ap-phone" loading="lazy" decoding="async"></figure>
-                        </article>
-                        <article class="ap-slide">
-                            <div class="ap-slide-text">
-                                <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3.5M8 7l4-3.5L16 7M5.5 12v6.5a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V12"/></svg></span>Cards</span>
-                                <h3 class="ap-h2 ap-h2--slide rv">Memories,<br>ready to share.</h3>
-                                <p class="ap-p rv">Each visited country gets its own card: the cities, the days and the places, with an album for your photos. Share a card, your whole map, or a trip itself.</p>
-
-                            </div>
-                            <figure class="ap-shots ap-shots--slide rv"><img src="style/images/intent/image_intent_archive_card.svg" width="418" height="850" alt="Italy’s country card with photos from the album" class="ap-phone" loading="lazy" decoding="async"><img src="style/images/intent/image_intent_share.svg" width="418" height="850" alt="Sharing a card of your travel map" class="ap-phone" loading="lazy" decoding="async"></figure>
-                        </article>
-                        <article class="ap-slide">
-                            <div class="ap-slide-text">
-                                <span class="ap-eyebrow rv"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14a4.5 4.5 0 0 1 4.5 5"/></svg></span>Friends</span>
-                                <h3 class="ap-h2 ap-h2--slide rv">Compare<br>with friends.</h3>
-                                <p class="ap-p rv">Scan a friend’s code and see where your maps meet. A map code holds only a name, the countries and a city count.</p>
-                                <ul class="ap-ticks rv"><li><strong>Both.</strong> Countries you’ve both been to.</li><li><strong>You.</strong> Places only you have seen.</li><li><strong>Friend.</strong> Ideas for your next trip.</li></ul>
-                            </div>
-                            <figure class="ap-shots ap-shots--slide rv"><img src="style/images/intent/image_intent_compare.svg" width="418" height="850" alt="Your map and a friend’s map compared" class="ap-phone" loading="lazy" decoding="async"></figure>
-                        </article>
+                            <div class="ip-nav ap-in" style="--d:3">
+                                <div class="ip-pills" role="tablist"></div>
+                                <div class="ip-arrows">
+                                    <button type="button" class="ip-arrow" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6l-6 6 6 6"/></svg></button>
+                                    <button type="button" class="ip-arrow" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg></button>
+                                </div>
                             </div>
                         </div>
-                        <div class="ap-rail-nav">
-                            <button type="button" class="ap-rail-btn" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-                            <div class="ap-rail-dots" role="tablist"></div>
-                            <button type="button" class="ap-rail-btn" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+                        <div class="ip-scene" data-back="style/images/intent/screens/trips.jpg">
+                            <div class="ip-glow" aria-hidden="true"></div>
+                            <canvas class="ip-canvas" aria-hidden="true"></canvas>
+                            <img class="ip-flat" src="style/images/intent/screens/newtrip.jpg" width="820" height="1783" alt="Intent: New trip" loading="lazy" decoding="async">
                         </div>
                     </section>
+
+                    <section class="ap-stage ip-frame ip-frame--flip" data-stage="2" aria-label="Details" data-ip>
+                        <div class="ip-copy">
+                            <span class="ap-eyebrow ap-in" style="--d:0"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>Details</span>
+                            <h2 class="ap-h2 ap-in" style="--d:1">Everything,<br>in its place.</h2>
+                            <div class="ip-rail ap-in" style="--d:2" tabindex="0" role="group" aria-label="Details">
+                                <article class="ip-part" data-label="Places & notes" data-video="style/videos/intent/features/addplace.mp4" data-ms="14400" data-screen="style/images/intent/screens/step1_add.jpg"><h3>Places, notes and files.</h3><p>Add what you want to see, a reminder or a file to any city, on a day or not yet.</p></article>
+                                <article class="ip-part" data-label="Documents" data-screen="style/images/intent/screens/pt_docs.jpg"><h3>Every ticket, ready.</h3><p>Flights become boarding-pass cards. Bookings and personal files sit next to them, even offline.</p></article>
+                                <article class="ip-part" data-label="Calendar" data-video="style/videos/intent/features/calendar.mp4" data-ms="12000" data-screen="style/images/intent/screens/trip_it_cal.jpg"><h3>The whole trip, by day.</h3><p>Swipe through the days and see what’s planned, when, and in which city.</p></article>
+                                <article class="ip-part" data-label="Not planned yet" data-screen="style/images/intent/screens/pt_cal.jpg"><h3>Nothing gets lost.</h3><p>Places without a day wait in their city. Add them to a day when you know.</p></article>
+                            </div>
+                            <div class="ip-nav ap-in" style="--d:3">
+                                <div class="ip-pills" role="tablist"></div>
+                                <div class="ip-arrows">
+                                    <button type="button" class="ip-arrow" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6l-6 6 6 6"/></svg></button>
+                                    <button type="button" class="ip-arrow" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ip-scene" data-back="style/images/intent/screens/showitem.jpg">
+                            <div class="ip-glow" aria-hidden="true"></div>
+                            <canvas class="ip-canvas" aria-hidden="true"></canvas>
+                            <img class="ip-flat" src="style/images/intent/screens/step1_add.jpg" width="820" height="1783" alt="Intent: Places & notes" loading="lazy" decoding="async">
+                        </div>
+                    </section>
+                    <section class="ap-stage ip-frame" data-stage="3" aria-label="Map" data-ip>
+                        <div class="ip-copy">
+                            <span class="ap-eyebrow ap-in" style="--d:0"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg></span>After the trip</span>
+                            <h2 class="ap-h2 ap-in" style="--d:1">See how far<br>you’ve come.</h2>
+                            <div class="ip-rail ap-in" style="--d:2" tabindex="0" role="group" aria-label="Map">
+                                <article class="ip-part" data-label="Map" data-screen="style/images/intent/screens/map_it.jpg"><h3>Fill in your world map.</h3><p>Finished trips colour in their countries. Countries, continents and cities add up.</p></article>
+                                <article class="ip-part" data-label="Share" data-video="style/videos/intent/features/share.mp4" data-ms="12400" data-screen="style/images/intent/screens/map_share.jpg"><h3>Your map, ready to share.</h3><p>One tap turns your map into an image: countries, cities and the share of the world you’ve seen.</p></article>
+                                <article class="ip-part" data-label="Compare" data-video="style/videos/intent/features/compare.mp4" data-ms="6500" data-screen="style/images/intent/screens/map_compare.jpg"><h3>Compare with friends.</h3><p>Scan a friend’s code and see where your maps meet. It holds only a name, countries and a city count.</p></article>
+                            </div>
+                            <div class="ip-nav ap-in" style="--d:3">
+                                <div class="ip-pills" role="tablist"></div>
+                                <div class="ip-arrows">
+                                    <button type="button" class="ip-arrow" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6l-6 6 6 6"/></svg></button>
+                                    <button type="button" class="ip-arrow" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ip-scene" data-back="style/images/intent/screens/map_cont.jpg">
+                            <div class="ip-glow" aria-hidden="true"></div>
+                            <canvas class="ip-canvas" aria-hidden="true"></canvas>
+                            <img class="ip-flat" src="style/images/intent/screens/map_it.jpg" width="820" height="1783" alt="Intent: Map" loading="lazy" decoding="async">
+                        </div>
+                    </section>
+                    </div>
+
+                    <div class="ap-rest" aria-label="Memories">
+                    <section class="ip-frame ip-frame--flip" aria-label="Memories" data-ip>
+                        <div class="ip-copy">
+                            <span class="ap-eyebrow ap-in" style="--d:0"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M7 4h10"/></svg></span>Memories</span>
+                            <h2 class="ap-h2 ap-in" style="--d:1">Memories,<br>ready to share.</h2>
+                            <div class="ip-rail ap-in" style="--d:2" tabindex="0" role="group" aria-label="Memories">
+                                <article class="ip-part" data-label="Archive" data-video="style/videos/intent/features/archive.mp4" data-ms="10100" data-screen="style/images/intent/screens/archive.jpg"><h3>Every trip, kept.</h3><p>Finished trips move to the archive by themselves, each one a card with its photo, stops and days.</p></article>
+                                <article class="ip-part" data-label="Cards" data-video="style/videos/intent/features/card.mp4" data-ms="6500" data-screen="style/images/intent/screens/country_it.jpg"><h3>A card for every country.</h3><p>The cities, the days and the places, with an album for your photos. Share it as it is.</p></article>
+                                <article class="ip-part" data-label="Together" data-screen="style/images/intent/screens/trip_shared.jpg"><h3>Plan it together.</h3><p>Share a trip with the friends you travel with, and plan the same note together.</p></article>
+                            </div>
+                            <div class="ip-nav ap-in" style="--d:3">
+                                <div class="ip-pills" role="tablist"></div>
+                                <div class="ip-arrows">
+                                    <button type="button" class="ip-arrow" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6l-6 6 6 6"/></svg></button>
+                                    <button type="button" class="ip-arrow" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6l6 6-6 6"/></svg></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ip-scene" data-back="style/images/intent/screens/wall.jpg">
+                            <div class="ip-glow" aria-hidden="true"></div>
+                            <canvas class="ip-canvas" aria-hidden="true"></canvas>
+                            <img class="ip-flat" src="style/images/intent/screens/archive.jpg" width="820" height="1783" alt="Intent: Archive" loading="lazy" decoding="async">
+                        </div>
+                    </section>
+
 
                     <section class="ap-privacy ap-block" id="intent-privacy">
                         <div class="ap-center-head">
@@ -456,19 +473,43 @@
                         </div>
                     </section>
                     </div>
+                    </div>
 
                     <div id="sp-sileo" class="sp-content-section ap ap--sileo" data-title="Take a moment.">
-                    <header class="ap-hero ap-hero--video ap-block">
+                    <!-- Two full-window stages: the hero, then one design frame (no scrolling — Sileo is still being designed). -->
+                    <div class="ap-deck" data-stages>
+                    <header class="ap-hero ap-hero--video ap-block ap-stage" data-stage="0" aria-label="Sileo">
                         <div class="ap-hero-media" aria-hidden="true">
                             <video class="ap-hero-video" data-src="style/videos/sileo/sileo_hero.mp4" poster="style/videos/sileo/sileo_hero_poster.jpg" muted loop playsinline preload="none"></video>
                         </div>
-                        <h1 class="ap-display rv">Take<br>a moment.</h1>
-                        <p class="ap-lead rv">A quiet place to pause, breathe and notice the small wins. Sileo is still on the drawing board.</p>
+                        <h1 class="ap-display ap-in" style="--d:0">Take<br>a moment.</h1>
+                        <p class="ap-lead ap-in" style="--d:2">A quiet place to pause, breathe and notice the small wins. Sileo is still on the drawing board.</p>
                     </header>
-                    <section class="ap-center ap-block ap-sileo">
-                        <figure class="ap-sileo-shot rv"><img src="style/images/sileo/image_sileo_main.svg" width="1045" height="1070" alt="Early Sileo designs" loading="lazy" decoding="async"></figure>
-                        <ul class="ap-pills rv"><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Moments that matter</li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span>More ways to pause</li><li><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></svg></span>Small wins</li></ul>
+                    </div>
+
+                    <div class="ap-rest">
+                    <section class="ap-sileo-frame" aria-label="Design">
+                        <div class="ap-sileo-copy">
+                            <span class="ap-sileo-badge ap-sileo-in" style="--d:0"><i aria-hidden="true"></i>In design</span>
+                            <h2 class="ap-h2 ap-sileo-in" style="--d:1">A pause,<br>by design.</h2>
+                            <p class="ap-sileo-lead ap-sileo-in" style="--d:2">Set a few quiet minutes, start the timer and do nothing at all. Sileo keeps count of your pauses, so the small wins add up.</p>
+                            <ul class="ap-sileo-list">
+                                <li class="ap-sileo-in" style="--d:3"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><strong>Moments that matter</strong>A timer for a pause of your own length.</span></li>
+                                <li class="ap-sileo-in" style="--d:4"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span><span><strong>More ways to pause</strong>Breathe, sit still, or simply do nothing.</span></li>
+                                <li class="ap-sileo-in" style="--d:5"><span class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8l2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8z"/></svg></span><span><strong>Small wins</strong>Every pause today, counted quietly.</span></li>
+                            </ul>
+                        </div>
+                        <div class="ap-sileo-stage" data-sileo3d data-light="style/images/sileo/sileo_screen_light.jpg" data-dark="style/images/sileo/sileo_screen_dark.jpg">
+                            <div class="ap-sileo-breath" aria-hidden="true"></div>
+                            <p class="ap-sileo-breath-label" aria-hidden="true"><span>Breathe in</span><span>Breathe out</span></p>
+                            <canvas class="ap-sileo-canvas" aria-hidden="true"></canvas>
+                            <figure class="ap-sileo-shots">
+                                <img src="style/images/sileo/sileo_screen_light.jpg" width="831" height="1800" alt="Sileo timer, ready to start" loading="lazy" decoding="async">
+                                <img src="style/images/sileo/sileo_screen_dark.jpg" width="831" height="1800" alt="Sileo during a pause: do nothing" loading="lazy" decoding="async">
+                            </figure>
+                        </div>
                     </section>
+                    </div>
                     </div>
                 </div>
 
@@ -479,13 +520,14 @@
         </div>
     </main>
 
-    <script src="js/bg.js?v=44"></script>
-    <script src="js/site.js?v=44"></script>
-    <script src="js/app.js?v=44"></script>
-    <script src="js/space.js?v=44"></script>
-    <!-- 3D phone on Mono's page 3: three.js comes from the CDN only when that page is first shown on a desktop window. -->
+    <script src="js/bg.js?v=70"></script>
+    <script src="js/site.js?v=70"></script>
+    <script src="js/app.js?v=70"></script>
+    <script src="js/space.js?v=70"></script>
+    <script src="js/intent.js?v=70"></script>
+    <!-- 3D pages (Mono's story, Sileo's design frame): three.js comes from the CDN only when such a page is first shown on a desktop window. -->
     <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
-    <script type="module" src="js/story3d.js?v=44"></script>
+    <script type="module" src="js/story3d.js?v=70"></script>
 </body>
 
 </html>

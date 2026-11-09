@@ -1,4 +1,4 @@
-/* Space page — Mono / Intent / Sileo window (hash routed), traffic-light controls (also when embedded in the home page), in-window overlay scrollbar, video heroes, blur-rise reveal, screen rails, privacy links,
+/* Space page — Mono / Intent / Sileo window (hash routed), traffic-light controls (also when embedded in the home page), in-window overlay scrollbar, video heroes, blur-rise reveal, privacy links,
    and full-window stages (Mono: hero → page) that change with an animation instead of a scroll. */
 document.addEventListener('DOMContentLoaded', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 stage.dataset.state = !on || i === index ? 'current' : i < index ? 'past' : 'future';
             });
             rest.dataset.state = !on || index === list.length ? 'current' : 'future';
-            nav.dataset.tone = index < list.length ? 'light' : 'auto';
+            nav.dataset.tone = index < list.length && list[index].classList.contains('ap-hero--video') ? 'light' : 'auto';
             nav.querySelectorAll('.sp-stage-dot').forEach((dot, i) => {
                 dot.classList.toggle('is-current', i === index);
                 dot.setAttribute('aria-current', i === index ? 'true' : 'false');
@@ -58,11 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
             announce();
         }
 
-        /* Tells the 3D story (js/story3d.js) whether its page is on screen. */
+        /* Tells the 3D pages (js/story3d.js: Mono's story, Sileo's design frame) whether their page is on screen. */
         function announce() {
             const on = staged();
             document.dispatchEvent(new CustomEvent('stagechange', {
-                detail: { staged: on, page: on && index === list.length, visible },
+                detail: { staged: on, page: on && index === list.length, visible, section: section ? section.id : null },
             }));
         }
 
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!section) { announce(); return; }
             list = Array.from(section.querySelectorAll('.ap-stage'));
             rest = section.querySelector('.ap-rest');
-            const names = list.map((stage) => stage.getAttribute('aria-label') || 'Section').concat('Details');
+            const names = list.map((stage) => stage.getAttribute('aria-label') || 'Section').concat(rest.getAttribute('aria-label') || 'Details');
             names.forEach((name, i) => {
                 const dot = document.createElement('button');
                 dot.type = 'button';
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function goToPrivacy(hash, smooth) {
         activate(policies[hash]);
-        stages.jump(2);
+        stages.jump(Infinity);
         document.getElementById(hash.slice(1))
             .scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto', block: 'start' });
     }
@@ -203,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         else scroller.style.removeProperty('--sp-view-h');
         updateBar();
         updateHeroes();
-        rails.forEach((rail) => rail.sync());
     }
 
     function metrics() {
@@ -311,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { root: narrow ? null : scroller, threshold: 0.15 });
         document.querySelectorAll('.ap').forEach((page) => page.classList.add('ap-reveal'));
-        const groups = [...document.querySelectorAll('.ap-slide'), ...document.querySelectorAll('.ap-block')];
+        const groups = [...document.querySelectorAll('.ap-block')];
         groups.forEach((group) => {
             group.querySelectorAll('.rv').forEach((el, i) => {
                 if (el.style.getPropertyValue('--i')) return;
@@ -320,56 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
-    /* ---- screen rails ---- */
-    const rails = Array.from(document.querySelectorAll('[data-rail]')).map((rail) => {
-        const block = rail.closest('.ap-rail-block');
-        const slides = Array.from(rail.querySelectorAll('.ap-slide'));
-        const dotsBox = block.querySelector('.ap-rail-dots');
-        const [prev, next] = block.querySelectorAll('.ap-rail-btn');
-        let current = 0;
-
-        const goTo = (i) => {
-            const target = slides[Math.max(0, Math.min(slides.length - 1, i))];
-            rail.scrollTo({
-                left: target.offsetLeft - slides[0].offsetLeft,
-                behavior: reduceMotion ? 'auto' : 'smooth',
-            });
-        };
-
-        const dots = slides.map((slide, i) => {
-            const dot = document.createElement('button');
-            dot.type = 'button';
-            dot.className = 'ap-rail-dot';
-            dot.setAttribute('aria-label', `Slide ${i + 1}`);
-            dot.addEventListener('click', () => goTo(i));
-            dotsBox.appendChild(dot);
-            return dot;
-        });
-
-        const sync = () => {
-            const max = rail.scrollWidth - rail.clientWidth;
-            current = rail.scrollLeft >= max - 2
-                ? slides.length - 1
-                : slides.reduce((best, slide, i) => (
-                    Math.abs(slide.offsetLeft - slides[0].offsetLeft - rail.scrollLeft)
-                        < Math.abs(slides[best].offsetLeft - slides[0].offsetLeft - rail.scrollLeft) ? i : best
-                ), 0);
-            dots.forEach((dot, i) => dot.classList.toggle('is-active', i === current));
-            prev.disabled = current === 0;
-            next.disabled = current === slides.length - 1;
-        };
-
-        prev.addEventListener('click', () => goTo(current - 1));
-        next.addEventListener('click', () => goTo(current + 1));
-        rail.addEventListener('scroll', sync, { passive: true });
-        rail.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
-            if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
-        });
-        sync();
-        return { sync };
-    });
 
     /* ---- privacy links ---- */
     document.querySelectorAll('.mn-copy-link').forEach((copyBtn) => copyBtn.addEventListener('click', () => {

@@ -72,45 +72,6 @@ html[data-theme="dark"] .sp-window {
     transform: scale(0.96);
 }
 
-/* ====== WINDOW · TRAFFIC LIGHTS ====== */
-.sp-lights {
-    display: flex;
-    gap: 8px;
-    margin-right: auto;
-    padding-left: 4px;
-}
-
-.sp-light {
-    display: grid;
-    place-items: center;
-    width: 13px;
-    height: 13px;
-    padding: 0;
-    border: 0.5px solid rgba(0, 0, 0, 0.12);
-    border-radius: 50%;
-    color: transparent;
-    cursor: pointer;
-    transition: color 120ms var(--ease-out), filter 120ms var(--ease-out);
-}
-
-.sp-light svg {
-    width: 9px;
-    height: 9px;
-}
-
-.sp-light--close { background: #FF5F57; }
-.sp-light--min { background: #FEBC2E; }
-.sp-light--zoom { background: #28C840; }
-
-.sp-lights:hover .sp-light,
-.sp-lights:focus-within .sp-light {
-    color: rgba(0, 0, 0, 0.55);
-}
-
-.sp-light:active {
-    filter: brightness(0.85);
-}
-
 /* ====== WINDOW · FULL SCREEN ====== */
 html.sp-max:not(.is-embed) .sp-window {
     position: fixed;
@@ -272,10 +233,6 @@ html[data-theme="dark"] .ap {
 
 .ap-h2 {
     font-size: clamp(38px, 6cqi, 84px);
-}
-
-.ap-h2--slide {
-    font-size: clamp(30px, 3.6cqi, 52px);
 }
 
 .ap-h3 {
@@ -869,21 +826,6 @@ html[data-theme="dark"] .ap {
     transition-duration: 400ms;
 }
 
-.ap-live-credit {
-    position: absolute;
-    right: 20px;
-    bottom: 14px;
-    margin: 0;
-    text-align: right;
-    font-size: 12px;
-    color: var(--text-strong);
-    opacity: 0.78;
-}
-
-.ap-live-credit a {
-    color: inherit;
-}
-
 /* ====== APP PAGE · WIDGETS ====== */
 /* One window tall: pick a size, the widget of that size animates in at its real proportions
    (small and medium are 340/776 of the large widget's height). */
@@ -1021,127 +963,6 @@ html[data-theme="dark"] .ap-seg-thumb {
     text-align: center;
 }
 
-/* ====== APP PAGE · RAIL ====== */
-.ap-rail-block {
-    max-width: none;
-}
-
-.ap-rail {
-    --rail-pad: max(0px, calc((100% - var(--ap-wrap)) / 2));
-    margin: clamp(40px, 6cqi, 72px) calc(var(--ap-pad) * -1) 0;
-    padding-inline: calc(var(--ap-pad) + var(--rail-pad));
-    scroll-padding-inline: calc(var(--ap-pad) + var(--rail-pad));
-    overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    outline: none;
-}
-
-.ap-rail::-webkit-scrollbar {
-    display: none;
-}
-
-.ap-rail-track {
-    display: flex;
-    gap: 20px;
-    width: max-content;
-}
-
-.ap-slide {
-    flex: none;
-    width: min(calc(100cqi - var(--ap-pad) * 2 - 48px), var(--ap-wrap));
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(24px, 4cqi, 64px);
-    align-items: center;
-    padding: clamp(32px, 5cqi, 72px) clamp(28px, 5cqi, 72px) 0;
-    border: 1px solid var(--color-gray-line);
-    border-radius: 36px;
-    overflow: hidden;
-    scroll-snap-align: start;
-}
-
-.ap-slide-text {
-    padding-bottom: clamp(32px, 5cqi, 72px);
-}
-
-.ap-shots--slide {
-    align-self: end;
-    align-items: flex-end;
-}
-
-.ap-shots--slide .ap-phone {
-    width: min(48%, 300px);
-}
-
-.ap-shots--slide .ap-phone:only-child {
-    width: min(64%, 330px);
-}
-
-.ap-shots--slide .ap-phone + .ap-phone {
-    margin-top: 0;
-    margin-bottom: -12%;
-}
-
-.ap-rail-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    margin-top: 28px;
-}
-
-.ap-rail-dots {
-    display: flex;
-    gap: 9px;
-}
-
-.ap-rail-dot {
-    width: 8px;
-    height: 8px;
-    padding: 0;
-    border: 0;
-    border-radius: 999px;
-    background: var(--ac-ink);
-    opacity: 0.22;
-    cursor: pointer;
-    transition: width 400ms var(--ap-ease), opacity 400ms var(--ap-ease);
-}
-
-.ap-rail-dot.is-active {
-    width: 26px;
-    opacity: 1;
-}
-
-.ap-rail-btn {
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border: 0;
-    border-radius: 50%;
-    color: var(--ac-ink);
-    background: var(--ac-soft);
-    cursor: pointer;
-    transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
-}
-
-.ap-rail-btn svg {
-    width: 18px;
-    height: 18px;
-}
-
-.ap-rail-btn:active {
-    transform: scale(0.94);
-}
-
-.ap-rail-btn:disabled {
-    opacity: 0.35;
-    cursor: default;
-}
-
 /* ====== APP PAGE · PRIVACY ====== */
 .ap-promises {
     list-style: none;
@@ -1152,8 +973,7 @@ html[data-theme="dark"] .ap-seg-thumb {
     margin-top: clamp(32px, 4cqi, 48px);
 }
 
-.ap-promises li,
-.ap-pills li {
+.ap-promises li {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -1267,24 +1087,435 @@ html[data-theme="dark"] .ap-seg-thumb {
 }
 
 /* ====== APP PAGE · SILEO ====== */
-.ap-sileo {
-    margin-top: clamp(56px, 8cqi, 96px);
+/* Two full-window stages: the hero, then one design frame that fits the window exactly (no scrolling).
+   Copy on the left rises in line by line; on the right the 3D phones (js/sileo3d.js) stand in a slow breathing ring. */
+.ap--sileo.ap-staged {
+    padding-bottom: 0;
 }
 
-.ap-sileo-shot img {
-    display: block;
-    width: min(100%, 620px);
-    height: auto;
+.ap-sileo-frame {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(300px, 0.85fr) 1.15fr;
+    align-items: center;
+    gap: clamp(24px, 4cqi, 64px);
+    max-width: var(--ap-wrap);
     margin: 0 auto;
+    padding: clamp(40px, 6cqi, 80px) 0;
 }
 
-.ap-pills {
+.ap-staged .ap-sileo-frame {
+    height: var(--sp-view-h, 100vh);
+    padding: 0;
+    overflow: hidden;
+}
+
+.ap-sileo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 14px 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ac-ink);
+    background: var(--ac-soft);
+}
+
+.ap-sileo-badge i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ac);
+    animation: sileo-pulse 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes sileo-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ac) 45%, transparent); }
+    50%      { box-shadow: 0 0 0 6px transparent; }
+}
+
+.ap-sileo-copy .ap-h2 {
+    margin-top: 22px;
+}
+
+.ap-sileo-lead {
+    max-width: 26em;
+    margin-top: 22px;
+    font-size: clamp(16px, 1.45cqi, 19px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+}
+
+.ap-sileo-list {
     list-style: none;
+    display: grid;
+    gap: 16px;
+    margin-top: clamp(28px, 3.4cqi, 44px);
+}
+
+.ap-sileo-list li {
     display: flex;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+}
+
+.ap-sileo-list strong {
+    display: block;
+    font-weight: 600;
+    color: var(--text-strong);
+}
+
+/* Right side: the 3D canvas over a breathing ring; the flat screenshots are the fallback (narrow window, no WebGL). */
+.ap-sileo-stage {
+    position: relative;
+    align-self: stretch;
+    min-height: 420px;
+}
+
+.ap-sileo-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+}
+
+.ap-staged:not(.ap-live-off) .ap-sileo-canvas { display: block; }
+.ap-sileo-stage.is-ready .ap-sileo-canvas { opacity: 1; }
+
+.ap-sileo-breath {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(78%, 62vh);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--ac) 24%, transparent) 0%, color-mix(in srgb, var(--ac) 11%, transparent) 52%, transparent 70%);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ac) 22%, transparent);
+    transform: translate(-50%, -50%) scale(0.86);
+    animation: sileo-breath 10s var(--ease-in-out) infinite;
+    pointer-events: none;
+}
+
+.ap-sileo-breath-label {
+    position: absolute;
+    left: 50%;
+    top: 7%;
+    z-index: 1;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.ap-sileo-breath-label span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ac-ink);
+    animation: sileo-breath-in 10s var(--ease-in-out) infinite;
+}
+
+.ap-sileo-breath-label span + span {
+    animation-name: sileo-breath-out;
+}
+
+@keyframes sileo-breath {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.86); }
+    50%      { transform: translate(-50%, -50%) scale(1.04); }
+}
+
+@keyframes sileo-breath-in {
+    0%, 42%  { opacity: 1; }
+    50%, 92% { opacity: 0; }
+    100%     { opacity: 1; }
+}
+
+@keyframes sileo-breath-out {
+    0%, 42%  { opacity: 0; }
+    50%, 92% { opacity: 1; }
+    100%     { opacity: 0; }
+}
+
+.ap-sileo-shots {
+    position: relative;
+    display: flex;
     justify-content: center;
-    gap: 12px;
-    margin-top: clamp(40px, 5cqi, 64px);
+    align-items: center;
+    gap: 4%;
+    height: 100%;
+}
+
+.ap-sileo-shots img {
+    width: min(38%, 240px);
+    height: auto;
+    border-radius: 13% / 6%;
+    box-shadow: 0 0 0 5px #111, 0 0 0 6.5px #c9cbcf;
+}
+
+.ap-sileo-shots img + img { transform: translateY(6%); }
+
+.ap-staged:not(.ap-live-off) .ap-sileo-shots { display: none; }
+
+/* Entrance: the copy rises out of blur line by line each time the frame arrives. */
+.ap-staged .ap-sileo-in {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+    filter: blur(8px);
+    transition: opacity 900ms var(--ap-ease), transform 900ms var(--ap-ease), filter 900ms var(--ap-ease);
+}
+
+.ap-staged .ap-rest[data-state="current"] .ap-sileo-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition-delay: calc(420ms + var(--d, 0) * 110ms);
+}
+
+.ap-staged .ap-sileo-breath,
+.ap-staged .ap-sileo-breath-label { opacity: 0; transition: opacity 1200ms var(--ease-out); }
+.ap-staged .ap-rest[data-state="current"] .ap-sileo-breath,
+.ap-staged .ap-rest[data-state="current"] .ap-sileo-breath-label { opacity: 1; transition-delay: 600ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .ap-sileo-breath,
+    .ap-sileo-breath-label span,
+    .ap-sileo-badge i { animation: none; }
+}
+
+/* ====== APP PAGE · INTENT FRAMES ====== */
+/* Plan and Details are full-window stages, Map opens the page under them. Each frame: copy with a horizontal rail of
+   parts (pills + arrows + swipe, js/intent.js) beside a 3D scene (js/intent3d.js); the flat screenshot is the fallback. */
+.ip-frame {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.9fr) 1.1fr;
+    align-items: center;
+    gap: clamp(24px, 4cqi, 64px);
+    max-width: var(--ap-wrap);
+    margin: var(--ap-gap) auto 0;
+}
+
+.ip-frame--flip .ip-copy { order: 1; }
+
+.ap-staged .ip-frame.ap-stage {
+    max-width: none;
+    padding-inline: max(var(--ap-pad), calc((100% - var(--ap-wrap)) / 2));
+}
+
+.ap-staged .ip-frame {
+    height: var(--sp-view-h, 100vh);
+    margin-top: 0;
+    overflow: hidden;
+}
+
+.ip-copy {
+    min-width: 0;
+}
+
+.ip-copy .ap-h2 {
+    margin-bottom: clamp(24px, 3cqi, 40px);
+}
+
+/* The rail: one part per width, snapped; the others fade back. */
+.ip-rail {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    outline: none;
+    mask-image: linear-gradient(90deg, #000 88%, transparent);
+}
+
+.ip-rail::-webkit-scrollbar { display: none; }
+
+.ip-part {
+    flex: 0 0 100%;
+    min-height: 128px;
+    padding-right: 12%;
+    scroll-snap-align: start;
+    opacity: 0.12;
+    filter: blur(3px);
+    transition: opacity 600ms var(--ap-ease), filter 600ms var(--ap-ease);
+}
+
+.ip-part.is-current {
+    opacity: 1;
+    filter: none;
+}
+
+.ip-part h3 {
+    font-size: clamp(22px, 2.2cqi, 30px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--text-strong);
+}
+
+.ip-part p {
+    max-width: 30em;
+    margin-top: 10px;
+    font-size: clamp(15px, 1.35cqi, 18px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    color: var(--text-secondary);
+}
+
+/* Pills: the current one fills with its autoplay progress. */
+.ip-nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: clamp(20px, 2.6cqi, 32px);
+}
+
+.ip-pills {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
+}
+
+.ip-pills::-webkit-scrollbar { display: none; }
+
+.ip-pill { flex: none; white-space: nowrap; }
+
+.ip-pill {
+    position: relative;
+    overflow: hidden;
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-strong);
+    background: color-mix(in srgb, var(--text-strong) 7%, transparent);
+    cursor: pointer;
+    transition: color 300ms var(--ease-out), background-color 300ms var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+
+.ip-pill span {
+    position: relative;
+    z-index: 1;
+}
+
+.ip-pill:hover { background: color-mix(in srgb, var(--text-strong) 12%, transparent); }
+.ip-pill:active { transform: scale(0.95); }
+
+.ip-pill.is-current {
+    color: var(--text-inverse);
+    background: color-mix(in srgb, var(--text-strong) 72%, transparent);
+}
+
+.ip-pill-bar {
+    position: absolute;
+    inset: 0;
+    background: var(--text-strong);
+    transform: scaleX(var(--p, 0));
+    transform-origin: 0 50%;
+    opacity: 0;
+    transition: transform 100ms linear;
+}
+
+.ip-pill.is-current .ip-pill-bar { opacity: 1; }
+
+.ip-arrows {
+    flex: none;
+    display: flex;
+    gap: 6px;
+}
+
+.ip-arrow {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    color: var(--text-strong);
+    background: color-mix(in srgb, var(--text-strong) 7%, transparent);
+    cursor: pointer;
+    transition: background-color 200ms var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+
+.ip-arrow svg { width: 16px; height: 16px; }
+.ip-arrow:hover { background: color-mix(in srgb, var(--text-strong) 12%, transparent); }
+.ip-arrow:active { transform: scale(0.92); }
+
+/* The scene: a soft accent glow, the 3D canvas, or the flat screenshot. */
+.ip-scene {
+    position: relative;
+    align-self: stretch;
+    min-height: 460px;
+    display: grid;
+    place-items: center;
+}
+
+.ip-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(80%, 64vh);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--ac) 20%, transparent) 0%, color-mix(in srgb, var(--ac) 7%, transparent) 50%, transparent 70%);
+    transform: translate(-50%, -50%);
+    animation: ip-glow 9s var(--ease-in-out) infinite;
+    pointer-events: none;
+}
+
+@keyframes ip-glow {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.8; }
+    50%      { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+}
+
+.ip-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+}
+
+.ap-staged:not(.ap-live-off) .ip-canvas { display: block; }
+.ip-scene.is-ready .ip-canvas { opacity: 1; }
+
+.ip-flat {
+    position: relative;
+    width: min(56%, 300px);
+    height: auto;
+    border-radius: 13% / 6%;
+    box-shadow: 0 0 0 6px #111, 0 0 0 7.5px #c9cbcf, 0 30px 60px rgba(0, 0, 0, 0.15);
+}
+
+.ap-staged:not(.ap-live-off) .ip-flat { display: none; }
+
+/* The page under the stages: its frame's copy arrives like a stage's. */
+.ap-staged .ap-rest[data-state="current"] .ap-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition-delay: calc(380ms + var(--d, 0) * 120ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ip-glow { animation: none; }
 }
 
 /* ====== APP PAGE · REVEAL ====== */
@@ -1307,8 +1538,9 @@ html[data-theme="dark"] .ap-seg-thumb {
 /* ====== APP PAGE · NARROW WINDOW ====== */
 @container (max-width: 760px) {
     .ap-lede,
-    .ap-slide,
-    .ap-policy {
+    .ap-policy,
+    .ap-sileo-frame,
+    .ip-frame {
         grid-template-columns: 1fr;
     }
 
@@ -1318,17 +1550,6 @@ html[data-theme="dark"] .ap-seg-thumb {
 
     .ap-text {
         max-width: none;
-    }
-
-
-    .ap-slide {
-        width: calc(100cqi - var(--ap-pad) * 2 - 24px);
-        padding: 28px 22px 0;
-        border-radius: 28px;
-    }
-
-    .ap-slide-text {
-        padding-bottom: 0;
     }
 
     .ap-policy-head {
