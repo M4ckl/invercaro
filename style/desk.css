@@ -64,9 +64,9 @@ html.desk-on .desk-veil.is-gone {
 /* ====== HINT + LABEL ====== */
 html.desk-on .desk-hint {
     position: fixed;
+    top: 4.5vh;
     left: 0;
     right: 0;
-    bottom: 7vh;
     z-index: 202;
     display: block;
     font-size: 13px;

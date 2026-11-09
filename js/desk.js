@@ -1,4 +1,4 @@
-/* Desk intro: a marble desk with an iMac, keyboard, mouse and the app keychains. The live home page is mapped onto the iMac display and a click flies the camera into it. */
+/* Desk intro: an iMac on a marble desk with the app keychains hanging beside it. The live home page is mapped onto the iMac display and a click flies the camera into it. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -105,12 +105,12 @@ function softShadowTexture() {
 const THEME = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 const PAL = {
   light: {
-    bg: '#F7F7F7', wall: 0xe2e0dc, alu: 0xdcdee1, bezel: 0xe9e8e4, keysBody: 0xe3e5e8, keys: 0xfafafa, mouse: 0xf6f6f6,
+    bg: '#F7F7F7', wall: 0xe2e0dc, alu: 0xdcdee1, bezel: 0xe9e8e4,
     marble: ['#efeeea', '#9b9892', '#c9c6c0'], leg: 0x1b1b1d, metal: 0xd4d7db,
     key: 10, hemi: 0.5, env: 0.75, contact: 0.32, exposure: 1.0,
   },
   dark: {
-    bg: '#08080A', wall: 0x18181b, alu: 0x4b4d52, bezel: 0x0a0a0b, keysBody: 0x3a3c40, keys: 0x151517, mouse: 0x1c1c1e,
+    bg: '#08080A', wall: 0x18181b, alu: 0x4b4d52, bezel: 0x0a0a0b,
     marble: ['#252527', '#8c8881', '#4a4845'], leg: 0x0c0c0d, metal: 0xa4a7ad,
     key: 5, hemi: 0.16, env: 0.4, contact: 0.6, exposure: 1.0,
   },
@@ -261,67 +261,18 @@ upright.position.set(0, 0.11, -0.05);
 computer.add(upright);
 contact(0.3, 0.26, 0, IMAC.z - 0.035);
 
-/* Keyboard + mouse */
-const kb = new THREE.Group();
-kb.position.set(-0.02, 0, 0.12);
-kb.userData.pick = 'computer';
-scene.add(kb);
-const KB = { w: 0.279, d: 0.115, h: 0.006 };
-const kbBody = mesh(new RoundedBoxGeometry(KB.w, KB.h, KB.d, 3, 0.0025), mat(PAL.keysBody, { metalness: 0.75, roughness: 0.35 }));
-kbBody.position.y = KB.h / 2;
-kbBody.rotation.x = deg(1.6);
-kb.add(kbBody);
-(function keyboard() {
-  const rows = [
-    { h: 0.6, keys: Array(14).fill(14.5 / 14) },
-    { h: 1, keys: [...Array(13).fill(1), 1.5] },
-    { h: 1, keys: [1.5, ...Array(12).fill(1), 1] },
-    { h: 1, keys: [1.75, ...Array(11).fill(1), 1.75] },
-    { h: 1, keys: [2.25, ...Array(10).fill(1), 2.25] },
-    { h: 1, keys: [1, 1, 1, 1.25, 5, 1.25, 1, 1, 1, 1] },
-  ];
-  const u = 0.262 / 14.5;
-  const gap = 0.0026;
-  const count = rows.reduce((n, r) => n + r.keys.length, 0);
-  const keys = new THREE.InstancedMesh(new RoundedBoxGeometry(1, 1, 1, 2, 0.2), mat(PAL.keys, { roughness: 0.5 }), count);
-  keys.castShadow = true;
-  keys.receiveShadow = true;
-  const m4 = new THREE.Matrix4();
-  let i = 0;
-  let z = -0.049;
-  rows.forEach((row) => {
-    const depth = row.h * u;
-    let x = -0.131;
-    row.keys.forEach((w) => {
-      m4.makeScale(w * u - gap, 0.0016, depth - gap);
-      m4.setPosition(x + (w * u) / 2, KB.h + 0.0006 - z * 0.028, z + depth / 2);
-      keys.setMatrixAt(i++, m4);
-      x += w * u;
-    });
-    z += depth;
-  });
-  kb.add(keys);
-})();
-contact(0.33, 0.16, -0.02, 0.12, PAL.contact * 0.6);
-
-const mouse = mesh(new THREE.SphereGeometry(1, 40, 24, 0, Math.PI * 2, 0, Math.PI / 2), phys(PAL.mouse, {
-  roughness: 0.25, clearcoat: 0.8, clearcoatRoughness: 0.1,
-}));
-mouse.scale.set(0.029, 0.012, 0.056);
-mouse.position.set(0.255, 0, 0.125);
-mouse.rotation.y = -0.12;
-mouse.userData.pick = 'computer';
-scene.add(mouse);
-contact(0.08, 0.13, 0.255, 0.125, PAL.contact * 0.7);
-
-/* ---- keychains ---- */
+/* ---- keychains: hang from above on fine chains and sway beside the iMac ---- */
 const KEYCHAINS = [
-  { app: 'sileo', name: 'Sileo', x: -0.36, z: 0.16, rot: 0.7 },
-  { app: 'mono', name: 'Mono', x: 0.4, z: 0.2, rot: -0.4 },
-  { app: 'intent', name: 'Intent', x: 0.43, z: 0.03, rot: 0.45 },
+  { app: 'sileo', name: 'Sileo', x: -0.37, z: -0.08, drop: 0.38, phase: 0.0 },
+  { app: 'mono', name: 'Mono', x: 0.33, z: -0.1, drop: 0.47, phase: 1.9 },
+  { app: 'intent', name: 'Intent', x: 0.39, z: -0.06, drop: 0.29, phase: 3.7 },
 ];
-const CHARM = 0.05;
+const HANG_Y = 0.82;
+const CHARM = 0.052;
+const CHARM_REACH = (CHARM / 2) * Math.SQRT2 - 0.004;
+const RING_R = 0.0105;
 const metal = mat(PAL.metal, { metalness: 1, roughness: 0.2 });
+const linkGeo = new THREE.TorusGeometry(0.0034, 0.0008, 6, 16);
 const chains = [];
 
 function splitRing(r) {
@@ -329,7 +280,7 @@ function splitRing(r) {
   const turns = 1.85;
   for (let i = 0; i <= 120; i++) {
     const a = (i / 120) * turns * Math.PI * 2;
-    pts.push(new THREE.Vector3(Math.cos(a) * r, (i / 120) * 0.0024, Math.sin(a) * r));
+    pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, (i / 120) * 0.0022));
   }
   return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 160, 0.001, 8, false);
 }
@@ -337,48 +288,52 @@ function splitRing(r) {
 const loader = new GLTFLoader();
 KEYCHAINS.forEach((k) => {
   const g = new THREE.Group();
-  g.position.set(k.x, 0, k.z);
-  g.rotation.y = k.rot;
-  g.userData.pick = k.app;
-  g.userData.name = k.name;
-  g.userData.lift = 0;
+  g.position.set(k.x, HANG_Y, k.z);
+  g.userData = { pick: k.app, name: k.name, phase: k.phase, rz: 0, vz: 0, rx: 0, vx: 0, hovered: false };
   scene.add(g);
   chains.push(g);
 
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.04, 0.085), new THREE.MeshBasicMaterial({ visible: false }));
-  hit.position.set(-0.01, 0.02, -0.007);
-  g.add(hit);
+  const chainLen = HANG_Y - k.drop - RING_R * 2;
+  const step = 0.0052;
+  const n = Math.floor(chainLen / step);
+  const links = new THREE.InstancedMesh(linkGeo, metal, n);
+  links.castShadow = true;
+  const m4 = new THREE.Matrix4();
+  const q = new THREE.Quaternion();
+  const e = new THREE.Euler();
+  for (let i = 0; i < n; i++) {
+    e.set(0, i % 2 ? Math.PI / 2 : 0, Math.PI / 2);
+    q.setFromEuler(e);
+    m4.compose(new THREE.Vector3(0, -i * step - step / 2, 0), q, new THREE.Vector3(1, 1, 1));
+    links.setMatrixAt(i, m4);
+  }
+  g.add(links);
 
-  const corner = new THREE.Vector3(-CHARM / 2 + 0.0035, 0, -CHARM / 2 + 0.0035);
-  const dir = new THREE.Vector3(-1, 0, -1).normalize();
-  const link = mesh(new THREE.TorusGeometry(0.0036, 0.0008, 8, 24), metal);
-  link.position.copy(corner).addScaledVector(dir, 0.0018).setY(0.005);
-  link.rotation.set(Math.PI / 2 - 0.5, 0, Math.PI / 4);
-  g.add(link);
-  const ring = mesh(splitRing(0.011), metal);
-  ring.position.copy(corner).addScaledVector(dir, 0.015).setY(0.001);
+  const ringY = -n * step - RING_R + 0.001;
+  const ring = mesh(splitRing(RING_R), metal);
+  ring.position.y = ringY;
   g.add(ring);
-  const shade = new THREE.Mesh(new THREE.PlaneGeometry(CHARM * 1.5, CHARM * 1.5), new THREE.MeshBasicMaterial({
-    map: shadowTex, color: 0x000000, transparent: true, opacity: PAL.contact * 0.8, depthWrite: false,
-  }));
-  shade.rotation.x = -Math.PI / 2;
-  shade.position.y = 0.0006;
-  g.add(shade);
-  g.userData.shade = shade;
+
+  const holder = new THREE.Group();
+  holder.position.y = ringY - RING_R - CHARM_REACH + 0.002;
+  g.add(holder);
+  g.userData.holder = holder;
+
+  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.11, 0.04), new THREE.MeshBasicMaterial({ visible: false }));
+  hit.position.y = 0.012;
+  holder.add(hit);
 
   loader.load(`style/3d%20models/${k.app}/icon_${k.app}_3d_${THEME}.glb`, (gltf) => {
     const charm = gltf.scene;
-    charm.rotation.x = -Math.PI / 2;
     charm.scale.setScalar(CHARM / 0.1445);
-    charm.position.y = (0.024 * CHARM) / 0.1445 / 2 + 0.0002;
+    charm.rotation.z = Math.PI / 4;
     charm.traverse((o) => {
       if (!o.isMesh) return;
       o.castShadow = true;
       o.receiveShadow = true;
       if (o.material && 'envMapIntensity' in o.material) o.material.envMapIntensity = PAL.env;
     });
-    g.add(charm);
-    g.userData.charm = charm;
+    holder.add(charm);
   });
 });
 
@@ -427,14 +382,14 @@ function syncPage() {
 }
 
 /* ---- camera ---- */
-const IDLE = { target: new THREE.Vector3(0, 0.215, -0.08), dist: 1.48, el: deg(10) };
+const IDLE = { target: new THREE.Vector3(0, 0.275, -0.12), dist: 1.12, el: deg(4) };
 const pointer = { x: 0, y: 0, sx: 0, sy: 0, ndc: new THREE.Vector2(), inside: false };
 const camTarget = new THREE.Vector3();
 let push = 0;
 
 function idlePose(k) {
   const dist = IDLE.dist * (1 + 0.3 * (1 - k)) * (1 - push * 0.04);
-  const el = IDLE.el + deg(7) * (1 - k) + pointer.sy * deg(1.8);
+  const el = IDLE.el + deg(6) * (1 - k) + pointer.sy * deg(1.5);
   const az = deg(-12) * (1 - k) + pointer.sx * deg(3.5);
   camTarget.copy(IDLE.target);
   camera.position.set(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(dist).add(camTarget);
@@ -502,7 +457,7 @@ function finish() {
 
 /* ---- input ---- */
 const raycaster = new THREE.Raycaster();
-const pickables = [computer, kb, mouse, ...chains];
+const pickables = [computer, ...chains];
 function pick() {
   raycaster.setFromCamera(pointer.ndc, camera);
   const hit = raycaster.intersectObjects(pickables, true)[0];
@@ -548,6 +503,7 @@ window.addEventListener('resize', onResize);
 /* ---- loop ---- */
 const clock = new THREE.Clock();
 let first = true;
+let time = 0;
 function frame() {
   raf = requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 1 / 20);
@@ -576,13 +532,22 @@ function frame() {
     zoomPose(easeInOut(zoom.t));
   }
 
+  time += dt;
   chains.forEach((g) => {
-    g.userData.lift = damp(g.userData.lift, hover === g && mode !== 'zoom' ? 1 : 0, 9, dt);
-    const l = g.userData.lift;
-    if (g.userData.charm) g.userData.charm.position.y = (0.024 * CHARM) / 0.1445 / 2 + 0.0002 + l * 0.014;
-    if (g.userData.charm) g.userData.charm.rotation.z = l * deg(6);
-    g.userData.shade.material.opacity = PAL.contact * 0.8 * (1 - l * 0.5);
-    g.userData.shade.scale.setScalar(1 + l * 0.25);
+    const u = g.userData;
+    const on = hover === g && mode !== 'zoom';
+    if (on && !u.hovered && time - (u.kick ?? -9) > 1.6) {
+      u.kick = time;
+      u.vz -= 0.32 * Math.sign(g.position.x);
+    }
+    u.hovered = on;
+    const sway = Math.sin(time * 0.8 + u.phase) * deg(1.6);
+    u.vz += (-(u.rz - sway) * 14 - u.vz * 1.6) * dt;
+    u.rz += u.vz * dt;
+    u.vx += (-(u.rx - Math.sin(time * 0.6 + u.phase * 1.3) * deg(1.2)) * 14 - u.vx * 1.6) * dt;
+    u.rx += u.vx * dt;
+    g.rotation.set(u.rx, 0, u.rz);
+    u.holder.rotation.y = Math.sin(time * 0.5 + u.phase) * 0.35 + u.rz * 2;
   });
 
   scene.updateMatrixWorld();
