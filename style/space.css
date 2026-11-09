@@ -72,45 +72,6 @@ html[data-theme="dark"] .sp-window {
     transform: scale(0.96);
 }
 
-/* ====== WINDOW · TRAFFIC LIGHTS ====== */
-.sp-lights {
-    display: flex;
-    gap: 8px;
-    margin-right: auto;
-    padding-left: 4px;
-}
-
-.sp-light {
-    display: grid;
-    place-items: center;
-    width: 13px;
-    height: 13px;
-    padding: 0;
-    border: 0.5px solid rgba(0, 0, 0, 0.12);
-    border-radius: 50%;
-    color: transparent;
-    cursor: pointer;
-    transition: color 120ms var(--ease-out), filter 120ms var(--ease-out);
-}
-
-.sp-light svg {
-    width: 9px;
-    height: 9px;
-}
-
-.sp-light--close { background: #FF5F57; }
-.sp-light--min { background: #FEBC2E; }
-.sp-light--zoom { background: #28C840; }
-
-.sp-lights:hover .sp-light,
-.sp-lights:focus-within .sp-light {
-    color: rgba(0, 0, 0, 0.55);
-}
-
-.sp-light:active {
-    filter: brightness(0.85);
-}
-
 /* ====== WINDOW · FULL SCREEN ====== */
 html.sp-max:not(.is-embed) .sp-window {
     position: fixed;

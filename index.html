@@ -7,9 +7,9 @@
   <title>Invercaro</title>
   <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
   <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
-  <link rel="stylesheet" href="style/main.css?v=60">
-  <link rel="stylesheet" href="style/mobile.css?v=60">
-  <link rel="stylesheet" href="style/desk.css?v=60">
+  <link rel="stylesheet" href="style/main.css?v=62">
+  <link rel="stylesheet" href="style/mobile.css?v=62">
+  <link rel="stylesheet" href="style/desk.css?v=62">
   <script>
     (function () {
       try {
@@ -56,38 +56,54 @@
       <a href="index.html" class="menubar-logo" aria-label="Invercaro home">
         <img src="style/icons/icon_invercaro.svg" alt="" class="logo-icon">
       </a>
-      <div class="menu">
-        <button class="menubar-item menu-trigger" id="link-invercaro" type="button" aria-expanded="false" aria-controls="menu-invercaro">Invercaro</button>
-        <div class="menu-pop menu-pop--list" id="menu-invercaro" role="dialog" aria-label="Invercaro">
-          <p class="menu-row">We create products that leave space.</p>
-          <p class="menu-row">An independent app studio crafting quiet, minimalist tools for&nbsp;iOS.</p>
-          <p class="menu-row">Software that respects your attention, removes clutter, and leaves space for what truly&nbsp;matters.</p>
-        </div>
-      </div>
+      <div class="menubar-swap">
+        <div class="menubar-group menubar-group--site" id="menubar-site">
+          <div class="menu">
+            <button class="menubar-item menu-trigger" id="link-invercaro" type="button" aria-expanded="false" aria-controls="menu-invercaro">Invercaro</button>
+            <div class="menu-pop menu-pop--list" id="menu-invercaro" role="dialog" aria-label="Invercaro">
+              <p class="menu-row">We create products that leave space.</p>
+              <p class="menu-row">An independent app studio crafting quiet, minimalist tools for&nbsp;iOS.</p>
+              <p class="menu-row">Software that respects your attention, removes clutter, and leaves space for what truly&nbsp;matters.</p>
+            </div>
+          </div>
 
-      <div class="menu">
-        <button class="menubar-item menu-trigger" id="link-space" type="button" aria-expanded="false" aria-controls="menu-space">Space</button>
-        <div class="menu-pop menu-pop--apps" id="menu-space" role="menu" aria-label="Space">
-          <a class="menu-app" href="space.html#mono" role="menuitem">Mono</a>
-          <a class="menu-app" href="space.html#intent" role="menuitem">Intent</a>
-          <a class="menu-app" href="space.html#sileo" role="menuitem">Sileo</a>
-        </div>
-      </div>
+          <div class="menu">
+            <button class="menubar-item menu-trigger" id="link-space" type="button" aria-expanded="false" aria-controls="menu-space">Space</button>
+            <div class="menu-pop menu-pop--apps" id="menu-space" role="menu" aria-label="Space">
+              <a class="menu-app" href="space.html#mono" role="menuitem">Mono</a>
+              <a class="menu-app" href="space.html#intent" role="menuitem">Intent</a>
+              <a class="menu-app" href="space.html#sileo" role="menuitem">Sileo</a>
+            </div>
+          </div>
 
-      <div class="menu">
-        <button class="menubar-item menu-trigger" type="button" aria-expanded="false" aria-controls="menu-about">About</button>
-        <div class="menu-pop menu-pop--list" id="menu-about" role="dialog" aria-label="About">
-          <p class="menu-row">We create products because we needed them ourselves.</p>
-          <p class="menu-row">Life doesn't need to be optimized. It's important to feel it.</p>
-          <p class="menu-row">Our apps don't rush, demand, or evaluate — they're just there when needed.</p>
-        </div>
-      </div>
+          <div class="menu">
+            <button class="menubar-item menu-trigger" type="button" aria-expanded="false" aria-controls="menu-about">About</button>
+            <div class="menu-pop menu-pop--list" id="menu-about" role="dialog" aria-label="About">
+              <p class="menu-row">We create products because we needed them ourselves.</p>
+              <p class="menu-row">Life doesn't need to be optimized. It's important to feel it.</p>
+              <p class="menu-row">Our apps don't rush, demand, or evaluate — they're just there when needed.</p>
+            </div>
+          </div>
 
-      <div class="menu">
-        <button class="menubar-item menu-trigger" type="button" aria-expanded="false" aria-controls="menu-next">What's next</button>
-        <div class="menu-pop menu-pop--list" id="menu-next" role="dialog" aria-label="What's next">
-          <p class="menu-row">Simple tools for attention, clarity and&nbsp;space.</p>
-          <p class="menu-row">We build only when something is truly&nbsp;missing — never sooner.</p>
+          <div class="menu">
+            <button class="menubar-item menu-trigger" type="button" aria-expanded="false" aria-controls="menu-next">What's next</button>
+            <div class="menu-pop menu-pop--list" id="menu-next" role="dialog" aria-label="What's next">
+              <p class="menu-row">Simple tools for attention, clarity and&nbsp;space.</p>
+              <p class="menu-row">We build only when something is truly&nbsp;missing — never sooner.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="menubar-group menubar-group--app" id="menubar-app" inert>
+          <div class="menu">
+            <button class="menubar-item menu-trigger nav-current" id="menubar-app-name" type="button" aria-expanded="false" aria-controls="menu-app">Mono</button>
+            <div class="menu-pop menu-pop--list" id="menu-app" role="dialog" aria-label="About the app">
+              <p class="menu-row menu-row--head"><span id="menu-app-title">Mono</span><span class="menu-status" id="menu-app-status">Testing</span></p>
+              <p class="menu-row" id="menu-app-desc"></p>
+            </div>
+          </div>
+          <a class="menubar-item" id="menubar-app-overview" href="space.html#mono">Overview</a>
+          <a class="menubar-item" id="menubar-app-support" href="support.html#mono">Support</a>
         </div>
       </div>
     </nav>
@@ -143,9 +159,7 @@
     </section>
   </main>
 
-  <div class="space-host" id="space-host" hidden>
-    <iframe class="space-frame" id="space-frame" title="Space" tabindex="-1"></iframe>
-  </div>
+  <div class="space-hosts" id="space-hosts"></div>
   </div>
 
   <canvas class="desk-canvas" id="desk-canvas" aria-label="A table with a laptop. Click the laptop or press Enter to open the site."></canvas>
@@ -153,15 +167,26 @@
   <p class="desk-hint" id="desk-hint"><strong>Invercaro</strong> · Click the screen to enter</p>
   <span class="desk-label" id="desk-label" aria-hidden="true"></span>
 
-  <script src="js/bg.js?v=60"></script>
-  <script src="js/site.js?v=60"></script>
-  <script src="js/dock.js?v=60"></script>
-  <script src="js/app.js?v=60"></script>
-  <script src="js/space-window.js?v=60"></script>
+  <script src="js/bg.js?v=62"></script>
+  <script src="js/site.js?v=62"></script>
+  <script src="js/dock.js?v=62"></script>
+  <script src="js/app.js?v=62"></script>
+  <script src="js/space-window.js?v=62"></script>
   <script type="module">
-    if (document.documentElement.classList.contains('desk-on')) {
-      import('./js/desk.js?v=60').catch(function () { document.documentElement.classList.remove('desk-on'); });
-    }
+    const root = document.documentElement;
+    const loadDesk = () => import('./js/desk.js?v=62');
+    if (root.classList.contains('desk-on')) loadDesk().catch(() => root.classList.remove('desk-on'));
+
+    /* The logo flies back out of the screen to the desk instead of reloading the page. */
+    const logo = document.querySelector('.menubar-logo');
+    const canDesk = () => window.innerWidth > 900 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (logo) logo.addEventListener('click', (e) => {
+      if (!canDesk() || root.classList.contains('desk-on')) return;
+      e.preventDefault();
+      if (window.invercaroDesk) { window.invercaroDesk.back(); return; }
+      window.__deskBack = true;
+      loadDesk().catch(() => { window.location.href = 'index.html'; });
+    }, true);
   </script>
 </body>
 

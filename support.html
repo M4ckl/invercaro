@@ -9,15 +9,16 @@
     <link rel="icon" type="image/svg+xml" href="style/icons/icon_invercaro_white.svg">
     <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
 
-    <link rel="stylesheet" href="style/main.css?v=60">
-    <link rel="stylesheet" href="style/support.css?v=60">
-    <link rel="stylesheet" href="style/mobile.css?v=60">
+    <link rel="stylesheet" href="style/main.css?v=62">
+    <link rel="stylesheet" href="style/support.css?v=62">
+    <link rel="stylesheet" href="style/mobile.css?v=62">
     <script>
         (function () {
             try {
                 var t = localStorage.getItem('invercaro-theme');
                 if (t) document.documentElement.setAttribute('data-theme', t);
             } catch (e) {}
+            if (window.self !== window.top) document.documentElement.classList.add('is-embed');
             document.documentElement.classList.add('is-loading');
         })();
     </script>
@@ -89,6 +90,16 @@
 
 
     <main class="su-container">
+        <div class="su-window-bar">
+            <div class="sp-lights" role="group" aria-label="Window controls">
+                <button type="button" class="sp-light sp-light--close" data-win="close" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 3.5l5 5M8.5 3.5l-5 5"/></svg></button>
+                <button type="button" class="sp-light sp-light--min" data-win="minimize" aria-label="Minimize"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h6"/></svg></button>
+                <button type="button" class="sp-light sp-light--zoom" data-win="zoom" aria-label="Enter full screen"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3.2 8.8V4.6l4.2 4.2zM8.8 3.2v4.2L4.6 3.2z"/></svg></button>
+            </div>
+            <p class="su-window-title" id="su-window-title">Support</p>
+        </div>
+
+        <div class="su-window-scroll">
         <section class="su-hero">
             <h1 class="su-title">Support</h1>
             <p class="su-subtitle">How can we help?</p>
@@ -341,12 +352,13 @@
                 </article>
             </div>
         </div>
+        </div>
     </main>
 
-    <script src="js/bg.js?v=60"></script>
-    <script src="js/site.js?v=60"></script>
-    <script src="js/app.js?v=60"></script>
-    <script src="js/support.js?v=60"></script>
+    <script src="js/bg.js?v=62"></script>
+    <script src="js/site.js?v=62"></script>
+    <script src="js/app.js?v=62"></script>
+    <script src="js/support.js?v=62"></script>
 </body>
 
 </html>

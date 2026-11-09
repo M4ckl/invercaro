@@ -413,6 +413,7 @@ function enter(app) {
   canvas.classList.remove('is-hover');
 }
 
+/* Inside the screen: the scene stops and hides, but stays ready to fly back out (back()). */
 function finish() {
   mode = 'done';
   cancelAnimationFrame(raf);
@@ -420,16 +421,33 @@ function finish() {
   page.style.visibility = '';
   root.classList.remove('desk-on');
   root.classList.add('desk-done');
-  window.removeEventListener('resize', onResize);
-  window.removeEventListener('keydown', onKey);
-  [canvas, veil, hint, label].forEach((el) => el.remove());
-  renderer.dispose();
   if (zoom.app) {
     const btn = document.querySelector(`.dock-app[data-app="${zoom.app}"]`);
     if (btn) setTimeout(() => btn.click(), 120);
   }
   document.dispatchEvent(new CustomEvent('deskdone'));
 }
+
+/* From the page back out to the desk: the same flight, reversed. It starts exactly at the page (identity), so there is no jump. */
+function back() {
+  if (mode !== 'done') return;
+  pointer.inside = false;
+  pointer.sx = pointer.sy = 0;
+  push = 0;
+  hover = null;
+  idlePose(1);
+  zoom.from = { target: camTarget.clone(), q: camera.quaternion.clone(), dist: camera.position.distanceTo(camTarget) };
+  zoom.app = null;
+  zoom.t = 1;
+  mode = 'unzoom';
+  film.material.opacity = 0;
+  veil.classList.add('is-gone');
+  root.classList.remove('desk-done');
+  root.classList.add('desk-on');
+  clock.getDelta();
+  frame();
+}
+window.invercaroDesk = { back };
 
 /* ---- input ---- */
 const raycaster = new THREE.Raycaster();
@@ -461,6 +479,7 @@ canvas.addEventListener('click', (e) => {
   enter(o === computer ? null : o.userData.pick);
 });
 function onKey(e) {
+  if (mode === 'done') return;
   if ((e.key === 'Enter' || e.key === ' ') && (mode === 'idle' || mode === 'intro')) {
     e.preventDefault();
     if (mode === 'intro') { introT = INTRO; idlePose(1); }
@@ -507,6 +526,14 @@ function frame() {
   } else if (mode === 'zoom') {
     zoom.t = Math.min(1, zoom.t + dt / ZOOM);
     zoomPose(easeInOut(zoom.t));
+  } else if (mode === 'unzoom') {
+    zoom.t = Math.max(0, zoom.t - dt / ZOOM);
+    zoomPose(easeInOut(zoom.t));
+    if (zoom.t <= 0) {
+      mode = 'idle';
+      introT = INTRO;
+      hint.classList.add('is-shown');
+    }
   }
 
   rings.forEach((r) => {
@@ -545,5 +572,11 @@ function frame() {
   if (mode === 'zoom' && zoom.t >= 1) finish();
 }
 
-idlePose(0);
-frame();
+if (window.__deskBack) {
+  mode = 'done';
+  THREE.DefaultLoadingManager.onLoad = () => { THREE.DefaultLoadingManager.onLoad = () => {}; back(); };
+  setTimeout(back, 2500);
+} else {
+  idlePose(0);
+  frame();
+}

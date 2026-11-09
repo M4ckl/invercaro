@@ -1,50 +1,138 @@
-/* Home — Space opens as an in-page window (space.html in an iframe) instead of loading a new page; its traffic lights close, minimise or zoom it.
-   Minimise uses a macOS-style genie into a window thumbnail at the right end of the dock (behind a separator);
-   clicking the thumbnail, the app's icon or any Space link brings the window back the same way. */
+/* Home — app windows. Each app has its own Space window (space.html#app) and Support window (support.html#app), each an iframe in a
+   `.space-host`. Several can be open (the front one is on top) or minimised at once: minimise is a macOS-style genie into that
+   window's own thumbnail at the right end of the dock, and the thumbnail (or the app's dock icon) brings it back the same way.
+   While a window is in front the menu bar switches to that app: its name, then Overview and Support. */
 (function () {
-  const host = document.getElementById('space-host');
-  if (!host) return;
-  const frame = document.getElementById('space-frame');
+  const hosts = document.getElementById('space-hosts');
+  if (!hosts) return;
   const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const GENIE_MS = 680;
-  let ready = false;
-  let pending = null;
-  let open = false;
-  let hideTimer = 0;
-  let lastFocus = null;
-  let currentApp = 'mono';
-  let minimizedApp = null;
-  let genie = null;
-  let thumb = null;
   const dockEl = document.getElementById('dock');
   const windowsEl = document.getElementById('dock-windows');
 
-  const send = (msg) => {
-    if (ready && frame.contentWindow) frame.contentWindow.postMessage({ space: true, ...msg }, '*');
+  const APPS = {
+    mono: { name: 'Mono', status: 'Testing', desc: 'Track spending. Nothing more.' },
+    intent: { name: 'Intent', status: 'Testing', desc: 'Plan the trip. Keep the journey.' },
+    sileo: { name: 'Sileo', status: 'Design', desc: 'Space to pause, breathe and notice the small wins.' },
   };
+  const PAGES = { space: 'space.html', support: 'support.html' };
 
-  function load(hash) {
-    if (!frame.getAttribute('src')) frame.src = 'space.html' + hash;
+  const wins = new Map();
+  let stack = [];
+  let spare = null;
+
+  /* ---- window objects ---- */
+  function makeHost(kind, hash) {
+    const host = document.createElement('div');
+    host.className = 'space-host';
+    host.hidden = true;
+    const frame = document.createElement('iframe');
+    frame.className = 'space-frame';
+    frame.tabIndex = -1;
+    frame.src = PAGES[kind] + hash;
+    host.append(frame);
+    hosts.append(host);
+    return { kind, host, frame, ready: false, pending: null, open: false, max: false, thumb: null, genie: null, hideTimer: 0 };
   }
 
-  /* ---- the minimised window's thumbnail in the dock ---- */
-  function makeThumb(app) {
-    const appBtn = document.querySelector(`.dock-app[data-app="${app}"]`);
+  function getWin(kind, app) {
+    const key = `${kind}:${app}`;
+    let w = wins.get(key);
+    if (w) return w;
+    if (kind === 'space' && spare) {
+      w = spare;
+      spare = null;
+      w.route = '#' + app;
+    } else {
+      w = makeHost(kind, '#' + app);
+    }
+    w.key = key;
+    w.app = app;
+    w.frame.title = `${APPS[app].name} ${kind === 'support' ? 'Support' : ''}`.trim();
+    wins.set(key, w);
+    return w;
+  }
+
+  const send = (w, msg) => {
+    if (w.ready && w.frame.contentWindow) w.frame.contentWindow.postMessage({ space: true, ...msg }, '*');
+  };
+  const front = () => stack[stack.length - 1] || null;
+
+  /* ---- stacking, menu bar, dock dots ---- */
+  const menubar = document.querySelector('.menubar');
+  const siteGroup = document.getElementById('menubar-site');
+  const appGroup = document.getElementById('menubar-app');
+  let swapT = 0;
+
+  function fillMenus(w) {
+    const a = APPS[w.app];
+    document.getElementById('menubar-app-name').textContent = a.name;
+    document.getElementById('menu-app-title').textContent = a.name;
+    document.getElementById('menu-app-status').textContent = a.status;
+    document.getElementById('menu-app-desc').textContent = a.desc;
+    const overview = document.getElementById('menubar-app-overview');
+    const support = document.getElementById('menubar-app-support');
+    overview.href = `space.html#${w.app}`;
+    support.href = `support.html#${w.app}`;
+  }
+
+  function setAppMenus(w) {
+    if (!menubar || !appGroup) return;
+    clearTimeout(swapT);
+    if (!w) {
+      menubar.classList.remove('is-app');
+      appGroup.inert = true;
+      siteGroup.inert = false;
+      return;
+    }
+    siteGroup.inert = true;
+    appGroup.inert = false;
+    if (menubar.classList.contains('is-app') && !reduceMotion) {
+      appGroup.classList.add('is-refreshing');
+      swapT = setTimeout(() => {
+        fillMenus(w);
+        appGroup.classList.remove('is-refreshing');
+      }, 180);
+    } else {
+      fillMenus(w);
+      menubar.classList.add('is-app');
+    }
+  }
+
+  function restack() {
+    stack.forEach((w, i) => {
+      w.host.style.zIndex = String((w.max ? 60 : 40) + i);
+      send(w, { type: 'visible', on: i === stack.length - 1 });
+    });
+    root.classList.toggle('space-open', stack.length > 0);
+    setAppMenus(front());
+    // The front app's Support window loads in the background, so the menu bar's Support opens at once.
+    if (front() && front().kind === 'space') getWin('support', front().app);
+    document.querySelectorAll('.dock-app').forEach((b) => {
+      const app = b.dataset.app;
+      b.classList.toggle('is-running', [...wins.values()].some((w) => w.app === app && (w.open || w.thumb)));
+    });
+  }
+
+  /* ---- dock thumbnails ---- */
+  function makeThumb(w) {
+    const appBtn = document.querySelector(`.dock-app[data-app="${w.app}"]`);
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'dock-window';
-    btn.dataset.app = app;
-    btn.setAttribute('aria-label', `Show ${appBtn ? appBtn.dataset.name : app} window`);
-    btn.innerHTML =
-      '<span class="dock-window-card"><span class="dock-window-bar"><i></i><i></i><i></i></span>' +
-      `<img class="dock-window-shot" src="style/videos/${app}/${app}_hero_poster.jpg" alt=""></span>`;
+    btn.setAttribute('aria-label', `Show ${w.frame.title} window`);
+    const shot = w.kind === 'space'
+      ? `<img class="dock-window-shot" src="style/videos/${w.app}/${w.app}_hero_poster.jpg" alt="">`
+      : '<span class="dock-window-shot dock-window-shot--support"><b>?</b></span>';
+    btn.innerHTML = `<span class="dock-window-card"><span class="dock-window-bar"><i></i><i></i><i></i></span>${shot}</span>`;
     if (appBtn) {
       const badge = appBtn.querySelector('.dock-icon').cloneNode();
       badge.className = 'dock-window-badge';
       badge.alt = '';
       btn.append(badge);
     }
+    btn.addEventListener('click', () => show(w, { restore: true }));
     windowsEl.append(btn);
     return btn;
   }
@@ -55,7 +143,7 @@
     btn.classList.add('is-in');
     const rect = btn.getBoundingClientRect();
     btn.classList.remove('is-in');
-    dockEl.classList.remove('has-windows');
+    if (!windowsEl.querySelector('.dock-window.is-in')) dockEl.classList.remove('has-windows');
     void btn.offsetWidth;
     dockEl.classList.remove('is-measuring');
     dockEl.classList.add('has-windows');
@@ -63,18 +151,13 @@
     return rect;
   }
 
-  function dropThumb() {
-    if (!thumb) return;
-    const old = thumb;
-    thumb = null;
+  function dropThumb(w) {
+    if (!w.thumb) return;
+    const old = w.thumb;
+    w.thumb = null;
     old.classList.remove('is-filled', 'is-in');
-    dockEl.classList.remove('has-windows');
+    if (!windowsEl.querySelector('.dock-window.is-in')) dockEl.classList.remove('has-windows');
     setTimeout(() => old.remove(), 400);
-  }
-
-  function setMinimized(app) {
-    minimizedApp = app;
-    document.querySelectorAll('.dock-app').forEach((b) => b.classList.toggle('is-minimized', b.dataset.app === app));
   }
 
   /* ---- genie: the window funnels into (or out of) its dock thumbnail ---- */
@@ -95,15 +178,15 @@
     return `polygon(${left.concat(right).join(', ')})`;
   }
 
-  function genieFrames(target) {
-    const f = frame.getBoundingClientRect();
+  function genieFrames(w, target) {
+    const f = w.frame.getBoundingClientRect();
     const cx = target.left + target.width / 2 - f.left;
     const cy = target.top + target.height / 2 - f.top;
     const mid = (cx / f.width) * 100;
     const half = (target.width / f.width) * 50;
     const l = mid - half;
     const r = mid + half;
-    frame.style.transformOrigin = `${cx}px ${cy}px`;
+    w.frame.style.transformOrigin = `${cx}px ${cy}px`;
     return [
       { offset: 0, clipPath: funnel(0, 100, 0, 100), transform: 'scale(1, 1)', opacity: 1 },
       { offset: 0.42, clipPath: funnel(0, 100, l, r), transform: 'scale(1, 0.9)', opacity: 1 },
@@ -112,143 +195,165 @@
     ];
   }
 
-  function stopGenie() {
-    if (!genie) return;
-    genie.onfinish = null;
-    genie.cancel();
-    genie = null;
-    frame.style.transformOrigin = '';
-    host.classList.remove('is-genie');
+  function stopGenie(w) {
+    if (!w.genie) return;
+    w.genie.onfinish = null;
+    w.genie.cancel();
+    w.genie = null;
+    w.frame.style.transformOrigin = '';
+    w.host.classList.remove('is-genie');
   }
 
-  /* ---- open / close ---- */
-  function show(hash, { restore = false } = {}) {
-    clearTimeout(hideTimer);
-    if (!ready) { pending = hash; load(hash); return; }
-    const fromRect = thumb && !reduceMotion ? thumb.getBoundingClientRect() : null;
-    // Bringing the minimised window back keeps its page and scroll; a Space link routes as usual.
-    if (!restore) send({ type: 'route', hash });
-    send({ type: 'theme', theme: root.getAttribute('data-theme') || 'light' });
-    send({ type: 'visible', on: true });
-    if (open) return;
-    open = true;
-    setMinimized(null);
-    dropThumb();
-    lastFocus = document.activeElement;
-    stopGenie();
-    host.hidden = false;
-    host.classList.remove('is-closing', 'is-minimizing');
-    root.classList.add('space-open');
+  /* ---- open / focus / close / minimise ---- */
+  function show(w, { restore = false, hash = null } = {}) {
+    clearTimeout(w.hideTimer);
+    if (!w.ready) { w.pending = { restore, hash }; return; }
+    const route = hash || w.route;
+    w.route = null;
+    if (route) send(w, { type: 'route', hash: route });
+    send(w, { type: 'theme', theme: root.getAttribute('data-theme') || 'light' });
+    stack = stack.filter((x) => x !== w).concat(w);
+    if (w.open) { restack(); w.frame.focus(); return; }
 
-    if (fromRect && fromRect.width > 0) {
-      host.classList.add('is-genie', 'is-open');
-      genie = frame.animate(genieFrames(fromRect), {
+    const fromRect = w.thumb && !reduceMotion ? w.thumb.getBoundingClientRect() : null;
+    w.open = true;
+    dropThumb(w);
+    stopGenie(w);
+    w.host.hidden = false;
+    w.host.classList.remove('is-closing', 'is-minimizing');
+    w.host.classList.toggle('is-max', w.max);
+    restack();
+
+    if (restore && fromRect && fromRect.width > 0) {
+      w.host.classList.add('is-genie', 'is-open');
+      w.genie = w.frame.animate(genieFrames(w, fromRect), {
         duration: GENIE_MS,
         easing: 'cubic-bezier(0.45, 0, 0.35, 1)',
         direction: 'reverse',
       });
-      genie.onfinish = stopGenie;
+      w.genie.onfinish = () => stopGenie(w);
     } else {
-      void host.offsetWidth;
-      host.classList.add('is-open');
+      void w.host.offsetWidth;
+      w.host.classList.add('is-open');
     }
-    frame.focus();
+    w.frame.focus();
   }
 
-  function hide(minimize) {
-    if (!open) return;
-    open = false;
-    send({ type: 'visible', on: false });
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  function hide(w, minimize) {
+    if (!w.open) return;
+    w.open = false;
+    stack = stack.filter((x) => x !== w);
+    if (minimize) w.thumb = makeThumb(w);
+    restack();
+    send(w, { type: 'visible', on: false });
 
-    const canGenie = minimize && !reduceMotion && dockEl && windowsEl && dockEl.getBoundingClientRect().width > 0;
-    if (minimize) { dropThumb(); thumb = dockEl && windowsEl ? makeThumb(currentApp) : null; }
+    const canGenie = minimize && !reduceMotion && dockEl.getBoundingClientRect().width > 0;
     if (canGenie) {
-      stopGenie();
-      host.classList.add('is-genie');
-      host.classList.remove('is-max');
-      root.classList.remove('space-open');
-      setMinimized(currentApp);
-      const target = slotRect(thumb);
-      const filled = thumb;
-      genie = frame.animate(genieFrames(target), {
+      stopGenie(w);
+      w.host.classList.add('is-genie');
+      const target = slotRect(w.thumb);
+      const filled = w.thumb;
+      w.genie = w.frame.animate(genieFrames(w, target), {
         duration: GENIE_MS,
         easing: 'cubic-bezier(0.45, 0, 0.35, 1)',
         fill: 'forwards',
       });
-      genie.onfinish = () => {
-        host.hidden = true;
-        host.classList.remove('is-open');
-        stopGenie();
+      w.genie.onfinish = () => {
+        w.host.hidden = true;
+        w.host.classList.remove('is-open');
+        stopGenie(w);
         filled.classList.add('is-filled');
       };
       return;
     }
 
-    if (minimize) {
-      setMinimized(currentApp);
-      if (thumb) {
-        dockEl.classList.add('has-windows');
-        thumb.classList.add('is-in', 'is-filled');
-      }
+    if (minimize && w.thumb) {
+      dockEl.classList.add('has-windows');
+      w.thumb.classList.add('is-in', 'is-filled');
     }
-    host.classList.remove('is-open', 'is-max');
-    host.classList.add('is-closing');
-    host.classList.toggle('is-minimizing', minimize);
-    root.classList.remove('space-open');
-    hideTimer = setTimeout(() => {
-      host.hidden = true;
-      host.classList.remove('is-closing', 'is-minimizing');
+    w.host.classList.remove('is-open');
+    w.host.classList.add('is-closing');
+    w.host.classList.toggle('is-minimizing', minimize);
+    w.hideTimer = setTimeout(() => {
+      w.host.hidden = true;
+      w.host.classList.remove('is-closing', 'is-minimizing');
     }, reduceMotion ? 0 : 520);
   }
 
-  /* ---- messages from the window ---- */
+  function close(w) {
+    dropThumb(w);
+    if (w.open) hide(w, false);
+    else restack();
+  }
+
+  /* Open (or bring forward, or restore) the window of one kind for one app. */
+  function openWindow(kind, app, hash) {
+    if (!APPS[app]) app = 'mono';
+    const w = getWin(kind, app);
+    show(w, { restore: !!w.thumb, hash: hash || null });
+  }
+
+  /* space.html#mono, #intent, #sileo, #privacy (Mono), #intent-privacy (Intent); support.html#app. */
+  function openHref(href) {
+    const url = new URL(href, window.location.href);
+    const hash = url.hash;
+    if (url.pathname.endsWith('support.html')) {
+      const app = hash.slice(1) || (front() && front().app) || 'mono';
+      openWindow('support', APPS[app] ? app : 'mono');
+      return;
+    }
+    const app = hash === '#privacy' ? 'mono' : hash === '#intent-privacy' ? 'intent' : hash.slice(1);
+    openWindow('space', APPS[app] ? app : 'mono', hash || null);
+  }
+
+  /* ---- messages from the windows ---- */
   window.addEventListener('message', (e) => {
     const msg = e.data;
-    if (!msg || !msg.space || e.source !== frame.contentWindow) return;
+    if (!msg || !msg.space) return;
+    const w = [...wins.values(), spare].find((x) => x && x.frame.contentWindow === e.source);
+    if (!w) return;
     if (msg.type === 'ready') {
-      ready = true;
-      if (pending) { const hash = pending; pending = null; show(hash); }
+      w.ready = true;
+      if (w.pending) { const p = w.pending; w.pending = null; show(w, p); }
     }
-    if (msg.type === 'app' && msg.app) currentApp = msg.app;
-    if (msg.type === 'close') { setMinimized(null); dropThumb(); hide(false); }
-    if (msg.type === 'minimize') hide(true);
-    if (msg.type === 'zoom') host.classList.toggle('is-max', msg.on);
+    if (msg.type === 'close') close(w);
+    if (msg.type === 'minimize') hide(w, true);
+    if (msg.type === 'zoom') {
+      w.max = msg.on;
+      w.host.classList.toggle('is-max', msg.on);
+      restack();
+    }
+    if (msg.type === 'open' && msg.href) {
+      if (msg.href === 'index.html') close(w);
+      else openHref(msg.href);
+    }
   });
 
-  /* ---- the dock thumbnail, or the minimised app's icon, reopens the window (before the dock's own click handler) ---- */
-  document.addEventListener('click', (e) => {
-    const button = e.target.closest('.dock-window, .dock-app');
-    if (!button || !minimizedApp || button.dataset.app !== minimizedApp) return;
-    e.preventDefault();
-    e.stopPropagation();
-    show('#' + minimizedApp, { restore: true });
-  }, true);
-
-  /* ---- an app's dock icon opens its window ---- */
+  /* ---- an app's dock icon opens (or restores) its window ---- */
   document.addEventListener('click', (e) => {
     const app = e.target.closest('.dock-app');
-    if (app) show('#' + app.dataset.app);
+    if (!app) return;
+    const minimized = [...wins.values()].find((w) => w.app === app.dataset.app && w.thumb && w.kind === 'space')
+      || [...wins.values()].find((w) => w.app === app.dataset.app && w.thumb);
+    if (minimized) show(minimized, { restore: true });
+    else openWindow('space', app.dataset.app);
   });
 
-  /* ---- links to Space open the window ---- */
+  /* ---- links to Space or Support open their windows ---- */
   document.addEventListener('click', (e) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-    const a = e.target.closest('a[href^="space.html"]');
+    const a = e.target.closest('a[href^="space.html"], a[href^="support.html"]');
     if (!a) return;
     e.preventDefault();
-    show(new URL(a.href).hash || '#mono');
+    openHref(a.getAttribute('href'));
   }, true);
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && open && !document.querySelector('.menu-trigger[aria-expanded="true"]')) {
-      setMinimized(null);
-      hide(false);
-    }
+    if (e.key === 'Escape' && front() && !document.querySelector('.menu-trigger[aria-expanded="true"]')) close(front());
   });
 
-  document.addEventListener('themechange', (e) => send({ type: 'theme', theme: e.detail }));
+  document.addEventListener('themechange', (e) => wins.forEach((w) => send(w, { type: 'theme', theme: e.detail })));
 
-  /* ---- warm up after the home page has loaded ---- */
-  window.addEventListener('load', () => setTimeout(() => load('#mono'), 1200));
+  /* ---- warm up one Space window after the home page has loaded ---- */
+  window.addEventListener('load', () => setTimeout(() => { if (!wins.size && !spare) spare = makeHost('space', '#mono'); }, 1200));
 })();
