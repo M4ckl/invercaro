@@ -1,4 +1,4 @@
-/* Desk intro: an iMac standing in a grey stucco studio under hard side light, with a keyring of app charms on the wall. The live home page is mapped onto the display and a click flies the camera into it. */
+/* Desk intro: an iMac standing in a grey stucco studio under hard side light, with the app charms hanging on wall hooks. The live home page is mapped onto the display and a click flies the camera into it. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -40,11 +40,11 @@ const plate = (w, h, r, rBottom) => new THREE.ShapeGeometry(rectShape(w, h, r, r
 const THEME = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 const PAL = {
   light: {
-    bg: '#5a5a5a', stucco: 0x9a9a9a, alu: 0xc9cacc, bezel: 0xbcbdbf, metal: 0xd4d7db, hook: 0x8c8a86,
+    bg: '#5a5a5a', stucco: 0x9a9a9a, alu: 0xc6c7c9, bezel: 0x0b0b0c, metal: 0xd4d7db, hook: 0x8c8a86,
     sun: 4.2, hemi: 0.16, env: 0.3, exposure: 1.0,
   },
   dark: {
-    bg: '#161618', stucco: 0x4a4a4c, alu: 0x45474b, bezel: 0x0a0a0b, metal: 0xa4a7ad, hook: 0x5e5c58,
+    bg: '#161618', stucco: 0x4a4a4c, alu: 0x47494d, bezel: 0x070708, metal: 0xa4a7ad, hook: 0x5e5c58,
     sun: 2.6, hemi: 0.08, env: 0.2, exposure: 1.0,
   },
 }[THEME];
@@ -127,35 +127,42 @@ overhang.castShadow = true;
 scene.add(overhang);
 
 /* ---- iMac ---- */
-const IMAC = { w: 0.547, h: 0.42, t: 0.0115, dw: 0.515, dh: 0.322, topBezel: 0.014, lift: 0.08, tilt: deg(-4), z: 0 };
+const IMAC = { w: 0.547, h: 0.42, t: 0.0115, dw: 0.515, dh: 0.322, topBezel: 0.014, lift: 0.085, tilt: deg(-4), z: 0 };
 const computer = new THREE.Group();
 computer.userData.pick = 'computer';
 computer.position.z = IMAC.z;
 scene.add(computer);
 
-const alu = mat(PAL.alu, { metalness: 0.35, roughness: 0.45, envMapIntensity: 0.9 });
+/* Bead-blasted aluminium: soft satin sheen, no mirror reflections. */
+const alu = phys(PAL.alu, {
+  metalness: 0.55, roughness: 0.42, envMapIntensity: 1.1, sheen: 0.25, sheenRoughness: 0.6, sheenColor: new THREE.Color(0xffffff),
+});
 
 const panel = new THREE.Group();
 panel.position.y = IMAC.lift;
 panel.rotation.x = IMAC.tilt;
 computer.add(panel);
 
-const bevel = 0.0016;
-const shellGeo = new THREE.ExtrudeGeometry(rectShape(IMAC.w - bevel * 2, IMAC.h - bevel * 2, 0.012), {
-  depth: IMAC.t - bevel * 2, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 3, curveSegments: 10,
+const bevel = 0.0018;
+const shellGeo = new THREE.ExtrudeGeometry(rectShape(IMAC.w - bevel * 2, IMAC.h - bevel * 2, 0.011), {
+  depth: IMAC.t - bevel * 2, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 4, curveSegments: 12,
 });
 shellGeo.translate(0, IMAC.h / 2, -IMAC.t / 2 + bevel);
 panel.add(mesh(shellGeo, alu));
 
+/* Front glass: black borders, a faint gloss; the chin below it stays aluminium. */
 const chin = IMAC.h - IMAC.topBezel * 2 - IMAC.dh;
 const glassH = IMAC.h - chin;
-const glass = mesh(plate(IMAC.w - 0.002, glassH - 0.001, 0.0115, 0), phys(PAL.bezel, {
-  metalness: 0.2, roughness: 0.4, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 0.9,
+const glass = mesh(plate(IMAC.w - 0.0024, glassH - 0.0012, 0.0105, 0), phys(PAL.bezel, {
+  metalness: 0, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.06, envMapIntensity: 0.7,
 }), { cast: false });
 glass.position.set(0, chin + glassH / 2, IMAC.t / 2 + 0.0002);
 panel.add(glass);
+const seam = new THREE.Mesh(new THREE.PlaneGeometry(IMAC.w - 0.003, 0.0006), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 }));
+seam.position.set(0, chin, IMAC.t / 2 + 0.0003);
+panel.add(seam);
 
-const cam = new THREE.Mesh(new THREE.CircleGeometry(0.0016, 20), new THREE.MeshBasicMaterial({ color: 0x0b0b0c }));
+const cam = new THREE.Mesh(new THREE.CircleGeometry(0.0016, 20), new THREE.MeshBasicMaterial({ color: 0x1c1c1f }));
 cam.position.set(0, IMAC.h - IMAC.topBezel / 2, IMAC.t / 2 + 0.0004);
 panel.add(cam);
 
@@ -179,43 +186,58 @@ film.position.copy(anchor.position).add(new THREE.Vector3(0, 0, 0.0003));
 film.renderOrder = 2;
 panel.add(film);
 
-const STAND = { w: 0.15, t: 0.006 };
-const foot = mesh(new RoundedBoxGeometry(STAND.w, STAND.t, 0.15, 3, 0.0025), alu);
-foot.position.set(0, STAND.t / 2, -0.035);
-computer.add(foot);
-const upright = mesh(new RoundedBoxGeometry(STAND.w, 0.23, STAND.t, 3, 0.0025), alu);
-upright.rotation.x = 0.24;
-upright.position.set(0, 0.11, -0.05);
-computer.add(upright);
+/* Stand: one bent aluminium sheet. A flat foot on the floor curls up at the back into an arm that leans forward
+   and meets the back of the display, like the real thing. Built as a side profile (z, y) extruded across the width. */
+(function stand() {
+  const W = 0.15, T = 0.0065, R = 0.026, LEAN = deg(19);
+  const hingeH = 0.17;
+  const hinge = { z: -IMAC.t / 2 - hingeH * Math.sin(-IMAC.tilt) - T / 2, y: IMAC.lift + hingeH * Math.cos(IMAC.tilt) };
+  const endY = T / 2 + R + R * Math.sin(LEAN);
+  const L = (hinge.y - endY) / Math.cos(LEAN);
+  const zb = hinge.z - L * Math.sin(LEAN) + R * Math.cos(LEAN);
+  const footFront = 0.07;
 
-/* ---- one keyring with all three app charms, hanging on a wall hook top-right ---- */
+  const line = [[footFront, T / 2]];
+  for (let i = 0; i <= 24; i++) {
+    const phi = -Math.PI / 2 - (i / 24) * (Math.PI / 2 + LEAN);
+    line.push([zb + R * Math.cos(phi), T / 2 + R + R * Math.sin(phi)]);
+  }
+  line.push([hinge.z, hinge.y]);
+
+  const normals = line.map((p, i) => {
+    const a = line[Math.max(0, i - 1)], b = line[Math.min(line.length - 1, i + 1)];
+    const hz = b[0] - a[0], hy = b[1] - a[1], l = Math.hypot(hz, hy);
+    return [-hy / l, hz / l];
+  });
+  const s = new THREE.Shape();
+  line.forEach((p, i) => {
+    const q = [p[0] + normals[i][0] * T / 2, p[1] + normals[i][1] * T / 2];
+    if (i === 0) s.moveTo(q[0], q[1]); else s.lineTo(q[0], q[1]);
+  });
+  for (let i = line.length - 1; i >= 0; i--) s.lineTo(line[i][0] - normals[i][0] * T / 2, line[i][1] - normals[i][1] * T / 2);
+  s.closePath();
+
+  const e = 0.0012;
+  const geo = new THREE.ExtrudeGeometry(s, { depth: W - e * 2, bevelEnabled: true, bevelThickness: e, bevelSize: e * 0.8, bevelSegments: 3, curveSegments: 4 });
+  geo.rotateY(-Math.PI / 2);
+  geo.translate(W / 2 - e, 0, 0);
+  computer.add(mesh(geo, alu));
+})();
+
+/* ---- keychains: each app charm on its own split ring, on its own wall hook, in a row top-right ---- */
 const CHARMS = [
-  { app: 'sileo', name: 'Sileo', at: deg(-42), tilt: deg(-30), dz: 0.006, drop: 0, phase: 0.0 },
-  { app: 'mono', name: 'Mono', at: deg(0), tilt: deg(2), dz: 0.024, drop: 0.016, phase: 2.1 },
-  { app: 'intent', name: 'Intent', at: deg(40), tilt: deg(31), dz: 0.014, drop: 0, phase: 4.0 },
+  { app: 'sileo', name: 'Sileo', x: 0.4, phase: 0.0 },
+  { app: 'mono', name: 'Mono', x: 0.52, phase: 2.1 },
+  { app: 'intent', name: 'Intent', x: 0.64, phase: 4.0 },
 ];
-const HOOK = new THREE.Vector3(0.52, 0.6, WALL_Z);
-const CHARM = 0.062;
+const HOOK_Y = 0.6;
+const CHARM = 0.058;
 const CHARM_REACH = (CHARM / 2) * Math.SQRT2 - 0.004;
-const RING_R = 0.019;
+const RING_R = 0.014;
 const metal = mat(PAL.metal, { metalness: 1, roughness: 0.2 });
 const steel = mat(PAL.hook, { metalness: 1, roughness: 0.35 });
 const chains = [];
-
-const hook = new THREE.Group();
-hook.position.copy(HOOK);
-scene.add(hook);
-const rose = mesh(new THREE.CylinderGeometry(0.009, 0.01, 0.004, 32), steel);
-rose.rotation.x = Math.PI / 2;
-rose.position.z = 0.002;
-hook.add(rose);
-const pegCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(0, 0, 0.003), new THREE.Vector3(0, -0.001, 0.02), new THREE.Vector3(0, 0.002, 0.031), new THREE.Vector3(0, 0.009, 0.034),
-]);
-hook.add(mesh(new THREE.TubeGeometry(pegCurve, 32, 0.0024, 12, false), steel));
-const pegTip = mesh(new THREE.SphereGeometry(0.0026, 16, 12), steel);
-pegTip.position.set(0, 0.009, 0.034);
-hook.add(pegTip);
+const rings = [];
 
 function splitRing(r) {
   const pts = [];
@@ -224,45 +246,57 @@ function splitRing(r) {
     const a = (i / 140) * turns * Math.PI * 2;
     pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, (i / 140) * 0.0022));
   }
-  return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 200, 0.0011, 10, false);
+  return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 200, 0.001, 10, false);
 }
-
-/* The ring rests on the peg and swings as a whole; the charms hang from points on it and sway on their own. */
-const keyring = new THREE.Group();
-keyring.position.set(0, -0.0012, 0.026);
-keyring.userData = { rz: 0, vz: 0 };
-hook.add(keyring);
-const ring = mesh(splitRing(RING_R), metal);
-ring.position.y = -RING_R;
-ring.rotation.y = 0.9;
-keyring.add(ring);
+const ringGeo = splitRing(RING_R);
+const roseGeo = new THREE.CylinderGeometry(0.008, 0.009, 0.004, 32);
+const pegGeo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0, 0, 0.003), new THREE.Vector3(0, -0.001, 0.018), new THREE.Vector3(0, 0.002, 0.027), new THREE.Vector3(0, 0.008, 0.03),
+]), 32, 0.0022, 12, false);
+const tipGeo = new THREE.SphereGeometry(0.0024, 16, 12);
+const jumpGeo = new THREE.TorusGeometry(0.0036, 0.0008, 8, 24);
 
 const loader = new GLTFLoader();
 CHARMS.forEach((k) => {
+  const hook = new THREE.Group();
+  hook.position.set(k.x, HOOK_Y, WALL_Z);
+  scene.add(hook);
+  const rose = mesh(roseGeo, steel);
+  rose.rotation.x = Math.PI / 2;
+  rose.position.z = 0.002;
+  hook.add(rose, mesh(pegGeo, steel));
+  const tip = mesh(tipGeo, steel);
+  tip.position.set(0, 0.008, 0.03);
+  hook.add(tip);
+
+  /* The ring rests on the peg and swings; the charm hangs from its lowest point and sways on its own. */
+  const keyring = new THREE.Group();
+  keyring.position.set(0, -0.0011, 0.023);
+  keyring.userData = { rz: 0, vz: 0, phase: k.phase };
+  hook.add(keyring);
+  rings.push(keyring);
+  const ring = mesh(ringGeo, metal);
+  ring.position.y = -RING_R;
+  ring.rotation.y = 0.9;
+  keyring.add(ring);
+
   const pivot = new THREE.Group();
-  pivot.position.set(Math.sin(k.at) * RING_R, -RING_R - Math.cos(k.at) * RING_R + 0.001, k.dz - 0.012);
-  pivot.userData = { pick: k.app, name: k.name, tilt: k.tilt, phase: k.phase, rz: k.tilt, vz: 0, rx: 0, vx: 0, hovered: false };
+  pivot.position.set(0, -RING_R * 2 + 0.001, 0.002);
+  pivot.userData = { pick: k.app, name: k.name, phase: k.phase, ring: keyring, rz: 0, vz: 0, rx: 0, vx: 0, hovered: false };
   keyring.add(pivot);
   chains.push(pivot);
 
-  const jump = mesh(new THREE.TorusGeometry(0.0038, 0.0008, 8, 24), metal);
-  jump.position.y = -0.0032;
+  const jump = mesh(jumpGeo, metal);
+  jump.position.y = -0.0031;
   jump.rotation.y = Math.PI / 2;
   pivot.add(jump);
-  if (k.drop) {
-    const extra = mesh(new THREE.TorusGeometry(0.005, 0.0008, 8, 24), metal);
-    extra.position.y = -0.0062 - k.drop / 2;
-    extra.scale.y = (k.drop + 0.004) / 0.01;
-    pivot.add(extra);
-  }
 
   const holder = new THREE.Group();
-  holder.position.y = -0.0062 - CHARM_REACH - k.drop;
+  holder.position.y = -0.006 - CHARM_REACH;
   pivot.add(holder);
-  pivot.userData.holder = holder;
 
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 0.02), new THREE.MeshBasicMaterial({ visible: false }));
-  hit.rotation.z = Math.PI / 4;
+  const hit = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.085, 0.02), new THREE.MeshBasicMaterial({ visible: false }));
+  hit.position.y = 0.008;
   holder.add(hit);
 
   loader.load(`style/3d%20models/${k.app}/icon_${k.app}_3d_${THEME}.glb`, (gltf) => {
@@ -475,20 +509,22 @@ function frame() {
     zoomPose(easeInOut(zoom.t));
   }
 
-  const kr = keyring.userData;
-  kr.vz += (-(kr.rz - Math.sin(time * 0.7) * deg(1.2)) * 9 - kr.vz * 1.4) * dt;
-  kr.rz += kr.vz * dt;
-  keyring.rotation.z = kr.rz;
+  rings.forEach((r) => {
+    const u = r.userData;
+    u.vz += (-(u.rz - Math.sin(time * 0.7 + u.phase) * deg(1)) * 9 - u.vz * 1.4) * dt;
+    u.rz += u.vz * dt;
+    r.rotation.z = u.rz;
+  });
   chains.forEach((p) => {
     const u = p.userData;
     const on = hover === p && mode !== 'zoom';
     if (on && !u.hovered && time - (u.kick ?? -9) > 1.6) {
       u.kick = time;
       u.vz += 0.5;
-      kr.vz += 0.12;
+      u.ring.userData.vz += 0.15;
     }
     u.hovered = on;
-    const rest = u.tilt + Math.sin(time * 0.9 + u.phase) * deg(1.4);
+    const rest = Math.sin(time * 0.9 + u.phase) * deg(1.4);
     u.vz += (-(u.rz - rest) * 16 - u.vz * 1.8) * dt;
     u.rz += u.vz * dt;
     u.vx += (-(u.rx - Math.sin(time * 0.6 + u.phase) * deg(3)) * 10 - u.vx * 1.5) * dt;
