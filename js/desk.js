@@ -1,10 +1,9 @@
-/* Desk intro: an iMac on a wooden desk, with one keyring of app charms hanging on the wall. The live home page is mapped onto the iMac display and a click flies the camera into it. */
+/* Desk intro: an iMac standing in a grey stucco studio under hard side light, with a keyring of app charms on the wall. The live home page is mapped onto the display and a click flies the camera into it. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
-import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 
 const root = document.documentElement;
 const page = document.getElementById('desk-page');
@@ -37,69 +36,16 @@ function rectShape(w, h, r, rBottom = r) {
 }
 const plate = (w, h, r, rBottom) => new THREE.ShapeGeometry(rectShape(w, h, r, rBottom), 8);
 
-/* Value noise, used for the plaster wall. */
-function noise2(seed) {
-  const N = 256;
-  const g = new Float32Array(N * N);
-  let s = seed;
-  for (let i = 0; i < g.length; i++) { s = (s * 16807) % 2147483647; g[i] = s / 2147483647; }
-  const at = (x, y) => g[(y & (N - 1)) * N + (x & (N - 1))];
-  return (x, y) => {
-    const xi = Math.floor(x), yi = Math.floor(y);
-    const xf = x - xi, yf = y - yi;
-    const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
-    const a = at(xi, yi), b = at(xi + 1, yi), c = at(xi, yi + 1), d = at(xi + 1, yi + 1);
-    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
-  };
-}
-
-function plasterTexture() {
-  const S = 512;
-  const c = document.createElement('canvas');
-  c.width = c.height = S;
-  const g = c.getContext('2d');
-  const img = g.createImageData(S, S);
-  const n = noise2(3);
-  for (let y = 0; y < S; y++) {
-    for (let x = 0; x < S; x++) {
-      const v = n(x / 9, y / 9) * 0.5 + n(x / 3.1, y / 3.1) * 0.3 + n(x / 40, y / 40) * 0.2;
-      const i = (y * S + x) * 4;
-      img.data[i] = img.data[i + 1] = img.data[i + 2] = v * 255;
-      img.data[i + 3] = 255;
-    }
-  }
-  g.putImageData(img, 0, 0);
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(10, 5);
-  return tex;
-}
-
-function softShadowTexture() {
-  const c = document.createElement('canvas');
-  c.width = c.height = 128;
-  const g = c.getContext('2d');
-  const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-  grd.addColorStop(0, 'rgba(0,0,0,1)');
-  grd.addColorStop(0.5, 'rgba(0,0,0,0.45)');
-  grd.addColorStop(1, 'rgba(0,0,0,0)');
-  g.fillStyle = grd;
-  g.fillRect(0, 0, 128, 128);
-  return new THREE.CanvasTexture(c);
-}
-
 /* ---- palette ---- */
 const THEME = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 const PAL = {
   light: {
-    bg: '#F7F7F7', wall: 0xd3cec7, alu: 0xdcdee1, bezel: 0xe9e8e4,
-    wood: 'oak_veneer_01', woodTint: 0xf0ebe4, leg: 0x1b1b1d, metal: 0xd4d7db, hook: 0xb8b2a6,
-    key: 6, window: 3.2, hemi: 0.45, env: 0.85, contact: 0.32, exposure: 1.0,
+    bg: '#5a5a5a', stucco: 0x9a9a9a, alu: 0xc9cacc, bezel: 0xbcbdbf, metal: 0xd4d7db, hook: 0x8c8a86,
+    sun: 4.2, hemi: 0.16, env: 0.3, exposure: 1.0,
   },
   dark: {
-    bg: '#08080A', wall: 0x18181b, alu: 0x4b4d52, bezel: 0x0a0a0b,
-    wood: 'wood_table_001', woodTint: 0xd8d0c8, leg: 0x0c0c0d, metal: 0xa4a7ad, hook: 0x8a857c,
-    key: 3, window: 1.4, hemi: 0.14, env: 0.45, contact: 0.6, exposure: 1.0,
+    bg: '#161618', stucco: 0x4a4a4c, alu: 0x45474b, bezel: 0x0a0a0b, metal: 0xa4a7ad, hook: 0x5e5c58,
+    sun: 2.6, hemi: 0.08, env: 0.2, exposure: 1.0,
   },
 }[THEME];
 
@@ -110,33 +56,20 @@ renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = PAL.exposure;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.VSMShadowMap;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(PAL.bg);
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-/* Studio HDRI "Studio Small 09" by Poly Haven (CC0) for real-world reflections on the aluminium, glass and wood. */
+/* Studio HDRI "Studio Small 09" by Poly Haven (CC0) for real-world reflections on the aluminium and glass. */
 new RGBELoader().load('style/hdr/studio_small_09_1k.hdr', (hdr) => {
   scene.environment = pmrem.fromEquirectangular(hdr).texture;
   hdr.dispose();
 });
 
 const camera = new THREE.PerspectiveCamera(32, window.innerWidth / window.innerHeight, 0.01, 30);
-
-scene.add(new THREE.HemisphereLight(0xffffff, 0x7d756c, PAL.hemi));
-const keyLight = new THREE.SpotLight(0xfff4e8, PAL.key, 0, 0.5, 1, 0);
-keyLight.position.set(-1.1, 2.1, 1.3);
-keyLight.target.position.set(0.05, 0.1, -0.15);
-scene.add(keyLight, keyLight.target);
-/* A soft "window" to the left: a wide area light that grades the wall and lays a long highlight on the desk. */
-RectAreaLightUniformsLib.init();
-const windowLight = new THREE.RectAreaLight(0xfff8f0, PAL.window, 1.2, 1.6);
-windowLight.position.set(-1.25, 0.75, 0.15);
-windowLight.lookAt(0.2, 0.15, -0.2);
-scene.add(windowLight);
-const rim = new THREE.DirectionalLight(0xe8eeff, PAL.key * 0.12);
-rim.position.set(1.4, 1.2, -0.6);
-scene.add(rim);
 
 function mat(color, opts = {}) {
   return new THREE.MeshStandardMaterial({ color, envMapIntensity: PAL.env, ...opts });
@@ -151,66 +84,56 @@ function mesh(geo, material, { cast = true, receive = true } = {}) {
   return m;
 }
 
-/* ---- room ---- */
-const TABLE = { w: 1.7, d: 0.82, t: 0.03, h: 0.74 };
-const wall = mesh(new THREE.PlaneGeometry(10, 5), mat(PAL.wall, { roughness: 0.92, bumpMap: plasterTexture(), bumpScale: 0.6 }), { cast: false });
-wall.position.set(0, 1.5, -TABLE.d / 2 - 0.12);
+/* ---- room: swirled stucco wall and floor ---- */
+const WALL_Z = -0.32;
+const texLoader = new THREE.TextureLoader();
+function stucco(repeatX, repeatY) {
+  const load = (kind, srgb) => {
+    const t = texLoader.load(`style/textures/stucco_${kind}_1k.jpg`);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(repeatX, repeatY);
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  };
+  return mat(PAL.stucco, { map: load('diff', true), normalMap: load('nor'), normalScale: new THREE.Vector2(0.5, 0.5), roughness: 0.93 });
+}
+const wall = mesh(new THREE.PlaneGeometry(6, 3), stucco(11, 5.5), { cast: false });
+wall.position.set(0, 1.5, WALL_Z);
 scene.add(wall);
-const floor = mesh(new THREE.PlaneGeometry(10, 10), mat(PAL.wall, { roughness: 0.9 }), { cast: false });
+const floor = mesh(new THREE.PlaneGeometry(6, 4), stucco(11, 7.3), { cast: false });
 floor.rotation.x = -Math.PI / 2;
-floor.position.y = -TABLE.h;
+floor.position.set(0, 0, WALL_Z + 2);
 scene.add(floor);
 
-/* ---- table: solid wood top on black steel legs ---- */
-/* Wood scans by Poly Haven (CC0): "Oak Veneer 01" for the light theme, "Wood Table 001" (walnut) for the dark one. */
-const texLoader = new THREE.TextureLoader();
-function woodMap(kind, srgb) {
-  const t = texLoader.load(`style/textures/${PAL.wood}_${kind}_1k.jpg`);
-  t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.center.set(0.5, 0.5);
-  t.rotation = Math.PI / 2;
-  t.repeat.set(0.9, 1.9);
-  t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  if (srgb) t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
-const woodTop = phys(PAL.woodTint, {
-  map: woodMap('diff', true), normalMap: woodMap('nor_gl'), roughnessMap: woodMap('rough'),
-  roughness: 1, normalScale: new THREE.Vector2(0.6, 0.6), clearcoat: 0.25, clearcoatRoughness: 0.35,
-});
-const top = mesh(new RoundedBoxGeometry(TABLE.w, TABLE.t, TABLE.d, 3, 0.004), woodTop);
-top.position.y = -TABLE.t / 2;
-scene.add(top);
-const steel = mat(PAL.leg, { metalness: 0.7, roughness: 0.45 });
-const legGeo = new THREE.BoxGeometry(0.028, TABLE.h - TABLE.t, 0.028);
-[[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => {
-  const leg = mesh(legGeo, steel);
-  leg.position.set(sx * (TABLE.w / 2 - 0.05), -TABLE.t - (TABLE.h - TABLE.t) / 2, sz * (TABLE.d / 2 - 0.05));
-  scene.add(leg);
-});
-const rail = mesh(new THREE.BoxGeometry(TABLE.w - 0.1, 0.03, 0.02), steel);
-rail.position.set(0, -TABLE.t - 0.015, -(TABLE.d / 2 - 0.05));
-scene.add(rail);
+/* ---- light: hard sun from the right, grazing the wall; an unseen overhang shades its upper left ---- */
+scene.add(new THREE.HemisphereLight(0xffffff, 0x6e6e6e, PAL.hemi));
+const SUN_DIR = new THREE.Vector3(1, 0.55, 0.6).normalize();
+const sun = new THREE.DirectionalLight(0xfffaf2, PAL.sun);
+sun.target.position.set(0, 0.3, -0.1);
+sun.position.copy(sun.target.position).addScaledVector(SUN_DIR, 4);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -1.8, right: 1.8, top: 1.8, bottom: -1.8, near: 0.5, far: 8 });
+sun.shadow.bias = -0.0004;
+sun.shadow.radius = 9;
+sun.shadow.blurSamples = 20;
+scene.add(sun, sun.target);
 
-const shadowTex = softShadowTexture();
-function contact(w, d, x, z, opacity = PAL.contact, parent = scene) {
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({
-    map: shadowTex, color: 0x000000, transparent: true, opacity, depthWrite: false,
-  }));
-  m.rotation.x = -Math.PI / 2;
-  m.position.set(x, 0.0006, z);
-  parent.add(m);
-  return m;
-}
+const overhang = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 4), new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false, side: THREE.DoubleSide }));
+overhang.rotation.y = Math.PI / 2;
+overhang.position.set(0.95, 1.18 + 2, 0.5);
+overhang.castShadow = true;
+scene.add(overhang);
 
 /* ---- iMac ---- */
-const IMAC = { w: 0.547, h: 0.42, t: 0.0115, dw: 0.515, dh: 0.322, topBezel: 0.014, lift: 0.08, tilt: deg(-5), z: -0.16 };
+const IMAC = { w: 0.547, h: 0.42, t: 0.0115, dw: 0.515, dh: 0.322, topBezel: 0.014, lift: 0.08, tilt: deg(-4), z: 0 };
 const computer = new THREE.Group();
 computer.userData.pick = 'computer';
 computer.position.z = IMAC.z;
 scene.add(computer);
 
-const alu = mat(PAL.alu, { metalness: 0.85, roughness: 0.32 });
+const alu = mat(PAL.alu, { metalness: 0.35, roughness: 0.45, envMapIntensity: 0.9 });
 
 const panel = new THREE.Group();
 panel.position.y = IMAC.lift;
@@ -227,10 +150,14 @@ panel.add(mesh(shellGeo, alu));
 const chin = IMAC.h - IMAC.topBezel * 2 - IMAC.dh;
 const glassH = IMAC.h - chin;
 const glass = mesh(plate(IMAC.w - 0.002, glassH - 0.001, 0.0115, 0), phys(PAL.bezel, {
-  roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.05,
+  metalness: 0.2, roughness: 0.4, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 0.9,
 }), { cast: false });
 glass.position.set(0, chin + glassH / 2, IMAC.t / 2 + 0.0002);
 panel.add(glass);
+
+const cam = new THREE.Mesh(new THREE.CircleGeometry(0.0016, 20), new THREE.MeshBasicMaterial({ color: 0x0b0b0c }));
+cam.position.set(0, IMAC.h - IMAC.topBezel / 2, IMAC.t / 2 + 0.0004);
+panel.add(cam);
 
 const anchor = new THREE.Object3D();
 anchor.position.set(0, IMAC.h - IMAC.topBezel - IMAC.dh / 2, IMAC.t / 2 + 0.0005);
@@ -258,10 +185,8 @@ foot.position.set(0, STAND.t / 2, -0.035);
 computer.add(foot);
 const upright = mesh(new RoundedBoxGeometry(STAND.w, 0.23, STAND.t, 3, 0.0025), alu);
 upright.rotation.x = 0.24;
-upright.receiveShadow = false;
 upright.position.set(0, 0.11, -0.05);
 computer.add(upright);
-contact(0.24, 0.22, 0, IMAC.z - 0.035, PAL.contact * 0.55);
 
 /* ---- one keyring with all three app charms, hanging on a wall hook top-right ---- */
 const CHARMS = [
@@ -269,30 +194,28 @@ const CHARMS = [
   { app: 'mono', name: 'Mono', at: deg(0), tilt: deg(2), dz: 0.024, drop: 0.016, phase: 2.1 },
   { app: 'intent', name: 'Intent', at: deg(40), tilt: deg(31), dz: 0.014, drop: 0, phase: 4.0 },
 ];
-const WALL_Z = wall.position.z;
-const HOOK = new THREE.Vector3(0.5, 0.53, WALL_Z);
-const CHARM = 0.064;
+const HOOK = new THREE.Vector3(0.52, 0.6, WALL_Z);
+const CHARM = 0.062;
 const CHARM_REACH = (CHARM / 2) * Math.SQRT2 - 0.004;
 const RING_R = 0.019;
-const metal = mat(PAL.metal, { metalness: 1, roughness: 0.18 });
-const brass = mat(PAL.hook, { metalness: 1, roughness: 0.3 });
+const metal = mat(PAL.metal, { metalness: 1, roughness: 0.2 });
+const steel = mat(PAL.hook, { metalness: 1, roughness: 0.35 });
 const chains = [];
 
 const hook = new THREE.Group();
 hook.position.copy(HOOK);
 scene.add(hook);
-const rose = mesh(new THREE.CylinderGeometry(0.009, 0.01, 0.004, 32), brass);
+const rose = mesh(new THREE.CylinderGeometry(0.009, 0.01, 0.004, 32), steel);
 rose.rotation.x = Math.PI / 2;
 rose.position.z = 0.002;
 hook.add(rose);
 const pegCurve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(0, 0, 0.003), new THREE.Vector3(0, -0.001, 0.02), new THREE.Vector3(0, 0.002, 0.031), new THREE.Vector3(0, 0.009, 0.034),
 ]);
-hook.add(mesh(new THREE.TubeGeometry(pegCurve, 32, 0.0024, 12, false), brass));
-const pegTip = mesh(new THREE.SphereGeometry(0.0026, 16, 12), brass);
+hook.add(mesh(new THREE.TubeGeometry(pegCurve, 32, 0.0024, 12, false), steel));
+const pegTip = mesh(new THREE.SphereGeometry(0.0026, 16, 12), steel);
 pegTip.position.set(0, 0.009, 0.034);
 hook.add(pegTip);
-contact(0.05, 0.05, 0, 0, PAL.contact * 0.25, hook).rotation.x = 0;
 
 function splitRing(r) {
   const pts = [];
@@ -304,7 +227,7 @@ function splitRing(r) {
   return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 200, 0.0011, 10, false);
 }
 
-/* The ring rests on the peg and swings as a whole; the charms hang from its lowest point and sway on their own. */
+/* The ring rests on the peg and swings as a whole; the charms hang from points on it and sway on their own. */
 const keyring = new THREE.Group();
 keyring.position.set(0, -0.0012, 0.026);
 keyring.userData = { rz: 0, vz: 0 };
@@ -324,14 +247,14 @@ CHARMS.forEach((k) => {
 
   const jump = mesh(new THREE.TorusGeometry(0.0038, 0.0008, 8, 24), metal);
   jump.position.y = -0.0032;
+  jump.rotation.y = Math.PI / 2;
+  pivot.add(jump);
   if (k.drop) {
     const extra = mesh(new THREE.TorusGeometry(0.005, 0.0008, 8, 24), metal);
     extra.position.y = -0.0062 - k.drop / 2;
     extra.scale.y = (k.drop + 0.004) / 0.01;
     pivot.add(extra);
   }
-  jump.rotation.y = Math.PI / 2;
-  pivot.add(jump);
 
   const holder = new THREE.Group();
   holder.position.y = -0.0062 - CHARM_REACH - k.drop;
@@ -347,7 +270,10 @@ CHARMS.forEach((k) => {
     charm.scale.setScalar(CHARM / 0.1445);
     charm.rotation.z = Math.PI / 4;
     charm.traverse((o) => {
-      if (o.isMesh && o.material && 'envMapIntensity' in o.material) o.material.envMapIntensity = PAL.env;
+      if (!o.isMesh) return;
+      o.castShadow = true;
+      o.receiveShadow = true;
+      if (o.material && 'envMapIntensity' in o.material) o.material.envMapIntensity = PAL.env;
     });
     holder.add(charm);
   });
@@ -397,16 +323,16 @@ function syncPage() {
   page.style.transform = homography(W, H, pts);
 }
 
-/* ---- camera ---- */
-const IDLE = { target: new THREE.Vector3(0, 0.25, -0.1), dist: 1.16, el: deg(9) };
+/* ---- camera: straight on, at display height ---- */
+const IDLE = { target: new THREE.Vector3(0, 0.3, -0.02), dist: 1.42, el: deg(3) };
 const pointer = { x: 0, y: 0, sx: 0, sy: 0, ndc: new THREE.Vector2(), inside: false };
 const camTarget = new THREE.Vector3();
 let push = 0;
 
 function idlePose(k) {
-  const dist = IDLE.dist * (1 + 0.3 * (1 - k)) * (1 - push * 0.04);
-  const el = IDLE.el + deg(6) * (1 - k) + pointer.sy * deg(1.5);
-  const az = deg(-12) * (1 - k) + pointer.sx * deg(3.5);
+  const dist = IDLE.dist * (1 + 0.22 * (1 - k)) * (1 - push * 0.035);
+  const el = IDLE.el + deg(4) * (1 - k) + pointer.sy * deg(1.2);
+  const az = deg(-8) * (1 - k) + pointer.sx * deg(2.5);
   camTarget.copy(IDLE.target);
   camera.position.set(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(dist).add(camTarget);
   camera.up.set(0, 1, 0);
@@ -523,6 +449,7 @@ let time = 0;
 function frame() {
   raf = requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 1 / 20);
+  time += dt;
 
   pointer.sx = damp(pointer.sx, pointer.inside && mode !== 'zoom' ? pointer.x : 0, 2.5, dt);
   pointer.sy = damp(pointer.sy, pointer.inside && mode !== 'zoom' ? pointer.y : 0, 2.5, dt);
@@ -548,7 +475,6 @@ function frame() {
     zoomPose(easeInOut(zoom.t));
   }
 
-  time += dt;
   const kr = keyring.userData;
   kr.vz += (-(kr.rz - Math.sin(time * 0.7) * deg(1.2)) * 9 - kr.vz * 1.4) * dt;
   kr.rz += kr.vz * dt;
