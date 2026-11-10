@@ -17,6 +17,12 @@
     <link rel="stylesheet" href="style/mobile.css?v=70">
     <script>
         (function () {
+            /* Opened directly (a link from the App Store, the app or a search engine): show it as a window on the home page.
+               Inside the home page it is an iframe, so this doesn't run there. `?page` keeps the plain page. */
+            if (window.self === window.top && !/[?&]page\b/.test(location.search)) {
+                location.replace('index.html?open=' + encodeURIComponent('space.html' + location.hash));
+                return;
+            }
             try {
                 var h = new Date().getHours();
                 document.documentElement.setAttribute('data-theme', h >= 10 && h < 18 ? 'light' : 'dark');
@@ -523,7 +529,7 @@
     <script src="js/bg.js?v=70"></script>
     <script src="js/site.js?v=70"></script>
     <script src="js/app.js?v=70"></script>
-    <script src="js/space.js?v=70"></script>
+    <script src="js/space.js?v=71"></script>
     <script src="js/intent.js?v=70"></script>
     <!-- 3D pages (Mono's story, Sileo's design frame): three.js comes from the CDN only when such a page is first shown on a desktop window. -->
     <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>

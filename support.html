@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="style/mobile.css?v=70">
     <script>
         (function () {
+            /* Opened directly (a link from the App Store, the app or a search engine): show it as a window on the home page.
+               Inside the home page it is an iframe, so this doesn't run there. `?page` keeps the plain page. */
+            if (window.self === window.top && !/[?&]page\b/.test(location.search)) {
+                location.replace('index.html?open=' + encodeURIComponent('support.html' + location.hash));
+                return;
+            }
             try {
                 var h = new Date().getHours();
                 document.documentElement.setAttribute('data-theme', h >= 10 && h < 18 ? 'light' : 'dark');

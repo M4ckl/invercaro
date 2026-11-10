@@ -19,17 +19,19 @@
       document.documentElement.classList.add('is-loading');
       try {
         var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var q = new URLSearchParams(location.search).get('desk');
+        var params = new URLSearchParams(location.search);
+        var q = params.get('desk');
+        var opening = params.has('open');
         var internal = false;
         if (document.referrer) {
           var r = new URL(document.referrer);
           internal = r.origin === location.origin && !/(\/|index\.html)$/.test(r.pathname);
         }
-        var desk = q === '1' || (q !== '0' && !calm && !internal && window.innerWidth > 900 && !!window.WebGLRenderingContext);
+        var desk = q === '1' || (q !== '0' && !opening && !calm && !internal && window.innerWidth > 900 && !!window.WebGLRenderingContext);
         if (desk) {
           document.documentElement.classList.add('desk-on');
           setTimeout(function () { if (!window.__deskReady) document.documentElement.classList.remove('desk-on'); }, 9000);
-        } else if (!calm && !sessionStorage.getItem('invercaro-splash')) {
+        } else if (!calm && !opening && !sessionStorage.getItem('invercaro-splash')) {
           document.documentElement.classList.add('has-splash');
         }
       } catch (e) {}
@@ -155,7 +157,7 @@
   <script src="js/site.js?v=70"></script>
   <script src="js/dock.js?v=70"></script>
   <script src="js/app.js?v=70"></script>
-  <script src="js/space-window.js?v=70"></script>
+  <script src="js/space-window.js?v=71"></script>
   <script type="module">
     const root = document.documentElement;
     const loadDesk = () => import('./js/desk.js?v=70');

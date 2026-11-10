@@ -357,6 +357,13 @@
 
   document.addEventListener('themechange', (e) => wins.forEach((w) => send(w, { type: 'theme', theme: e.detail })));
 
+  /* ---- a direct link (support.html#mono, space.html#privacy …) arrives as index.html?open=…: open that window ---- */
+  const opening = new URLSearchParams(window.location.search).get('open');
+  if (opening && /^(space|support)\.html(#[\w-]+)?$/.test(opening)) {
+    history.replaceState(null, '', 'index.html');
+    openHref(opening);
+  }
+
   /* ---- warm up one Space window after the home page has loaded ---- */
   window.addEventListener('load', () => setTimeout(() => { if (!wins.size && !spare) spare = makeHost('space', '#mono'); }, 1200));
 })();

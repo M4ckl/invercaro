@@ -186,8 +186,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function goToPrivacy(hash, smooth) {
         activate(policies[hash]);
         stages.jump(Infinity);
-        document.getElementById(hash.slice(1))
-            .scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto', block: 'start' });
+        const target = document.getElementById(hash.slice(1));
+        target.scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto', block: 'start' });
+        /* Content above the policy (videos, reveals) can still change height while the page settles, which leaves the
+           scroll short of the policy; snap to it once the scroll and the layout have settled. */
+        const settle = () => {
+            if (window.location.hash !== hash) return;
+            const off = target.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+            if (Math.abs(off) > 4) target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        };
+        setTimeout(settle, smooth ? 1100 : 400);
+        setTimeout(settle, 2200);
     }
 
     function route(smooth) {
