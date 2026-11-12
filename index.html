@@ -9,12 +9,12 @@
   <link rel="apple-touch-icon" href="style/icons/icon_invercaro_white.svg">
   <link rel="stylesheet" href="style/main.css?v=70">
   <link rel="stylesheet" href="style/mobile.css?v=70">
-  <link rel="stylesheet" href="style/desk.css?v=70">
+  <link rel="stylesheet" href="style/desk.css?v=73">
   <script>
     (function () {
       try {
         var h = new Date().getHours();
-        document.documentElement.setAttribute('data-theme', h >= 10 && h < 18 ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', h >= 6 && h < 18 ? 'light' : 'dark');
       } catch (e) {}
       document.documentElement.classList.add('is-loading');
       try {
@@ -27,7 +27,7 @@
           var r = new URL(document.referrer);
           internal = r.origin === location.origin && !/(\/|index\.html)$/.test(r.pathname);
         }
-        var desk = q === '1' || (q !== '0' && !opening && !calm && !internal && window.innerWidth > 900 && !!window.WebGLRenderingContext);
+        var desk = q === '1' || (q !== '0' && !opening && !calm && !internal && window.innerWidth > 900);
         if (desk) {
           document.documentElement.classList.add('desk-on');
           setTimeout(function () { if (!window.__deskReady) document.documentElement.classList.remove('desk-on'); }, 9000);
@@ -37,7 +37,6 @@
       } catch (e) {}
     })();
   </script>
-  <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
 </head>
 
 <body class="home">
@@ -148,19 +147,19 @@
   <div class="space-hosts" id="space-hosts"></div>
   </div>
 
-  <canvas class="desk-canvas" id="desk-canvas" aria-label="A table with a laptop. Click the laptop or press Enter to open the site."></canvas>
+  <div class="desk-stage" id="desk-stage" role="button" tabindex="0" aria-label="A desk with an iMac. Click the screen or press Enter to open the site."></div>
   <div class="desk-veil" id="desk-veil" aria-hidden="true"></div>
   <p class="desk-hint" id="desk-hint"><strong>Invercaro</strong> · Click the screen to enter</p>
   <span class="desk-label" id="desk-label" aria-hidden="true"></span>
 
   <script src="js/bg.js?v=70"></script>
-  <script src="js/site.js?v=70"></script>
+  <script src="js/site.js?v=71"></script>
   <script src="js/dock.js?v=70"></script>
-  <script src="js/app.js?v=70"></script>
+  <script src="js/app.js?v=71"></script>
   <script src="js/space-window.js?v=71"></script>
   <script type="module">
     const root = document.documentElement;
-    const loadDesk = () => import('./js/desk.js?v=70');
+    const loadDesk = () => import('./js/workspace.js?v=74');
     if (root.classList.contains('desk-on')) loadDesk().catch(() => root.classList.remove('desk-on'));
 
     /* The logo flies back out of the screen to the desk instead of reloading the page. */

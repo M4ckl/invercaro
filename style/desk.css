@@ -1,4 +1,4 @@
-/* Desk intro: 3D table scene over the home page; the page itself is mapped onto the laptop display (js/desk.js). */
+/* Desk intro: a rendered desk scene over the home page; the page itself is mapped onto the iMac display (js/workspace.js). */
 
 /* ====== PAGE WRAPPER ====== */
 .desk-page {
@@ -26,33 +26,123 @@ html.desk-on .desk-page {
 }
 
 /* ====== SCENE ====== */
-.desk-canvas,
+.desk-stage,
+.desk-film,
 .desk-veil,
 .desk-hint,
 .desk-label {
     display: none;
 }
 
-html.desk-on .desk-canvas {
+/* The rendered desk. js/workspace.js sizes it to cover the viewport and moves it with one transform. */
+html.desk-on .desk-stage {
+    --lit: 0;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
     z-index: 200;
     display: block;
-    width: 100vw;
-    height: 100vh;
+    transform-origin: 0 0;
+    will-change: transform;
+    background-color: #0b0b0d;
+    user-select: none;
+    -webkit-user-select: none;
     outline: none;
 }
 
-html.desk-on .desk-canvas.is-hover {
+html.desk-on .desk-stage.is-hover {
+    cursor: pointer;
+}
+
+.desk-shot {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Lamps-on render fades in over the dusk render. */
+.desk-shot.is-on {
+    opacity: var(--lit);
+}
+
+.desk-display {
+    position: absolute;
+    background-color: var(--bg-main);
+}
+
+/* The page sits above the desk image, exactly over the display. */
+html.desk-on .desk-page {
+    z-index: 205;
+}
+
+html.desk-on .desk-film {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 206;
+    display: block;
+    transform-origin: 0 0;
+    pointer-events: none;
+}
+
+.desk-film-black,
+.desk-film-gloss {
+    position: absolute;
+    inset: 0;
+}
+
+.desk-film-black {
+    inset: -1px;
+    background-color: #000000;
+}
+
+.desk-film-gloss {
+    background: linear-gradient(118deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 28%, rgba(255, 255, 255, 0) 46%);
+}
+
+/* ====== CHARMS ====== */
+.desk-charm,
+.desk-charm-pivot {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.desk-charm-pivot {
+    top: 0;
+    left: 0;
+    will-change: transform;
+}
+
+.desk-charm-ring,
+.desk-charm-img {
+    position: absolute;
+    max-width: none;
+    height: auto;
+    filter: brightness(calc(0.24 + 0.76 * var(--lit))) saturate(calc(0.35 + 0.65 * var(--lit)));
+}
+
+.desk-charm-ring {
+    pointer-events: none;
+}
+
+.desk-charm-tile {
+    filter: drop-shadow(calc(var(--u) * 1.5) calc(var(--u) * 6) calc(var(--u) * 4.5) rgb(0 0 0 / calc(0.5 * var(--lit))));
+}
+
+.desk-charm-img {
     cursor: pointer;
 }
 
 html.desk-on .desk-veil {
     position: fixed;
     inset: 0;
-    z-index: 201;
+    z-index: 210;
     display: block;
-    background-color: #1a1a1a;
+    background-color: #060607;
     pointer-events: none;
     transition: opacity 1000ms var(--ease-out);
 }
@@ -67,12 +157,13 @@ html.desk-on .desk-hint {
     top: 4.5vh;
     left: 0;
     right: 0;
-    z-index: 202;
+    z-index: 212;
     display: block;
     font-size: 13px;
     letter-spacing: 0.01em;
     text-align: center;
-    color: rgba(255, 255, 255, 0.62);
+    color: rgba(255, 255, 255, 0.86);
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.35);
     pointer-events: none;
     opacity: 0;
     transform: translateY(8px);
@@ -95,7 +186,7 @@ html.desk-on .desk-label {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 202;
+    z-index: 212;
     display: block;
     padding: 5px 11px;
     border-radius: 999px;

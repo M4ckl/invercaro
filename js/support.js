@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const app = document.querySelector(`.su-app[data-app="${name}"] strong`);
         if (title && app) title.textContent = `${app.textContent} Support`;
         if (updateHash) history.replaceState(null, '', `#${name}`);
-        if (embedded) tell({ type: 'app', app: name });
     }
 
     apps.forEach((app) => app.addEventListener('click', () => select(app.dataset.app, true)));

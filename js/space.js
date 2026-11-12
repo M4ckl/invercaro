@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const staged = () => !!section && !narrowView.matches;
 
-
         function apply() {
             if (!section) return;
             const on = staged();
@@ -169,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = document.getElementById(id);
         if (!target) return;
         sections.forEach((section) => section.classList.toggle('sp-active-section', section === target));
-        if (embedded) tell({ type: 'app', app: id.replace('sp-', '') });
         stages.reset(target);
         scroller.scrollTop = 0;
         window.scrollTo(0, 0);

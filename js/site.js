@@ -1,4 +1,4 @@
-/* Shared site behaviour: theme by time of day (light 10:00–18:00, dark otherwise; switches with a circular reveal) + smooth page transitions. */
+/* Shared site behaviour: theme by time of day (light 6:00–18:00, dark otherwise; switches with a circular reveal) + smooth page transitions. */
 (function () {
   const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -16,7 +16,7 @@
     });
   }
 
-  const LIGHT_FROM = 10;
+  const LIGHT_FROM = 6;
   const DARK_FROM = 18;
   function themeForNow() {
     const h = new Date().getHours();

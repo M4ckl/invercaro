@@ -4,9 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---------------- Current page ---------------- */
     const path = window.location.pathname;
-    const current = path.includes('space.html') ? 'link-space'
-        : path.includes('support.html') ? 'link-support'
-        : 'link-invercaro';
+    const current = path.includes('space.html') ? 'link-space' : 'link-invercaro';
     const currentLink = document.getElementById(current);
     if (currentLink) {
         currentLink.classList.add('nav-current');
